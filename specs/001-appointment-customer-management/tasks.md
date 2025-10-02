@@ -101,7 +101,7 @@ Based on plan.md structure decision (Web application):
   - Volume mounts for data persistence
   - Health checks for services
 
-- [ ] **T008** Create backend environment configuration
+- [x] **T008** Create backend environment configuration
 
   - Create `backend/src/config/env.config.ts` with validation
   - Load: DATABASE_URL, REDIS_HOST, JWT_SECRET, GMAIL_USER, GMAIL_APP_PASSWORD, ILETI_MERKEZI_API_KEY, NODE_ENV, PORT

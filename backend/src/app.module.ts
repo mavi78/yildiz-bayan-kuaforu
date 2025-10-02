@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { ConfigModule } from "./config/config.module";
 
 /**
  * Ana uygulama modülü
@@ -20,10 +20,7 @@ import { AppService } from "./app.service";
 @Module({
   imports: [
     // Environment değişkenleri
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: "../.env",
-    }),
+    ConfigModule,
 
     // Rate limiting
     ThrottlerModule.forRoot([

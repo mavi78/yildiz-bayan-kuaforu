@@ -23,7 +23,7 @@ module.exports = {
     jest: true,
     es2021: true,
   },
-  ignorePatterns: ['dist', '.eslintrc.js'],
+  ignorePatterns: ['dist', '.eslintrc.js', 'prisma/schema.prisma'],
   rules: {
     '@typescript-eslint/no-unused-vars': [
       'error',
