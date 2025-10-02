@@ -54,7 +54,7 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 1.1: Setup
 
-- [ ] **T001** Create monorepo structure with backend/ and frontend/ directories
+- [x] **T001** Create monorepo structure with backend/ and frontend/ directories
 
   - Create `backend/`, `frontend/`, `shared/types/` (optional)
   - Add root `package.json` with workspace config (pnpm)
