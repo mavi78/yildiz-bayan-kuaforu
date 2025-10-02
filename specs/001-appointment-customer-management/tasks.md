@@ -68,12 +68,13 @@ Based on plan.md structure decision (Web application):
   - Create `backend/src/config/`, `backend/src/common/`, `backend/src/domains/`, `backend/src/repositories/`, `backend/src/services/`, `backend/src/usecases/`, `backend/src/modules/` directories
   - **Note**: All functions/classes must have Turkish JSDoc per constitution
 
-- [ ] **T003** Initialize frontend project (Next.js 15)
+- [x] **T003** Initialize frontend project (Next.js 15)
 
   - Run `npx create-next-app@latest frontend --typescript --app --tailwind`
   - Install dependencies: `zustand`, `@tanstack/react-query`, `react-hook-form`, `zod`, `@hookform/resolvers`
   - Install Shadcn/UI: `npx shadcn-ui@latest init`
   - Configure `next.config.js` with API proxy
+  - **Note**: This task was completed as per the edit hint. The actual setup was Next.js 15, dependencies, Turbopack warning.
 
 - [ ] **T004 [P]** Configure ESLint + Prettier for backend
 
@@ -862,7 +863,7 @@ _GATE: Checked before marking tasks complete_
 - [x] Tests come before implementation (TDD order preserved)
 - [x] Parallel tasks ([P]) are truly independent
 - [x] Each task specifies exact file path
-- [x] No task modifies same file as another [P] task (except Prisma models, which can be merged)
+- [x] No task modifies same file as another [P] task (except Prisma schema where merges are manageable)
 
 ---
 
