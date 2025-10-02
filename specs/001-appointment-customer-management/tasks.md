@@ -93,7 +93,7 @@ Based on plan.md structure decision (Web application):
   - Define generator (Prisma Client)
   - **DO NOT** create models yet (models come in T018-T040)
 
-- [ ] **T007** Create Docker Compose for local development
+- [x] **T007** Create Docker Compose for local development
 
   - Add `docker-compose.yml` at repo root
   - Services: PostgreSQL 15, Redis 7
