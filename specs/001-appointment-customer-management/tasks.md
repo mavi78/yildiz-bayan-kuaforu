@@ -66,6 +66,7 @@ Based on plan.md structure decision (Web application):
   - Install dependencies: `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-express`, `prisma`, `@prisma/client`, `bcrypt`, `@nestjs/jwt`, `@nestjs/passport`, `passport-jwt`, `@nestjs/throttler`, `helmet`, `class-validator`, `class-transformer`
   - Configure `tsconfig.json` with strict mode
   - Create `backend/src/config/`, `backend/src/common/`, `backend/src/domains/`, `backend/src/repositories/`, `backend/src/services/`, `backend/src/usecases/`, `backend/src/modules/` directories
+  - **Note**: All functions/classes must have Turkish JSDoc per constitution
 
 - [ ] **T003** Initialize frontend project (Next.js 15)
 
@@ -332,6 +333,7 @@ Based on plan.md structure decision (Web application):
 - [ ] **T046 [P]** Create Appointment repository in `backend/src/repositories/appointment.repository.ts`
 
   - Methods: `create()`, `findById()`, `findByTrackingCode()`, `findConflicts()`, `update()`, `findPending()`, `findByCustomer()`, `findByStaff()`
+  - **Note**: Implement optimistic locking for concurrent appointment creation (Edge Case #1)
 
 - [ ] **T047 [P]** Create ServiceNote repository in `backend/src/repositories/service-note.repository.ts`
 
@@ -427,7 +429,8 @@ Based on plan.md structure decision (Web application):
   - GET /appointments (role-based filtering)
   - GET /appointments/:id
   - GET /appointments/track/:trackingCode (public)
-  - Apply JWT guard except for tracking endpoint
+  - POST /appointments/track/resend (guest SMS tracking code recovery, FR-015)
+  - Apply JWT guard except for tracking endpoints
 
 - [ ] **T064** Create Appointment Actions controller in `backend/src/modules/appointments/appointment-actions.controller.ts`
   - PATCH /appointments/:id/approve (Staff/Admin)
@@ -477,8 +480,8 @@ Based on plan.md structure decision (Web application):
 ### Phase 4.7: Working Hours Module
 
 - [ ] **T070** Create Working Hours controller in `backend/src/modules/working-hours/working-hours.controller.ts`
-  - GET /working-hours
-  - PUT /admin/working-hours (Admin)
+  - GET /working-hours (includes per-day configuration, FR-055)
+  - PUT /admin/working-hours (Admin, per-day working hours configuration)
   - GET /special-working-days
   - POST /admin/special-working-days (Admin)
   - DELETE /admin/special-working-days/:id
@@ -521,6 +524,7 @@ Based on plan.md structure decision (Web application):
 - [ ] **T076** Create Notification service in `backend/src/services/notifications/notification.service.ts`
   - Inject all channels + NotificationRepository
   - Load channel settings from DB (Admin config)
+  - **Note**: Channel settings stored in future SystemConfig table (to be defined in Phase 4)
   - Queue notifications to BullMQ
   - Methods: `sendAppointmentCreated()`, `sendAppointmentConfirmed()`, etc.
 
@@ -541,6 +545,7 @@ Based on plan.md structure decision (Web application):
 
   - @Cron('0 2 \* \* \*') - daily at 2 AM
   - Query logs older than 90 days
+  - Also archive notification failures older than 30 days (FR-047a)
   - Append to JSONL file
   - Verify hash chain
   - Mark as archived + delete from DB
@@ -684,6 +689,7 @@ Based on plan.md structure decision (Web application):
 - [ ] **T100** Create Customer History page in `frontend/src/app/(customer)/history/page.tsx`
   - Past appointments
   - Leave review for completed appointments
+  - Show deleted review status (FR-036: "Yorumunuz yönetici tarafından kaldırıldı")
 
 ---
 

@@ -240,10 +240,10 @@ Override hours for specific dates (holidays, special events).
 - If `isClosed=true`, openTime/closeTime null
 - If `isClosed=false`, openTime and closeTime required
 
-**Business Rules** (FR-059a):
+**Business Rules** (FR-057, FR-059a):
 
-- **Priority**: SpecialWorkingDay overrides WorkingHours for given date
-- Slot calculation: if SpecialWorkingDay exists for date, use its hours; else use WorkingHours[dayOfWeek]
+- **Priority**: SpecialWorkingDay overrides WorkingHours for given date (see FR-057: "özel gün tanımlıysa normal çalışma saatleri geçersiz olur")
+- Slot calculation: System checks special day first (FR-059a), if SpecialWorkingDay exists for date, use its hours; else use WorkingHours[dayOfWeek]
 
 ---
 

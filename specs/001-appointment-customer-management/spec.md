@@ -56,6 +56,29 @@
 
 ---
 
+## Terminology Glossary
+
+**Purpose**: Standardize terminology across spec (Turkish) and implementation (English code).
+
+| Turkish (Spec) | English (Code/Tasks) | Definition |
+|----------------|----------------------|------------|
+| **Kayıtsız Müşteri** | Guest | Unregistered customer who books via phone/web without login; cannot leave reviews |
+| **Misafir** | Guest | Synonym for Kayıtsız Müşteri |
+| **Kayıtlı Müşteri** | Registered Customer | Customer with User account, can login and leave reviews |
+| **İşlem Notu** | ServiceNote | Post-appointment staff notes (max 1000 chars), visible only to Admin/Staff |
+| **Randevu Notları** | Appointment.notes | General appointment notes visible to customer |
+| **Veresiye** | Deferred Payment | Payment on credit with due date, collateral, responsible staff |
+| **Davet** | Invitation | Invitation-only registration token with 72h expiry |
+| **Çakışma** | Conflict | Appointment scheduling conflict (same staff, date, time) |
+| **Override** | Override | Admin forcing appointment despite conflict, with justification |
+| **Takip Kodu** | Tracking Code | 8-char alphanumeric code for guest appointment tracking |
+| **Özel Gün** | SpecialWorkingDay | Override working hours for specific date (holiday, event) |
+| **Normal Çalışma Saatleri** | WorkingHours | Regular weekly working hours per day (Mon-Sun) |
+
+**Note**: In code, always use English entity/field names. In UI/documentation for Turkish users, use Turkish terms from this glossary.
+
+---
+
 ## User Scenarios & Testing _(mandatory)_
 
 ### Primary User Story

@@ -71,7 +71,7 @@
 
 **Scale/Scope**:
 
-- Expected: ~100 appointments/week, ~500 registered customers, ~50 staff
+- Expected: ~100 appointments/week, ~500 registered customers, ~5-10 staff (single-location salon)
 - Data: ~12 entities, ~70 functional requirements across 9 domain groups
 - UI: ~20-25 pages/screens (admin dashboard, customer portal, staff interface)
 
