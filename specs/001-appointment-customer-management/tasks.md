@@ -88,7 +88,7 @@ Based on plan.md structure decision (Web application):
   - Add `frontend/.prettierrc`
   - Add lint scripts to `frontend/package.json`
 
-- [ ] **T006** Initialize Prisma schema in `backend/prisma/schema.prisma`
+- [x] **T006** Initialize Prisma schema in `backend/prisma/schema.prisma`
 
   - Define datasource (PostgreSQL)
   - Define generator (Prisma Client)
