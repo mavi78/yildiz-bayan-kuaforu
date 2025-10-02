@@ -76,13 +76,13 @@ Based on plan.md structure decision (Web application):
   - Configure `next.config.js` with API proxy
   - **Note**: This task was completed as per the edit hint. The actual setup was Next.js 15, dependencies, Turbopack warning.
 
-- [ ] **T004 [P]** Configure ESLint + Prettier for backend
+- [x] **T004 [P]** Configure ESLint + Prettier for backend
 
   - Add `backend/.eslintrc.js` with NestJS rules
   - Add `backend/.prettierrc` with project style
   - Add lint scripts to `backend/package.json`
 
-- [ ] **T005 [P]** Configure ESLint + Prettier for frontend
+- [x] **T005 [P]** Configure ESLint + Prettier for frontend
 
   - Add `frontend/.eslintrc.json` with Next.js rules
   - Add `frontend/.prettierrc`

@@ -81,6 +81,7 @@ pnpm --filter frontend test
 ## 📦 Bağımlılıklar
 
 ### Runtime
+
 - `next@15` - App Router
 - `react@19`, `react-dom@19`
 - `zustand@5`
@@ -88,6 +89,7 @@ pnpm --filter frontend test
 - `@hookform/resolvers`, `react-hook-form`, `zod`
 
 ### Development
+
 - `typescript@5`
 - `eslint@8` (Next.js önerilmektedir)
 - `@typescript-eslint/eslint-plugin`, `parser`

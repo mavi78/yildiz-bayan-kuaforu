@@ -1,20 +1,20 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { ThrottlerModule } from "@nestjs/throttler";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
 /**
  * Ana uygulama modülü
- * 
+ *
  * @description
  * NestJS uygulamasının root modülü. Tüm feature modüllerini ve
  * global konfigürasyonları içerir.
- * 
+ *
  * Yapılandırmalar:
  * - ConfigModule: Environment değişkenleri yönetimi
  * - ThrottlerModule: Rate limiting (DDoS koruması)
- * 
+ *
  * @module AppModule
  */
 @Module({
@@ -22,7 +22,7 @@ import { AppService } from './app.service';
     // Environment değişkenleri
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../.env',
+      envFilePath: "../.env",
     }),
 
     // Rate limiting
@@ -47,4 +47,3 @@ import { AppService } from './app.service';
   providers: [AppService],
 })
 export class AppModule {}
-
