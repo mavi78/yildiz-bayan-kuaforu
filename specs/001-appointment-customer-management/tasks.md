@@ -60,7 +60,7 @@ Based on plan.md structure decision (Web application):
   - Add root `package.json` with workspace config (pnpm)
   - Add `.gitignore`, `.env.example`
 
-- [ ] **T002** Initialize backend project (NestJS 10)
+- [x] **T002** Initialize backend project (NestJS 10)
 
   - Run `nest new backend` or initialize manually
   - Install dependencies: `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-express`, `prisma`, `@prisma/client`, `bcrypt`, `@nestjs/jwt`, `@nestjs/passport`, `passport-jwt`, `@nestjs/throttler`, `helmet`, `class-validator`, `class-transformer`
