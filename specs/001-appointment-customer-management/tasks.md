@@ -107,7 +107,7 @@ Based on plan.md structure decision (Web application):
   - Load: DATABASE_URL, REDIS_HOST, JWT_SECRET, GMAIL_USER, GMAIL_APP_PASSWORD, ILETI_MERKEZI_API_KEY, NODE_ENV, PORT
   - Use `class-validator` for validation
 
-- [ ] **T009** Create backend main.ts bootstrap
+- [x] **T009** Create backend main.ts bootstrap
 
   - Configure global pipes (ValidationPipe)
   - Enable Helmet for security headers

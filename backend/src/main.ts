@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
-import { ValidationPipe } from "@nestjs/common";
+import { ValidationPipe, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import helmet from "helmet";
 import { AppModule } from "./app.module";
@@ -19,7 +20,13 @@ import { AppModule } from "./app.module";
  * @returns {Promise<void>}
  */
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+  const logger = new Logger("Bootstrap");
+  app.useLogger(logger);
+
+  const configService = app.get(ConfigService);
 
   // Global prefix
   app.setGlobalPrefix("api");
@@ -36,17 +43,20 @@ async function bootstrap() {
     }),
   );
 
+  // Throttler guard eklenecek (TBD) - T012 sonrası
+
   // Security: Helmet
   app.use(helmet());
 
   // CORS yapılandırması
   app.enableCors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: configService.get<string>("FRONTEND_URL") || "http://localhost:3000",
     credentials: true,
   });
 
   // Swagger dokümantasyonu (sadece development)
-  if (process.env.NODE_ENV !== "production") {
+  const nodeEnv = configService.get<string>("NODE_ENV");
+  if (nodeEnv !== "production") {
     const config = new DocumentBuilder()
       .setTitle("Yıldız Bayan Kuaförü API")
       .setDescription("Appointment & Customer Management API")
@@ -66,16 +76,17 @@ async function bootstrap() {
     SwaggerModule.setup("api/docs", app, document);
   }
 
-  const port = process.env.BACKEND_PORT || 3001;
+  const port = configService.get<number>("BACKEND_PORT") || 3001;
   await app.listen(port);
 
-  console.log(`🚀 Backend API running on: http://localhost:${port}/api`);
-  if (process.env.NODE_ENV !== "production") {
-    console.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
+  logger.log(`🚀 Backend API running on: http://localhost:${port}/api`);
+  if (nodeEnv !== "production") {
+    logger.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
   }
 }
 
 bootstrap().catch(error => {
-  console.error("❌ Backend başlatılamadı:", error);
+  const logger = new Logger("Bootstrap");
+  logger.error("❌ Backend başlatılamadı:", error);
   process.exit(1);
 });
