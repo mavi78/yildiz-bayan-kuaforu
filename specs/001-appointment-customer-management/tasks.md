@@ -116,7 +116,7 @@ Based on plan.md structure decision (Web application):
   - Swagger setup (optional for dev)
   - Port configuration (3001)
 
-- [ ] **T010** Create frontend environment configuration
+- [x] **T010** Create frontend environment configuration
   - Create `frontend/.env.local.example`
   - Define NEXT_PUBLIC_API_URL, NEXT_PUBLIC_WS_URL
   - Create `frontend/src/lib/env.ts` for type-safe env access
