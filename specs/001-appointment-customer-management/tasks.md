@@ -409,45 +409,85 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 3.2: Customer & Appointment Repositories (Parallel)
 
-- [ ] **T042 [P]** Create Customer repository in `backend/src/repositories/customer.repository.ts`
+- [x] **T042 [P]** Create Customer repository in `backend/src/repositories/customer.repository.ts`
 
-  - Methods: `create()`, `findById()`, `findByPhone()`, `findByUserId()`, `update()`, `findGuests()`
+  - ✅ Methods: `create()`, `findById()`, `findByPhone()`, `findByUserId()`, `update()`, `findGuests()`
+  - ✅ Additional methods: `findMany()`, `count()`, `findByEmail()`, `delete()`, `updateStats()`, `incrementStats()`, `convertToRegistered()`, `exists()`, `isPhoneTaken()`
+  - ✅ Support for dual customer type (REGISTERED/GUEST)
+  - ✅ Denormalized stats management
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T043 [P]** Create Service repository in `backend/src/repositories/service.repository.ts`
+- [x] **T043 [P]** Create Service repository in `backend/src/repositories/service.repository.ts`
 
-  - Methods: `findAll()`, `findById()`, `create()`, `update()`, `softDelete()`
+  - ✅ Methods: `findAll()`, `findById()`, `create()`, `update()`, `softDelete()`
+  - ✅ Additional methods: `activate()`, `findMany()`, `count()`, `searchByName()`, `exists()`, `updatePrice()`, `updateDuration()`, `delete()`
+  - ✅ Active/inactive service management
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T044 [P]** Create WorkingHours repository in `backend/src/repositories/working-hours.repository.ts`
+- [x] **T044 [P]** Create WorkingHours repository in `backend/src/repositories/working-hours.repository.ts`
 
-  - Methods: `findByDayOfWeek()`, `upsert()`, `findAll()`
+  - ✅ Methods: `findByDayOfWeek()`, `upsert()`, `findAll()`
+  - ✅ Additional methods: `update()`, `create()`, `markClosed()`, `markOpen()`, `delete()`, `exists()`, `findOpenDays()`, `bulkUpsert()`
+  - ✅ Day of week support (0=Sunday, 6=Saturday)
+  - ✅ HH:mm time format
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T045 [P]** Create SpecialWorkingDay repository in `backend/src/repositories/special-working-day.repository.ts`
+- [x] **T045 [P]** Create SpecialWorkingDay repository in `backend/src/repositories/special-working-day.repository.ts`
 
-  - Methods: `findByDate()`, `create()`, `delete()`, `findUpcoming()`
+  - ✅ Methods: `findByDate()`, `create()`, `delete()`, `findUpcoming()`
+  - ✅ Additional methods: `findByDateRange()`, `update()`, `findById()`, `findAll()`, `existsByDate()`, `deleteOldRecords()`, `count()`
+  - ✅ Priority over WorkingHours (FR-057)
+  - ✅ Holiday and special event management
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T046 [P]** Create Appointment repository in `backend/src/repositories/appointment.repository.ts`
+- [x] **T046 [P]** Create Appointment repository in `backend/src/repositories/appointment.repository.ts`
 
-  - Methods: `create()`, `findById()`, `findByTrackingCode()`, `findConflicts()`, `update()`, `findPending()`, `findByCustomer()`, `findByStaff()`
-  - **Note**: Implement optimistic locking for concurrent appointment creation (Edge Case #1)
+  - ✅ Methods: `create()`, `findById()`, `findByTrackingCode()`, `findConflicts()`, `update()`, `findPending()`, `findByCustomer()`, `findByStaff()`
+  - ✅ Additional methods: `findMany()`, `count()`, `updateStatus()`, `findByDateRange()`, `exists()`, `isTrackingCodeTaken()`, `delete()`, `findToday()`
+  - ✅ Optimistic locking support for concurrent creation
+  - ✅ Conflict detection: (staffId, date, time) + status ∈ {PENDING, CONFIRMED}
+  - ✅ 8-char alphanumeric tracking code support
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T047 [P]** Create ServiceNote repository in `backend/src/repositories/service-note.repository.ts`
+- [x] **T047 [P]** Create ServiceNote repository in `backend/src/repositories/service-note.repository.ts`
 
-  - Methods: `create()`, `findByAppointment()` (ordered by createdAt)
+  - ✅ Methods: `create()`, `findByAppointment()` (ordered by createdAt desc)
+  - ✅ Additional methods: `findById()`, `delete()`, `update()`, `count()`
+  - ✅ Staff-only notes (max 1000 chars, enforced at service layer)
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T048 [P]** Create Payment repository in `backend/src/repositories/payment.repository.ts`
+- [x] **T048 [P]** Create Payment repository in `backend/src/repositories/payment.repository.ts`
 
-  - Methods: `create()`, `findByAppointment()`, `update()`, `findVeresiye()`, `findOverdue()`
+  - ✅ Methods: `create()`, `findByAppointment()`, `update()`, `findVeresiye()`, `findOverdue()`
+  - ✅ Additional methods: `findById()`, `findMany()`, `count()`, `findUpcomingVeresiye()`, `findByDateRange()`, `getTotalAmount()`
+  - ✅ Veresiye (deferred payment) full support with due date, collateral, responsible
+  - ✅ Payment aggregation methods
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T049 [P]** Create Review repository in `backend/src/repositories/review.repository.ts`
+- [x] **T049 [P]** Create Review repository in `backend/src/repositories/review.repository.ts`
 
-  - Methods: `create()`, `findById()`, `update()`, `findPending()`, `findApproved()`, `calculateAverageRating()`
+  - ✅ Methods: `create()`, `findById()`, `update()`, `findPending()`, `findApproved()`, `calculateAverageRating()`
+  - ✅ Additional methods: `findMany()`, `count()`, `approve()`, `softDelete()`, `findByCustomer()`
+  - ✅ Admin approval workflow
+  - ✅ Average rating calculation (approved reviews only)
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T050 [P]** Create Notification repository in `backend/src/repositories/notification.repository.ts`
+- [x] **T050 [P]** Create Notification repository in `backend/src/repositories/notification.repository.ts`
 
-  - Methods: `create()`, `update()`, `findFailed()`, `findToArchive()`
+  - ✅ Methods: `create()`, `update()`, `findFailed()`, `findToArchive()`
+  - ✅ Additional methods: `findById()`, `findMany()`, `count()`, `deleteMany()`, `findByCustomer()`, `findByAppointment()`
+  - ✅ Multi-channel tracking (email, SMS, socket)
+  - ✅ Retry attempt tracking (max 3)
+  - ✅ 30-day archival support
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T051 [P]** Create AuditLog repository in `backend/src/repositories/audit-log.repository.ts`
-  - Methods: `create()`, `findToArchive()`, `markArchived()`, `deleteArchived()`, `findLatest()` (for previousHash)
+- [x] **T051 [P]** Create AuditLog repository in `backend/src/repositories/audit-log.repository.ts`
+  - ✅ Methods: `create()`, `findToArchive()`, `markArchived()`, `deleteArchived()`, `findLatest()` (for previousHash)
+  - ✅ Additional methods: `findById()`, `findMany()`, `count()`, `findByActor()`, `findByTarget()`, `findByAction()`, `findByDateRange()`, `findChain()`
+  - ✅ SHA-256 hash chain support
+  - ✅ 90-day retention before archival
+  - ✅ JSONL archival preparation
+  - ✅ Turkish JSDoc documentation
 
 ### Phase 3.3: Business Services
 
