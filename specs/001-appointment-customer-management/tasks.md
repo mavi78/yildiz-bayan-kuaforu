@@ -714,10 +714,24 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 5.1: Notification Channels
 
-- [ ] **T072** Create Notification domain entities
+- [x] **T072** Create Notification domain entities
 
-  - Create `backend/src/domains/notifications/entities/notification.entity.ts`
-  - Create `backend/src/domains/notifications/value-objects/channel.vo.ts`
+  - ✅ Created `backend/src/domains/notifications/entities/notification.entity.ts`
+    - NotificationEvent enum (APPOINTMENT_CREATED, APPOINTMENT_CONFIRMED, etc.)
+    - DeliveryStatus enum (PENDING, SENT, FAILED)
+    - Notification entity with DDD pattern (create, reconstitute methods)
+    - Multi-channel status tracking (email, SMS, socket)
+    - Business logic: markEmailSent(), markSmsFailed(), processResult(), etc.
+    - FR-046: Max 3 retry attempts with canRetry() method
+    - FR-047: hasAllChannelsFailed() and shouldShowInAdminPanel()
+    - FR-047a: shouldBeArchived() for 30-day archival
+  - ✅ Created `backend/src/domains/notifications/value-objects/channel.vo.ts`
+    - NotificationChannel enum (EMAIL, SMS, SOCKET)
+    - Helper functions: toNotificationChannel(), toNotificationChannels()
+    - Validation: isValidChannel(), getAllChannels()
+    - Turkish descriptions: getChannelDescription(), getChannelDetails()
+  - ✅ Immutable value objects with self-validation
+  - ✅ Turkish JSDoc documentation
 
 - [ ] **T073** Create Email channel in `backend/src/services/notifications/channels/email.channel.ts`
 
