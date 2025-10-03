@@ -491,10 +491,18 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 3.3: Business Services
 
-- [ ] **T052** Create Customer service in `backend/src/services/customer.service.ts`
+- [x] **T052** Create Customer service in `backend/src/services/customer.service.ts`
 
-  - Inject CustomerRepository
-  - Methods: `createGuest()`, `createRegistered()`, `findByPhone()`, `convertGuestToRegistered()`, `findById()`
+  - ✅ Injected CustomerRepository
+  - ✅ Methods: `createGuest()`, `createRegistered()`, `findByPhone()`, `convertGuestToRegistered()`, `findById()`
+  - ✅ Additional methods: `update()`, `findAll()`, `updateStats()`, `delete()`, `count()`, `findByUserId()`, `findGuests()`
+  - ✅ Business rules: Guest duplicate prevention (phone matching), registered customer uniqueness
+  - ✅ Validation: Phone format (E.164), email format
+  - ✅ Error handling: NotFoundException, ConflictException, BadRequestException
+  - ✅ Guest → Registered conversion logic (FR-021, FR-022)
+  - ✅ Denormalized stats management (totalAppointments, totalSpent)
+  - ✅ Search and pagination support
+  - ✅ Turkish JSDoc documentation
 
 - [ ] **T053** Create Appointment service in `backend/src/services/appointment.service.ts`
 
