@@ -620,11 +620,16 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 4.4: Reviews Module
 
-- [ ] **T066** Create Reviews controller in `backend/src/modules/customers/reviews.controller.ts`
-  - POST /customers/:id/reviews (registered only)
-  - GET /customers/:id/reviews
-  - PATCH /reviews/:id/approve (Admin)
-  - DELETE /reviews/:id (Admin, triggers audit log)
+- [x] **T066** Create Reviews controller in `backend/src/modules/customers/reviews.controller.ts`
+  - ✅ POST /customers/:id/reviews (registered only)
+  - ✅ GET /customers/:id/reviews
+  - ✅ PATCH /reviews/:id/approve (Admin)
+  - ✅ DELETE /reviews/:id (Admin, triggers audit log)
+  - ✅ Created CreateReviewDto with validation
+  - ✅ Integrated with ReviewService
+  - ✅ Added to CustomersModule
+  - ✅ Role-based access control (CUSTOMER, ADMIN)
+  - ✅ FR-036: DELETED status message handling
 
 ### Phase 4.5: Payments Module
 
