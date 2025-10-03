@@ -8,6 +8,7 @@ import { AuthModule } from "@modules/auth/auth.module";
 import { AppointmentsModule } from "@modules/appointments/appointments.module";
 import { CustomersModule } from "@modules/customers/customers.module";
 import { PaymentsModule } from "@modules/payments/payments.module";
+import { ReportsModule } from "@modules/reports/reports.module";
 
 /**
  * Ana uygulama modülü
@@ -41,7 +42,7 @@ import { PaymentsModule } from "@modules/payments/payments.module";
     AppointmentsModule,
     CustomersModule,
     PaymentsModule,
-    // ReportsModule,
+    ReportsModule,
     // NotificationsModule,
     // WorkingHoursModule,
     // AuditModule,

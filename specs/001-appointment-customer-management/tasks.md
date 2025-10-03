@@ -649,16 +649,30 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 4.6: Reports Module
 
-- [ ] **T068** Create Reports controller in `backend/src/modules/reports/reports.controller.ts`
+- [x] **T068** Create Reports controller in `backend/src/modules/reports/reports.controller.ts`
 
-  - GET /reports/appointments?filters
-  - GET /reports/payments (Admin only)
-  - GET /reports/export?format=csv|xlsx
+  - ✅ GET /reports/appointments?filters - Randevu raporu (filtreli liste)
+  - ✅ GET /reports/payments (Admin only) - Ödeme raporu
+  - ✅ GET /reports/export?format=csv|xlsx - Randevu export
+  - ✅ GET /reports/export/payments?format=csv|xlsx - Ödeme export
+  - ✅ Created ReportsService with xlsx library integration
+  - ✅ Created DTOs: AppointmentReportFiltersDto, PaymentReportFiltersDto, ExportFormatQueryDto
+  - ✅ Created ReportsModule and added to AppModule
+  - ✅ Installed xlsx package (v0.18.5)
+  - ✅ Turkish JSDoc documentation
+  - ✅ Admin-only access with role guards
+  - ✅ CSV export with UTF-8 BOM for Excel compatibility
+  - ✅ XLSX export with Buffer-based streaming
+  - ✅ Turkish column headers and data translation
 
-- [ ] **T069** Implement CSV/XLSX export service in `backend/src/services/reports.service.ts`
-  - Use `xlsx` library
-  - Streaming for large reports
-  - Map data per quickstart.md format
+- [x] **T069** Implement CSV/XLSX export service in `backend/src/services/reports.service.ts`
+  - ✅ Used `xlsx` library per research.md pattern
+  - ✅ Buffer-based export for memory efficiency
+  - ✅ Turkish column headers and data formatting
+  - ✅ Date formatting: DD/MM/YYYY
+  - ✅ Status/method translation helpers
+  - ✅ Appointment export: Tarih, Saat, Müşteri, Hizmet, Personel, Durum, Ödeme
+  - ✅ Payment export: Ödeme Tarihi, Müşteri, Tutar, Yöntem, Veresiye bilgileri
 
 ### Phase 4.7: Working Hours Module
 
