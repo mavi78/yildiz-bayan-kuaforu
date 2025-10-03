@@ -518,10 +518,19 @@ Based on plan.md structure decision (Web application):
   - ✅ Helper methods: timeToMinutes(), minutesToTime(), getDayName(), isTimeInRange()
   - ✅ Turkish JSDoc documentation
 
-- [ ] **T054** Create Payment service in `backend/src/services/payment.service.ts`
+- [x] **T054** Create Payment service in `backend/src/services/payment.service.ts`
 
-  - Inject PaymentRepository
-  - Methods: `recordPayment()`, `findVeresiyeOverdue()`, `updatePayment()`
+  - ✅ Injected PaymentRepository
+  - ✅ Methods: `recordPayment()`, `findVeresiyeOverdue()`, `updatePayment()`
+  - ✅ Additional methods: `findById()`, `findByAppointment()`, `findAllVeresiye()`, `findUpcomingVeresiye()`, `findByDateRange()`, `getTotalAmount()`, `count()`, `closeVeresiye()`, `extendVeresiyeDueDate()`, `getPaymentMethodDistribution()`, `getVeresiyeSummary()`
+  - ✅ Business rules: VERESIYE validation (dueDate, collateral, responsible required per FR-040)
+  - ✅ Veresiye reminders support: -3 days, 0 days, +N days (FR-042a)
+  - ✅ Validation: amount > 0, dueDate not in past, unique per appointment
+  - ✅ Error handling: NotFoundException, BadRequestException, ConflictException
+  - ✅ Payment aggregation: getTotalAmount(), getPaymentMethodDistribution()
+  - ✅ Veresiye management: close, extend, summary methods
+  - ✅ Audit log integration ready (FR-039a)
+  - ✅ Turkish JSDoc documentation
 
 - [ ] **T055** Create Review service in `backend/src/services/review.service.ts`
   - Inject ReviewRepository
