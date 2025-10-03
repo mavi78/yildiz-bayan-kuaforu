@@ -744,11 +744,26 @@ Based on plan.md structure decision (Web application):
   - ✅ Error handling and logging
   - ✅ Connection testing functionality
 
-- [ ] **T074** Create SMS channel in `backend/src/services/notifications/channels/sms.channel.ts`
-
-  - Use İleti Merkezi API/SDK
-  - DLR (Delivery Report) handling
-  - Implement `send()` method
+- [x] **T074** Create SMS channel in `backend/src/services/notifications/channels/sms.channel.ts`
+  - ✅ Axios HTTP client for İleti Merkezi REST API
+  - ✅ Authentication via API key and secret (Authorization header)
+  - ✅ Phone number normalization to E.164 format (+905XXXXXXXXX)
+  - ✅ SMS sending with configurable sender name
+  - ✅ DLR (Delivery Report) webhook processing with status mapping
+  - ✅ Implemented `send()` method with comprehensive error handling
+  - ✅ SMS templates for all notification events:
+    - Appointment created (with tracking code for guests)
+    - Appointment confirmed
+    - Appointment cancelled
+    - Appointment reminder
+    - Payment reminder (veresiye)
+    - Tracking code resend (FR-015)
+  - ✅ Connection testing functionality (`testConnection()`)
+  - ✅ Message length calculation (160 chars = 1 SMS)
+  - ✅ Request/response interceptors for logging
+  - ✅ Turkish JSDoc documentation
+  - ✅ Environment variables: ILETI_MERKEZI_API_KEY, ILETI_MERKEZI_API_SECRET, ILETI_MERKEZI_SENDER
+  - ✅ Installed axios ^1.12.2 dependency
 
 - [ ] **T075** Create Socket.io gateway in `backend/src/modules/notifications/notifications.gateway.ts`
 
