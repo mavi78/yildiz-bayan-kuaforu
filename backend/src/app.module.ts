@@ -9,6 +9,7 @@ import { AppointmentsModule } from "@modules/appointments/appointments.module";
 import { CustomersModule } from "@modules/customers/customers.module";
 import { PaymentsModule } from "@modules/payments/payments.module";
 import { ReportsModule } from "@modules/reports/reports.module";
+import { WorkingHoursModule } from "@modules/working-hours/working-hours.module";
 
 /**
  * Ana uygulama modülü
@@ -43,8 +44,8 @@ import { ReportsModule } from "@modules/reports/reports.module";
     CustomersModule,
     PaymentsModule,
     ReportsModule,
+    WorkingHoursModule,
     // NotificationsModule,
-    // WorkingHoursModule,
     // AuditModule,
   ],
   controllers: [AppController],

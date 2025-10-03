@@ -676,12 +676,25 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 4.7: Working Hours Module
 
-- [ ] **T070** Create Working Hours controller in `backend/src/modules/working-hours/working-hours.controller.ts`
-  - GET /working-hours (includes per-day configuration, FR-055)
-  - PUT /admin/working-hours (Admin, per-day working hours configuration)
-  - GET /special-working-days
-  - POST /admin/special-working-days (Admin)
-  - DELETE /admin/special-working-days/:id
+- [x] **T070** Create Working Hours controller in `backend/src/modules/working-hours/working-hours.controller.ts`
+  - ✅ GET /working-hours - Tüm çalışma saatleri (public, FR-055)
+  - ✅ PUT /admin/working-hours - Toplu güncelleme (Admin, 7 gün)
+  - ✅ GET /special-working-days - Gelecekteki özel günler (public)
+  - ✅ POST /admin/special-working-days - Özel gün ekle (Admin)
+  - ✅ DELETE /admin/special-working-days/:id - Özel gün sil (Admin)
+  - ✅ Created DTOs: UpdateWorkingHoursDto, DayWorkingHoursDto, CreateSpecialDayDto
+  - ✅ Created WorkingHoursModule and added to AppModule
+  - ✅ Turkish JSDoc documentation
+  - ✅ Public endpoints: No auth required (randevu formu için)
+  - ✅ Admin endpoints: Role guard + JWT auth
+  - ✅ Business rules validation:
+    - dayOfWeek uniqueness check (0-6)
+    - openTime < closeTime validation
+    - isClosed=false requires openTime and closeTime
+    - Past date prevention for special days
+    - Duplicate date check for special days
+  - ✅ Priority: SpecialWorkingDay > WorkingHours (FR-057, FR-059a)
+  - ✅ Bulk upsert support for working hours (7 days at once)
 
 ### Phase 4.8: Audit Module
 
