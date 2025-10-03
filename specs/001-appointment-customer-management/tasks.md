@@ -633,11 +633,19 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 4.5: Payments Module
 
-- [ ] **T067** Create Payments controller in `backend/src/modules/payments/payments.controller.ts`
-  - POST /payments
-  - GET /payments (role-based filtering)
-  - GET /payments/veresiye
-  - PATCH /payments/:id
+- [x] **T067** Create Payments controller in `backend/src/modules/payments/payments.controller.ts`
+  - ✅ POST /payments - Ödeme kaydı oluştur (Staff/Admin)
+  - ✅ GET /payments - Ödeme listesi (role-based filtering, tarih aralığı)
+  - ✅ GET /payments/veresiye - Veresiye ödemeler listesi (overdue, upcoming)
+  - ✅ PATCH /payments/:id - Ödeme güncelle (Staff/Admin)
+  - ✅ GET /payments/stats/summary - İstatistikler (Admin)
+  - ✅ Created DTOs: RecordPaymentDto, UpdatePaymentDto
+  - ✅ Integrated with PaymentService
+  - ✅ Created PaymentsModule and added to AppModule
+  - ✅ Role-based access control (STAFF, ADMIN, CUSTOMER)
+  - ✅ FR-040: VERESIYE validation (dueDate, collateral, responsible)
+  - ✅ FR-042a: Veresiye reminder support (overdue, upcoming)
+  - ✅ Audit log TODO markers for FR-039a
 
 ### Phase 4.6: Reports Module
 

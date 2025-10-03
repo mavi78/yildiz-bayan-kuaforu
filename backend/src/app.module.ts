@@ -7,6 +7,7 @@ import { SharedModule } from "@modules/shared";
 import { AuthModule } from "@modules/auth/auth.module";
 import { AppointmentsModule } from "@modules/appointments/appointments.module";
 import { CustomersModule } from "@modules/customers/customers.module";
+import { PaymentsModule } from "@modules/payments/payments.module";
 
 /**
  * Ana uygulama modülü
@@ -39,7 +40,7 @@ import { CustomersModule } from "@modules/customers/customers.module";
     AuthModule,
     AppointmentsModule,
     CustomersModule,
-    // PaymentsModule,
+    PaymentsModule,
     // ReportsModule,
     // NotificationsModule,
     // WorkingHoursModule,
