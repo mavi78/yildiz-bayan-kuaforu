@@ -677,36 +677,36 @@ Based on plan.md structure decision (Web application):
 ### Phase 4.7: Working Hours Module
 
 - [x] **T070** Create Working Hours controller in `backend/src/modules/working-hours/working-hours.controller.ts`
-  - ✅ GET /working-hours - Tüm çalışma saatleri (public, FR-055)
-  - ✅ PUT /admin/working-hours - Toplu güncelleme (Admin, 7 gün)
-  - ✅ GET /special-working-days - Gelecekteki özel günler (public)
-  - ✅ POST /admin/special-working-days - Özel gün ekle (Admin)
-  - ✅ DELETE /admin/special-working-days/:id - Özel gün sil (Admin)
-  - ✅ Created DTOs: UpdateWorkingHoursDto, DayWorkingHoursDto, CreateSpecialDayDto
-  - ✅ Created WorkingHoursModule and added to AppModule
-  - ✅ Turkish JSDoc documentation
-  - ✅ Public endpoints: No auth required (randevu formu için)
-  - ✅ Admin endpoints: Role guard + JWT auth
-  - ✅ Business rules validation:
-    - dayOfWeek uniqueness check (0-6)
-    - openTime < closeTime validation
-    - isClosed=false requires openTime and closeTime
-    - Past date prevention for special days
-    - Duplicate date check for special days
-  - ✅ Priority: SpecialWorkingDay > WorkingHours (FR-057, FR-059a)
-  - ✅ Bulk upsert support for working hours (7 days at once)
+  - [x] GET /working-hours - Tüm çalışma saatleri (public, FR-055)
+  - [x] PUT /admin/working-hours - Toplu güncelleme (Admin, 7 gün)
+  - [x] GET /special-working-days - Gelecekteki özel günler (public)
+  - [x] POST /admin/special-working-days - Özel gün ekle (Admin)
+  - [x] DELETE /admin/special-working-days/:id - Özel gün sil (Admin)
+  - [x] Created DTOs: UpdateWorkingHoursDto, DayWorkingHoursDto, CreateSpecialDayDto
+  - [x] Created WorkingHoursModule and added to AppModule
+  - [x] Turkish JSDoc documentation
+  - [x] Public endpoints: No auth required (randevu formu için)
+  - [x] Admin endpoints: Role guard + JWT auth
+  - [x] Business rules validation:
+    - [x] dayOfWeek uniqueness check (0-6)
+    - [x] openTime < closeTime validation
+    - [x] isClosed=false requires openTime and closeTime
+    - [x] Past date prevention for special days
+    - [x] Duplicate date check for special days
+  - [x] Priority: SpecialWorkingDay > WorkingHours (FR-057, FR-059a)
+  - [x] Bulk upsert support for working hours (7 days at once)
 
 ### Phase 4.8: Audit Module
 
 - [x] **T071** Create Audit Logs controller in `backend/src/modules/audit/audit-logs.controller.ts`
-  - ✅ GET /admin/audit-logs (Admin only, with filters)
-  - ✅ Created AuditLogFiltersDto with validation
-  - ✅ Pagination support (page, limit params, default: 50/page, max: 100)
-  - ✅ Multiple filter options: action, actorId, targetEntity, targetId, date range
-  - ✅ Integrated with AuditLogRepository
-  - ✅ Created AuditModule and added to AppModule
-  - ✅ Turkish JSDoc documentation
-  - ✅ Role-based access control (ADMIN only)
+  - [x] GET /admin/audit-logs (Admin only, with filters)
+  - [x] Created AuditLogFiltersDto with validation
+  - [x] Pagination support (page, limit params, default: 50/page, max: 100)
+  - [x] Multiple filter options: action, actorId, targetEntity, targetId, date range
+  - [x] Integrated with AuditLogRepository
+  - [x] Created AuditModule and added to AppModule
+  - [x] Turkish JSDoc documentation
+  - [x] Role-based access control (ADMIN only)
 
 ---
 
@@ -716,54 +716,54 @@ Based on plan.md structure decision (Web application):
 
 - [x] **T072** Create Notification domain entities
 
-  - ✅ Created `backend/src/domains/notifications/entities/notification.entity.ts`
-    - NotificationEvent enum (APPOINTMENT_CREATED, APPOINTMENT_CONFIRMED, etc.)
-    - DeliveryStatus enum (PENDING, SENT, FAILED)
-    - Notification entity with DDD pattern (create, reconstitute methods)
-    - Multi-channel status tracking (email, SMS, socket)
-    - Business logic: markEmailSent(), markSmsFailed(), processResult(), etc.
-    - FR-046: Max 3 retry attempts with canRetry() method
-    - FR-047: hasAllChannelsFailed() and shouldShowInAdminPanel()
-    - FR-047a: shouldBeArchived() for 30-day archival
-  - ✅ Created `backend/src/domains/notifications/value-objects/channel.vo.ts`
-    - NotificationChannel enum (EMAIL, SMS, SOCKET)
-    - Helper functions: toNotificationChannel(), toNotificationChannels()
-    - Validation: isValidChannel(), getAllChannels()
-    - Turkish descriptions: getChannelDescription(), getChannelDetails()
-  - ✅ Immutable value objects with self-validation
-  - ✅ Turkish JSDoc documentation
+  - [x] Created `backend/src/domains/notifications/entities/notification.entity.ts`
+    - [x] NotificationEvent enum (APPOINTMENT_CREATED, APPOINTMENT_CONFIRMED, etc.)
+    - [x] DeliveryStatus enum (PENDING, SENT, FAILED)
+    - [x] Notification entity with DDD pattern (create, reconstitute methods)
+    - [x] Multi-channel status tracking (email, SMS, socket)
+    - [x] Business logic: markEmailSent(), markSmsFailed(), processResult(), etc.
+    - [x] FR-046: Max 3 retry attempts with canRetry() method
+    - [x] FR-047: hasAllChannelsFailed() and shouldShowInAdminPanel()
+    - [x] FR-047a: shouldBeArchived() for 30-day archival
+  - [x] Created `backend/src/domains/notifications/value-objects/channel.vo.ts`
+    - [x] NotificationChannel enum (EMAIL, SMS, SOCKET)
+    - [x] Helper functions: toNotificationChannel(), toNotificationChannels()
+    - [x] Validation: isValidChannel(), getAllChannels()
+    - [x] Turkish descriptions: getChannelDescription(), getChannelDetails()
+  - [x] Immutable value objects with self-validation
+  - [x] Turkish JSDoc documentation
 
 - [x] **T073** Create Email channel in `backend/src/services/notifications/channels/email.channel.ts`
 
-  - ✅ Use Nodemailer
-  - ✅ Gmail SMTP configuration
-  - ✅ Implement `send()` method
-  - ✅ Email templates for all notification types
-  - ✅ Unit tests with comprehensive coverage
-  - ✅ Integration with NotificationService
-  - ✅ Error handling and logging
-  - ✅ Connection testing functionality
+  - [x] Use Nodemailer
+  - [x] Gmail SMTP configuration
+  - [x] Implement `send()` method
+  - [x] Email templates for all notification types
+  - [x] Unit tests with comprehensive coverage
+  - [x] Integration with NotificationService
+  - [x] Error handling and logging
+  - [x] Connection testing functionality
 
 - [x] **T074** Create SMS channel in `backend/src/services/notifications/channels/sms.channel.ts`
-  - ✅ Axios HTTP client for İleti Merkezi REST API
-  - ✅ Authentication via API key and secret (Authorization header)
-  - ✅ Phone number normalization to E.164 format (+905XXXXXXXXX)
-  - ✅ SMS sending with configurable sender name
-  - ✅ DLR (Delivery Report) webhook processing with status mapping
-  - ✅ Implemented `send()` method with comprehensive error handling
-  - ✅ SMS templates for all notification events:
-    - Appointment created (with tracking code for guests)
-    - Appointment confirmed
-    - Appointment cancelled
-    - Appointment reminder
-    - Payment reminder (veresiye)
-    - Tracking code resend (FR-015)
-  - ✅ Connection testing functionality (`testConnection()`)
-  - ✅ Message length calculation (160 chars = 1 SMS)
-  - ✅ Request/response interceptors for logging
-  - ✅ Turkish JSDoc documentation
-  - ✅ Environment variables: ILETI_MERKEZI_API_KEY, ILETI_MERKEZI_API_SECRET, ILETI_MERKEZI_SENDER
-  - ✅ Installed axios ^1.12.2 dependency
+  - [x] Axios HTTP client for İleti Merkezi REST API
+  - [x] Authentication via API key and secret (Authorization header)
+  - [x] Phone number normalization to E.164 format (+905XXXXXXXXX)
+  - [x] SMS sending with configurable sender name
+  - [x] DLR (Delivery Report) webhook processing with status mapping
+  - [x] Implemented `send()` method with comprehensive error handling
+  - [x] SMS templates for all notification events:
+    - [x] Appointment created (with tracking code for guests)
+    - [x] Appointment confirmed
+    - [x] Appointment cancelled
+    - [x] Appointment reminder
+    - [x] Payment reminder (veresiye)
+    - [x] Tracking code resend (FR-015)
+  - [x] Connection testing functionality (`testConnection()`)
+  - [x] Message length calculation (160 chars = 1 SMS)
+  - [x] Request/response interceptors for logging
+  - [x] Turkish JSDoc documentation
+  - [x] Environment variables: ILETI_MERKEZI_API_KEY, ILETI_MERKEZI_API_SECRET, ILETI_MERKEZI_SENDER
+  - [x] Installed axios ^1.12.2 dependency
 
 - [ ] **T075** Create Socket.io gateway in `backend/src/modules/notifications/notifications.gateway.ts`
 
