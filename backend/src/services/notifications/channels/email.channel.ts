@@ -15,8 +15,8 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as nodemailer from "nodemailer";
 import { Transporter } from "nodemailer";
-import { NotificationChannel } from "../../../domains/notifications/value-objects/channel.vo";
-import { NotificationResult } from "../../../domains/notifications/entities/notification.entity";
+import { NotificationChannel } from "@domains/notifications/value-objects/channel.vo";
+import { NotificationResult } from "@domains/notifications/entities/notification.entity";
 
 /**
  * Email gönderim seçenekleri
