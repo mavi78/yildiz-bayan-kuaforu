@@ -504,12 +504,19 @@ Based on plan.md structure decision (Web application):
   - ✅ Search and pagination support
   - ✅ Turkish JSDoc documentation
 
-- [ ] **T053** Create Appointment service in `backend/src/services/appointment.service.ts`
+- [x] **T053** Create Appointment service in `backend/src/services/appointment.service.ts`
 
-  - Inject AppointmentRepository, WorkingHoursRepository, SpecialWorkingDayRepository
-  - Methods: `checkConflict()`, `checkWorkingHours()`, `generateTrackingCode()`, `findAvailableSlots()`
-  - Conflict logic: check (staffId, date, time) with status ∈ {PENDING, CONFIRMED}
-  - Working hours priority: SpecialWorkingDay > WorkingHours
+  - ✅ Injected AppointmentRepository, WorkingHoursRepository, SpecialWorkingDayRepository, ServiceRepository
+  - ✅ Methods: `checkConflict()`, `checkWorkingHours()`, `generateTrackingCode()`, `findAvailableSlots()`
+  - ✅ Additional methods: `create()`, `findById()`, `findByTrackingCode()`, `updateStatus()`, `findPending()`, `findByCustomer()`, `findByStaff()`
+  - ✅ Conflict logic: (staffId, date, time) + status ∈ {PENDING, CONFIRMED}
+  - ✅ Working hours priority: SpecialWorkingDay > WorkingHours (FR-057, FR-059a)
+  - ✅ Tracking code generation: 8-char alphanumeric (excludes I, O, 0, 1 for clarity)
+  - ✅ Slot calculation: (closeTime - openTime) / serviceDuration (FR-056)
+  - ✅ Time validation: HH:mm format, range checking
+  - ✅ Future slot filtering: Past times excluded for today
+  - ✅ Helper methods: timeToMinutes(), minutesToTime(), getDayName(), isTimeInRange()
+  - ✅ Turkish JSDoc documentation
 
 - [ ] **T054** Create Payment service in `backend/src/services/payment.service.ts`
 
