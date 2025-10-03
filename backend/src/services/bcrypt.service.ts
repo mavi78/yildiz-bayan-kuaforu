@@ -7,8 +7,8 @@
  * @module services
  */
 
-import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { Injectable } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
 
 /**
  * Bcrypt Service
@@ -42,10 +42,7 @@ export class BcryptService {
    * @param hashedPassword - Hash'lenmiş şifre
    * @returns Şifre eşleşirse true
    */
-  async compare(
-    plainPassword: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
+  async compare(plainPassword: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(plainPassword, hashedPassword);
   }
 

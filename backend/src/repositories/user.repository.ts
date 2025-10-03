@@ -8,9 +8,9 @@
  * @module repositories
  */
 
-import { Injectable } from '@nestjs/common';
-import { User as PrismaUser, Role } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { User as PrismaUser, Role } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * User oluşturma için gerekli veriler
@@ -113,7 +113,7 @@ export class UserRepository {
    */
   async findByEmailOrPhone(emailOrPhone: string): Promise<PrismaUser | null> {
     // Email formatı kontrolü (basit)
-    const isEmail = emailOrPhone.includes('@');
+    const isEmail = emailOrPhone.includes("@");
 
     if (isEmail) {
       return this.findByEmail(emailOrPhone);
@@ -142,7 +142,7 @@ export class UserRepository {
       skip: options?.skip,
       take: options?.take,
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
   }
@@ -291,7 +291,7 @@ export class UserRepository {
       include: {
         customer: true,
         sentInvitations: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: "desc" },
           take: 10,
         },
       },

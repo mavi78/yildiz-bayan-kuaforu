@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { Appointment, AppointmentStatus, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { Appointment, AppointmentStatus, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * Appointment Repository
@@ -50,10 +50,7 @@ export class AppointmentRepository {
    * @param includeRelations - İlişkileri dahil et
    * @returns Randevu veya null
    */
-  async findById(
-    id: string,
-    includeRelations = false,
-  ): Promise<Appointment | null> {
+  async findById(id: string, includeRelations = false): Promise<Appointment | null> {
     return this.prisma.appointment.findUnique({
       where: { id },
       include: includeRelations
@@ -68,7 +65,7 @@ export class AppointmentRepository {
             },
             service: true,
             serviceNotes: {
-              orderBy: { createdAt: 'desc' },
+              orderBy: { createdAt: "desc" },
             },
             payment: true,
             review: true,
@@ -147,10 +144,7 @@ export class AppointmentRepository {
    * @param data - Güncellenecek veriler
    * @returns Güncellenmiş randevu
    */
-  async update(
-    id: string,
-    data: Prisma.AppointmentUpdateInput,
-  ): Promise<Appointment> {
+  async update(id: string, data: Prisma.AppointmentUpdateInput): Promise<Appointment> {
     return this.prisma.appointment.update({
       where: { id },
       data,
@@ -177,7 +171,7 @@ export class AppointmentRepository {
         },
         service: true,
       },
-      orderBy: [{ date: 'asc' }, { time: 'asc' }],
+      orderBy: [{ date: "asc" }, { time: "asc" }],
       take: limit,
     });
   }
@@ -189,10 +183,7 @@ export class AppointmentRepository {
    * @param includeAll - Tüm durumları dahil et (varsayılan: sadece aktif)
    * @returns Randevu listesi
    */
-  async findByCustomer(
-    customerId: string,
-    includeAll = false,
-  ): Promise<Appointment[]> {
+  async findByCustomer(customerId: string, includeAll = false): Promise<Appointment[]> {
     return this.prisma.appointment.findMany({
       where: {
         customerId,
@@ -213,7 +204,7 @@ export class AppointmentRepository {
         },
         service: true,
       },
-      orderBy: { date: 'desc' },
+      orderBy: { date: "desc" },
     });
   }
 
@@ -225,11 +216,7 @@ export class AppointmentRepository {
    * @param endDate - Bitiş tarihi
    * @returns Randevu listesi
    */
-  async findByStaff(
-    staffId: string,
-    startDate?: Date,
-    endDate?: Date,
-  ): Promise<Appointment[]> {
+  async findByStaff(staffId: string, startDate?: Date, endDate?: Date): Promise<Appointment[]> {
     return this.prisma.appointment.findMany({
       where: {
         staffId,
@@ -246,7 +233,7 @@ export class AppointmentRepository {
         customer: true,
         service: true,
       },
-      orderBy: [{ date: 'asc' }, { time: 'asc' }],
+      orderBy: [{ date: "asc" }, { time: "asc" }],
     });
   }
 
@@ -336,7 +323,7 @@ export class AppointmentRepository {
         },
         service: true,
       },
-      orderBy: [{ date: 'asc' }, { time: 'asc' }],
+      orderBy: [{ date: "asc" }, { time: "asc" }],
     });
   }
 
@@ -408,8 +395,7 @@ export class AppointmentRepository {
         },
         service: true,
       },
-      orderBy: { time: 'asc' },
+      orderBy: { time: "asc" },
     });
   }
 }
-

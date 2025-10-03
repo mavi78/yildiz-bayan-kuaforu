@@ -70,23 +70,17 @@ export class ReviewService {
     }
 
     if (customer.type !== CustomerType.REGISTERED) {
-      throw new ForbiddenException(
-        "Sadece kayıtlı müşteriler yorum yapabilir. (FR-032)",
-      );
+      throw new ForbiddenException("Sadece kayıtlı müşteriler yorum yapabilir. (FR-032)");
     }
 
     // Randevu kontrolü: COMPLETED olmalı
-    const appointment = await this.appointmentRepository.findById(
-      data.appointmentId,
-    );
+    const appointment = await this.appointmentRepository.findById(data.appointmentId);
     if (!appointment) {
       throw new NotFoundException("Randevu bulunamadı.");
     }
 
     if (appointment.status !== AppointmentStatus.COMPLETED) {
-      throw new BadRequestException(
-        "Sadece tamamlanmış randevular için yorum yapılabilir.",
-      );
+      throw new BadRequestException("Sadece tamamlanmış randevular için yorum yapılabilir.");
     }
 
     // Randevu müşteriye ait mi kontrol et
@@ -106,9 +100,7 @@ export class ReviewService {
     });
 
     if (existingReview.length > 0) {
-      throw new BadRequestException(
-        "Bu randevu için zaten yorum yapılmış.",
-      );
+      throw new BadRequestException("Bu randevu için zaten yorum yapılmış.");
     }
 
     // Yorum oluştur (default status=PENDING)
@@ -273,14 +265,13 @@ export class ReviewService {
     deleted: number;
     averageRating: number;
   }> {
-    const [total, pending, approved, deleted, averageRating] =
-      await Promise.all([
-        this.count(),
-        this.count(ReviewStatus.PENDING),
-        this.count(ReviewStatus.APPROVED),
-        this.count(ReviewStatus.DELETED),
-        this.getAverageRating(),
-      ]);
+    const [total, pending, approved, deleted, averageRating] = await Promise.all([
+      this.count(),
+      this.count(ReviewStatus.PENDING),
+      this.count(ReviewStatus.APPROVED),
+      this.count(ReviewStatus.DELETED),
+      this.getAverageRating(),
+    ]);
 
     return {
       total,
@@ -316,4 +307,3 @@ export class ReviewService {
     return distribution;
   }
 }
-

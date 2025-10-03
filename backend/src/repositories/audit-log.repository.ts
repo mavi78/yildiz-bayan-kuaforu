@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { AuditLog, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { AuditLog, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * AuditLog Repository
@@ -54,7 +54,7 @@ export class AuditLogRepository {
         },
         archived: false,
       },
-      orderBy: { timestamp: 'asc' },
+      orderBy: { timestamp: "asc" },
     });
   }
 
@@ -99,7 +99,7 @@ export class AuditLogRepository {
    */
   async findLatest(): Promise<AuditLog | null> {
     return this.prisma.auditLog.findFirst({
-      orderBy: { timestamp: 'desc' },
+      orderBy: { timestamp: "desc" },
     });
   }
 
@@ -174,7 +174,7 @@ export class AuditLogRepository {
   async findByActor(actorId: string, limit = 100): Promise<AuditLog[]> {
     return this.prisma.auditLog.findMany({
       where: { actorId },
-      orderBy: { timestamp: 'desc' },
+      orderBy: { timestamp: "desc" },
       take: limit,
     });
   }
@@ -186,10 +186,7 @@ export class AuditLogRepository {
    * @param targetId - Hedef entity ID
    * @returns Denetim kaydı listesi
    */
-  async findByTarget(
-    targetEntity: string,
-    targetId: string,
-  ): Promise<AuditLog[]> {
+  async findByTarget(targetEntity: string, targetId: string): Promise<AuditLog[]> {
     return this.prisma.auditLog.findMany({
       where: {
         targetEntity,
@@ -203,7 +200,7 @@ export class AuditLogRepository {
           },
         },
       },
-      orderBy: { timestamp: 'asc' },
+      orderBy: { timestamp: "asc" },
     });
   }
 
@@ -225,7 +222,7 @@ export class AuditLogRepository {
           },
         },
       },
-      orderBy: { timestamp: 'desc' },
+      orderBy: { timestamp: "desc" },
       take: limit,
     });
   }
@@ -237,10 +234,7 @@ export class AuditLogRepository {
    * @param endDate - Bitiş tarihi
    * @returns Denetim kaydı listesi
    */
-  async findByDateRange(
-    startDate: Date,
-    endDate: Date,
-  ): Promise<AuditLog[]> {
+  async findByDateRange(startDate: Date, endDate: Date): Promise<AuditLog[]> {
     return this.prisma.auditLog.findMany({
       where: {
         timestamp: {
@@ -256,7 +250,7 @@ export class AuditLogRepository {
           },
         },
       },
-      orderBy: { timestamp: 'asc' },
+      orderBy: { timestamp: "asc" },
     });
   }
 
@@ -279,9 +273,8 @@ export class AuditLogRepository {
           )?.timestamp,
         },
       },
-      orderBy: { timestamp: 'asc' },
+      orderBy: { timestamp: "asc" },
       take: limit,
     });
   }
 }
-

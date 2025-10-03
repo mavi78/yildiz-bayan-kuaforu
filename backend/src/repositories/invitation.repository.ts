@@ -8,9 +8,9 @@
  * @module repositories
  */
 
-import { Injectable } from '@nestjs/common';
-import { Invitation as PrismaInvitation, Role } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { Invitation as PrismaInvitation, Role } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * Invitation oluşturma için gerekli veriler
@@ -72,9 +72,7 @@ export class InvitationRepository {
    * @param token - Davet token'ı
    * @returns Davet ve ilişkili veriler
    */
-  async findByTokenWithRelations(
-    token: string,
-  ): Promise<PrismaInvitation | null> {
+  async findByTokenWithRelations(token: string): Promise<PrismaInvitation | null> {
     return this.prisma.invitation.findUnique({
       where: { token },
       include: {
@@ -112,7 +110,7 @@ export class InvitationRepository {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
   }
@@ -181,7 +179,7 @@ export class InvitationRepository {
       skip: options?.skip,
       take: options?.take,
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
       include: {
         guestCustomer: true,
@@ -211,7 +209,7 @@ export class InvitationRepository {
       skip: options?.skip,
       take: options?.take,
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
       include: {
         inviter: {
@@ -233,11 +231,7 @@ export class InvitationRepository {
    * @param options - Filtreleme seçenekleri
    * @returns Davet sayısı
    */
-  async count(options?: {
-    isUsed?: boolean;
-    inviterId?: string;
-    role?: Role;
-  }): Promise<number> {
+  async count(options?: { isUsed?: boolean; inviterId?: string; role?: Role }): Promise<number> {
     return this.prisma.invitation.count({
       where: {
         isUsed: options?.isUsed,
@@ -294,13 +288,9 @@ export class InvitationRepository {
    * @param hoursBeforeExpiry - Kaç saat kala uyarı gönderileceği
    * @returns Davet listesi
    */
-  async findExpiringBefore(hoursBeforeExpiry: number): Promise<
-    PrismaInvitation[]
-  > {
+  async findExpiringBefore(hoursBeforeExpiry: number): Promise<PrismaInvitation[]> {
     const now = new Date();
-    const expiryThreshold = new Date(
-      now.getTime() + hoursBeforeExpiry * 60 * 60 * 1000,
-    );
+    const expiryThreshold = new Date(now.getTime() + hoursBeforeExpiry * 60 * 60 * 1000);
 
     return this.prisma.invitation.findMany({
       where: {
@@ -329,15 +319,13 @@ export class InvitationRepository {
    * @param guestCustomerId - Guest customer ID
    * @returns Davet listesi
    */
-  async findByGuestCustomer(
-    guestCustomerId: string,
-  ): Promise<PrismaInvitation[]> {
+  async findByGuestCustomer(guestCustomerId: string): Promise<PrismaInvitation[]> {
     return this.prisma.invitation.findMany({
       where: {
         guestCustomerId,
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
   }

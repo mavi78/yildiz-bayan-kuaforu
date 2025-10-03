@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { Service, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { Service, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * Service Repository
@@ -23,7 +23,7 @@ export class ServiceRepository {
   async findAll(includeInactive = false): Promise<Service[]> {
     return this.prisma.service.findMany({
       where: includeInactive ? undefined : { isActive: true },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
     });
   }
 
@@ -142,11 +142,11 @@ export class ServiceRepository {
       where: {
         name: {
           contains: name,
-          mode: 'insensitive',
+          mode: "insensitive",
         },
         isActive: true,
       },
-      orderBy: { name: 'asc' },
+      orderBy: { name: "asc" },
     });
   }
 
@@ -205,4 +205,3 @@ export class ServiceRepository {
     });
   }
 }
-

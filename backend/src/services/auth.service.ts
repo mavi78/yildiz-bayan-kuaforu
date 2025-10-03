@@ -7,12 +7,12 @@
  * @module services
  */
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Role } from '@prisma/client';
-import { UserRepository } from '../repositories/user.repository';
-import { BcryptService } from './bcrypt.service';
-import { RedisService } from '../common/redis.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { Role } from "@prisma/client";
+import { UserRepository } from "../repositories/user.repository";
+import { BcryptService } from "./bcrypt.service";
+import { RedisService } from "../common/redis.service";
 
 /**
  * JWT Payload yapısı
@@ -85,22 +85,19 @@ export class AuthService {
     const user = await this.userRepository.findByEmailOrPhone(emailOrPhone);
 
     if (!user) {
-      throw new UnauthorizedException('Geçersiz kimlik bilgileri');
+      throw new UnauthorizedException("Geçersiz kimlik bilgileri");
     }
 
     // Kullanıcı aktif mi kontrol et
     if (!user.isActive) {
-      throw new UnauthorizedException('Hesap deaktif durumda');
+      throw new UnauthorizedException("Hesap deaktif durumda");
     }
 
     // Şifre doğrulama
-    const isPasswordValid = await this.bcryptService.compare(
-      password,
-      user.passwordHash,
-    );
+    const isPasswordValid = await this.bcryptService.compare(password, user.passwordHash);
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Geçersiz kimlik bilgileri');
+      throw new UnauthorizedException("Geçersiz kimlik bilgileri");
     }
 
     // Şifre hash'inin güncellenm esi gerekip gerekmediğini kontrol et
@@ -215,10 +212,7 @@ export class AuthService {
    * @param hashedPassword - Hash'lenmiş şifre
    * @returns Şifre eşleşirse true
    */
-  async verifyPassword(
-    plainPassword: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
+  async verifyPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
     return this.bcryptService.compare(plainPassword, hashedPassword);
   }
 
@@ -235,13 +229,13 @@ export class AuthService {
   private getExpiryForRole(role: Role): string {
     switch (role) {
       case Role.ADMIN:
-        return '8h';
+        return "8h";
       case Role.STAFF:
-        return '12h';
+        return "12h";
       case Role.CUSTOMER:
-        return '7d';
+        return "7d";
       default:
-        return '8h';
+        return "8h";
     }
   }
 
@@ -266,7 +260,7 @@ export class AuthService {
     try {
       return this.jwtService.verify<JwtPayload>(token);
     } catch (error) {
-      throw new UnauthorizedException('Geçersiz token');
+      throw new UnauthorizedException("Geçersiz token");
     }
   }
 

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { ServiceNote, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { ServiceNote, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * ServiceNote Repository
@@ -51,7 +51,7 @@ export class ServiceNoteRepository {
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -112,4 +112,3 @@ export class ServiceNoteRepository {
     return this.prisma.serviceNote.count({ where });
   }
 }
-

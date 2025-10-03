@@ -7,8 +7,8 @@
  * @module common/decorators
  */
 
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { JwtUser } from '../guards/jwt.strategy';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { JwtUser } from "../guards/jwt.strategy";
 
 /**
  * CurrentUser Decorator

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { SpecialWorkingDay, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { SpecialWorkingDay, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * SpecialWorkingDay Repository
@@ -44,9 +44,7 @@ export class SpecialWorkingDayRepository {
    * });
    * ```
    */
-  async create(
-    data: Prisma.SpecialWorkingDayCreateInput,
-  ): Promise<SpecialWorkingDay> {
+  async create(data: Prisma.SpecialWorkingDayCreateInput): Promise<SpecialWorkingDay> {
     return this.prisma.specialWorkingDay.create({ data });
   }
 
@@ -75,7 +73,7 @@ export class SpecialWorkingDayRepository {
           gte: new Date(),
         },
       },
-      orderBy: { date: 'asc' },
+      orderBy: { date: "asc" },
       take: limit,
     });
   }
@@ -87,10 +85,7 @@ export class SpecialWorkingDayRepository {
    * @param endDate - Bitiş tarihi
    * @returns Özel gün listesi
    */
-  async findByDateRange(
-    startDate: Date,
-    endDate: Date,
-  ): Promise<SpecialWorkingDay[]> {
+  async findByDateRange(startDate: Date, endDate: Date): Promise<SpecialWorkingDay[]> {
     return this.prisma.specialWorkingDay.findMany({
       where: {
         date: {
@@ -98,7 +93,7 @@ export class SpecialWorkingDayRepository {
           lte: endDate,
         },
       },
-      orderBy: { date: 'asc' },
+      orderBy: { date: "asc" },
     });
   }
 
@@ -109,10 +104,7 @@ export class SpecialWorkingDayRepository {
    * @param data - Güncellenecek veriler
    * @returns Güncellenmiş özel gün
    */
-  async update(
-    id: string,
-    data: Prisma.SpecialWorkingDayUpdateInput,
-  ): Promise<SpecialWorkingDay> {
+  async update(id: string, data: Prisma.SpecialWorkingDayUpdateInput): Promise<SpecialWorkingDay> {
     return this.prisma.specialWorkingDay.update({
       where: { id },
       data,
@@ -148,7 +140,7 @@ export class SpecialWorkingDayRepository {
    */
   async findAll(includeRelations = false): Promise<SpecialWorkingDay[]> {
     return this.prisma.specialWorkingDay.findMany({
-      orderBy: { date: 'desc' },
+      orderBy: { date: "desc" },
       include: includeRelations
         ? {
             createdBy: {
@@ -203,4 +195,3 @@ export class SpecialWorkingDayRepository {
     return this.prisma.specialWorkingDay.count({ where });
   }
 }
-

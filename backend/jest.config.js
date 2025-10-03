@@ -15,6 +15,13 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   passWithNoTests: true,
+  // TypeScript derleyici ayarları (diagnostics devre dışı bırakılarak hızlı test çalıştırma)
+  globals: {
+    "ts-jest": {
+      diagnostics: false,
+      isolatedModules: true,
+    },
+  },
 
   // Test dosyalarının konumu
   roots: ["<rootDir>/src", "<rootDir>/test"],

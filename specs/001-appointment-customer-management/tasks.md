@@ -593,12 +593,18 @@ Based on plan.md structure decision (Web application):
   - ✅ Created DTOs: CreateGuestAppointmentDto, CreateRegisteredAppointmentDto, ResendTrackingCodeDto
   - ✅ Created AppointmentsModule with usecases wired up
 
-- [ ] **T064** Create Appointment Actions controller in `backend/src/modules/appointments/appointment-actions.controller.ts`
-  - PATCH /appointments/:id/approve (Staff/Admin)
-  - PATCH /appointments/:id/override (Admin, with justification)
-  - PATCH /appointments/:id/cancel
-  - PATCH /appointments/:id/complete
-  - POST /appointments/:id/notes (ServiceNote, Staff/Admin)
+- [x] **T064** Create Appointment Actions controller in `backend/src/modules/appointments/appointment-actions.controller.ts`
+  - ✅ PATCH /appointments/:id/approve (Staff/Admin)
+  - ✅ PATCH /appointments/:id/override (Admin, with justification)
+  - ✅ PATCH /appointments/:id/cancel
+  - ✅ PATCH /appointments/:id/complete
+  - ✅ POST /appointments/:id/notes (ServiceNote, Staff/Admin)
+  - ✅ Created DTOs: ApproveAppointmentDto, CancelAppointmentDto, AddServiceNoteDto
+  - ✅ Integrated with ApproveAppointmentUsecase
+  - ✅ Role-based access control with @Roles decorator
+  - ✅ JWT authentication with AuthGuard
+  - ✅ ServiceNote repository for staff notes
+  - ✅ Registered in AppointmentsModule
 
 ### Phase 4.3: Customers Module
 

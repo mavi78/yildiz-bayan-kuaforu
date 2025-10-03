@@ -37,7 +37,7 @@ export class Phone {
    */
   public static create(phone: string): Phone {
     if (!phone) {
-      throw new Error('Phone number is required');
+      throw new Error("Phone number is required");
     }
 
     const normalizedPhone = this.normalize(phone);
@@ -57,27 +57,27 @@ export class Phone {
    */
   private static normalize(phone: string): string {
     // Boşluk, tire ve parantez gibi karakterleri temizle
-    let cleaned = phone.replace(/[\s\-\(\)\.]/g, '');
+    let cleaned = phone.replace(/[\s\-\(\)\.]/g, "");
 
     // Başta + varsa koru, yoksa sonra ekle
-    const hasPlus = cleaned.startsWith('+');
+    const hasPlus = cleaned.startsWith("+");
     if (hasPlus) {
       cleaned = cleaned.substring(1);
     }
 
     // Türkiye kodu (90) kontrolü ve eklenmesi
-    if (cleaned.startsWith('90')) {
+    if (cleaned.startsWith("90")) {
       // Zaten 90 ile başlıyor
-      return '+' + cleaned;
-    } else if (cleaned.startsWith('0')) {
+      return "+" + cleaned;
+    } else if (cleaned.startsWith("0")) {
       // 0 ile başlıyorsa, 0'ı kaldır ve 90 ekle
-      return '+90' + cleaned.substring(1);
+      return "+90" + cleaned.substring(1);
     } else if (cleaned.length === 10) {
       // 10 haneli numara, direkt 90 ekle
-      return '+90' + cleaned;
+      return "+90" + cleaned;
     } else {
       // Diğer durumlar
-      return '+' + cleaned;
+      return "+" + cleaned;
     }
   }
 
@@ -103,14 +103,41 @@ export class Phone {
     // Alan kodu kontrolü (5XX mobil operatörler için)
     const areaCode = phone.substring(3, 6);
     const validAreaCodes = [
-      '501', '505', '506', '507', '551', '552', '553', '554', '555', '556', '559', // Turkcell
-      '530', '531', '532', '533', '534', '535', '536', '537', '538', '539', // Vodafone
-      '541', '542', '543', '544', '545', '546', '547', '548', '549', // Türk Telekom
+      "501",
+      "505",
+      "506",
+      "507",
+      "551",
+      "552",
+      "553",
+      "554",
+      "555",
+      "556",
+      "559", // Turkcell
+      "530",
+      "531",
+      "532",
+      "533",
+      "534",
+      "535",
+      "536",
+      "537",
+      "538",
+      "539", // Vodafone
+      "541",
+      "542",
+      "543",
+      "544",
+      "545",
+      "546",
+      "547",
+      "548",
+      "549", // Türk Telekom
     ];
 
     // Sabit hat numaraları için (2XX, 3XX, 4XX başlangıçlı)
     const firstDigit = phone.charAt(3);
-    if (['2', '3', '4'].includes(firstDigit)) {
+    if (["2", "3", "4"].includes(firstDigit)) {
       return true; // Sabit hat numarası
     }
 
@@ -125,7 +152,7 @@ export class Phone {
    */
   public isMobile(): boolean {
     const firstDigit = this._value.charAt(3);
-    return firstDigit === '5';
+    return firstDigit === "5";
   }
 
   /**
@@ -135,7 +162,7 @@ export class Phone {
    */
   public isLandline(): boolean {
     const firstDigit = this._value.charAt(3);
-    return ['2', '3', '4'].includes(firstDigit);
+    return ["2", "3", "4"].includes(firstDigit);
   }
 
   /**
@@ -154,7 +181,7 @@ export class Phone {
    */
   public getNationalFormat(): string {
     // +90XXXXXXXXXX -> 0XXXXXXXXXX
-    return '0' + this._value.substring(3);
+    return "0" + this._value.substring(3);
   }
 
   /**

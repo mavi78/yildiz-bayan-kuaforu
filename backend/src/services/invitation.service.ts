@@ -12,9 +12,9 @@ import {
   NotFoundException,
   BadRequestException,
   ConflictException,
-} from '@nestjs/common';
-import { Invitation, Role } from '@prisma/client';
-import { InvitationRepository } from '../repositories/invitation.repository';
+} from "@nestjs/common";
+import { Invitation, Role } from "@prisma/client";
+import { InvitationRepository } from "../repositories/invitation.repository";
 
 /**
  * Davet oluşturma için gerekli veriler
@@ -65,19 +65,14 @@ export class InvitationService {
   async create(data: CreateInvitationInput): Promise<Invitation> {
     // Admin için davet oluşturulamaz
     if (data.role === Role.ADMIN) {
-      throw new BadRequestException(
-        'Admin kullanıcılar davet ile oluşturulamaz',
-      );
+      throw new BadRequestException("Admin kullanıcılar davet ile oluşturulamaz");
     }
 
     // Aynı email için aktif davet var mı kontrol et
-    const existingInvitation =
-      await this.invitationRepository.findActiveByEmail(data.email);
+    const existingInvitation = await this.invitationRepository.findActiveByEmail(data.email);
 
     if (existingInvitation) {
-      throw new ConflictException(
-        `${data.email} için zaten aktif bir davet mevcut`,
-      );
+      throw new ConflictException(`${data.email} için zaten aktif bir davet mevcut`);
     }
 
     // Token üret (UUID v4)
@@ -109,7 +104,7 @@ export class InvitationService {
     const invitation = await this.invitationRepository.findByToken(token);
 
     if (!invitation) {
-      throw new NotFoundException('Davet bulunamadı');
+      throw new NotFoundException("Davet bulunamadı");
     }
 
     return invitation;
@@ -123,11 +118,10 @@ export class InvitationService {
    * @throws NotFoundException - Davet bulunamazsa
    */
   async findByTokenWithRelations(token: string): Promise<Invitation> {
-    const invitation =
-      await this.invitationRepository.findByTokenWithRelations(token);
+    const invitation = await this.invitationRepository.findByTokenWithRelations(token);
 
     if (!invitation) {
-      throw new NotFoundException('Davet bulunamadı');
+      throw new NotFoundException("Davet bulunamadı");
     }
 
     return invitation;
@@ -150,7 +144,7 @@ export class InvitationService {
     if (!invitation) {
       return {
         isValid: false,
-        reason: 'Davet bulunamadı',
+        reason: "Davet bulunamadı",
       };
     }
 
@@ -158,7 +152,7 @@ export class InvitationService {
       return {
         isValid: false,
         invitation,
-        reason: 'Davet daha önce kullanılmış',
+        reason: "Davet daha önce kullanılmış",
       };
     }
 
@@ -167,7 +161,7 @@ export class InvitationService {
       return {
         isValid: false,
         invitation,
-        reason: 'Davetin süresi dolmuş',
+        reason: "Davetin süresi dolmuş",
       };
     }
 
@@ -239,11 +233,7 @@ export class InvitationService {
    * @param options - Filtreleme seçenekleri
    * @returns Davet sayısı
    */
-  async count(options?: {
-    isUsed?: boolean;
-    inviterId?: string;
-    role?: Role;
-  }): Promise<number> {
+  async count(options?: { isUsed?: boolean; inviterId?: string; role?: Role }): Promise<number> {
     return this.invitationRepository.count(options);
   }
 
@@ -289,11 +279,7 @@ export class InvitationService {
     const newExpiresAt = new Date();
     newExpiresAt.setHours(newExpiresAt.getHours() + 72);
 
-    return this.invitationRepository.regenerateToken(
-      oldToken,
-      newToken,
-      newExpiresAt,
-    );
+    return this.invitationRepository.regenerateToken(oldToken, newToken, newExpiresAt);
   }
 
   /**
@@ -330,7 +316,7 @@ export class InvitationService {
    * @returns Davet linki
    */
   generateInvitationLink(token: string, baseUrl?: string): string {
-    const url = baseUrl || process.env.FRONTEND_URL || 'http://localhost:3000';
+    const url = baseUrl || process.env.FRONTEND_URL || "http://localhost:3000";
     return `${url}/register?token=${token}`;
   }
 
@@ -342,11 +328,7 @@ export class InvitationService {
    * @param invitationLink - Davet linki
    * @returns HTML email içeriği
    */
-  generateEmailBody(
-    inviterName: string,
-    salonName: string,
-    invitationLink: string,
-  ): string {
+  generateEmailBody(inviterName: string, salonName: string, invitationLink: string): string {
     return `
 <!DOCTYPE html>
 <html>
@@ -401,13 +383,10 @@ export class InvitationService {
   private generateToken(): string {
     // UUID v4 üretimi (basitleştirilmiş)
     // Gerçek implementasyonda 'uuid' paketi kullanılmalı
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-      /[xy]/g,
-      function (c) {
-        const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      },
-    );
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0;
+      const v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 }

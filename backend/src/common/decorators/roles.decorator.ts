@@ -7,15 +7,15 @@
  * @module common/decorators
  */
 
-import { SetMetadata } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { SetMetadata } from "@nestjs/common";
+import { Role } from "@prisma/client";
 
 /**
  * Roles decorator metadata key
  *
  * RolesGuard bu key ile metadata'yı okur
  */
-export const ROLES_KEY = 'roles';
+export const ROLES_KEY = "roles";
 
 /**
  * Roles Decorator

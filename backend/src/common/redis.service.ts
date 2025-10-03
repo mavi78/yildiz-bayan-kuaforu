@@ -7,9 +7,9 @@
  * @module common
  */
 
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
+import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import Redis from "ioredis";
 
 /**
  * Redis Service
@@ -26,7 +26,7 @@ import Redis from 'ioredis';
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
   private client: Redis;
-  private readonly prefix: string = 'yildiz:';
+  private readonly prefix: string = "yildiz:";
 
   constructor(private readonly configService: ConfigService) {}
 
@@ -34,17 +34,17 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    * Module başlatıldığında Redis'e bağlan
    */
   async onModuleInit() {
-    const host = this.configService.get<string>('REDIS_HOST', 'localhost');
-    const port = this.configService.get<number>('REDIS_PORT', 6379);
-    const password = this.configService.get<string>('REDIS_PASSWORD');
-    const db = this.configService.get<number>('REDIS_DB', 0);
+    const host = this.configService.get<string>("REDIS_HOST", "localhost");
+    const port = this.configService.get<number>("REDIS_PORT", 6379);
+    const password = this.configService.get<string>("REDIS_PASSWORD");
+    const db = this.configService.get<number>("REDIS_DB", 0);
 
     this.client = new Redis({
       host,
       port,
       password,
       db,
-      retryStrategy: (times) => {
+      retryStrategy: times => {
         const delay = Math.min(times * 50, 2000);
         return delay;
       },
@@ -52,16 +52,16 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     });
 
     // Bağlantı olaylarını logla
-    this.client.on('connect', () => {
+    this.client.on("connect", () => {
       console.log(`[Redis] Connected to ${host}:${port}`);
     });
 
-    this.client.on('error', (err) => {
-      console.error('[Redis] Connection error:', err);
+    this.client.on("error", err => {
+      console.error("[Redis] Connection error:", err);
     });
 
-    this.client.on('close', () => {
-      console.log('[Redis] Connection closed');
+    this.client.on("close", () => {
+      console.log("[Redis] Connection closed");
     });
   }
 
@@ -95,7 +95,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    */
   async addToBlacklist(jti: string, ttl: number): Promise<void> {
     const key = this.prefixKey(`blacklist:${jti}`);
-    await this.client.set(key, '1', 'EX', ttl);
+    await this.client.set(key, "1", "EX", ttl);
   }
 
   /**
@@ -123,7 +123,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const prefixedKey = this.prefixKey(key);
 
     if (ttl) {
-      await this.client.set(prefixedKey, value, 'EX', ttl);
+      await this.client.set(prefixedKey, value, "EX", ttl);
     } else {
       await this.client.set(prefixedKey, value);
     }
@@ -232,7 +232,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const keys = await this.client.keys(prefixedPattern);
 
     // Prefix'i kaldır
-    return keys.map((key) => key.replace(this.prefix, ''));
+    return keys.map(key => key.replace(this.prefix, ""));
   }
 
   /**
@@ -250,7 +250,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       return 0;
     }
 
-    const prefixedKeys = keys.map((key) => this.prefixKey(key));
+    const prefixedKeys = keys.map(key => this.prefixKey(key));
     return this.client.del(...prefixedKeys);
   }
 
@@ -271,7 +271,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async ping(): Promise<boolean> {
     try {
       const result = await this.client.ping();
-      return result === 'PONG';
+      return result === "PONG";
     } catch {
       return false;
     }

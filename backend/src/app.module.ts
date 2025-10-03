@@ -3,6 +3,9 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigModule } from "./config/config.module";
+import { SharedModule } from "@modules/shared";
+import { AuthModule } from "@modules/auth/auth.module";
+import { AppointmentsModule } from "@modules/appointments/appointments.module";
 
 /**
  * Ana uygulama modülü
@@ -30,9 +33,10 @@ import { ConfigModule } from "./config/config.module";
       },
     ]),
 
-    // Feature modülleri buraya eklenecek
-    // AuthModule,
-    // AppointmentsModule,
+    // Feature modülleri
+    SharedModule,
+    AuthModule,
+    AppointmentsModule,
     // CustomersModule,
     // PaymentsModule,
     // ReportsModule,

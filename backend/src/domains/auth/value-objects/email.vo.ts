@@ -30,7 +30,7 @@ export class Email {
    */
   public static create(email: string): Email {
     if (!email) {
-      throw new Error('Email is required');
+      throw new Error("Email is required");
     }
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -60,7 +60,7 @@ export class Email {
     }
 
     // Ek doğrulamalar
-    const parts = email.split('@');
+    const parts = email.split("@");
     if (parts.length !== 2) {
       return false;
     }
@@ -78,12 +78,12 @@ export class Email {
     }
 
     // Domain'de en az bir nokta olmalı
-    if (!domainPart.includes('.')) {
+    if (!domainPart.includes(".")) {
       return false;
     }
 
     // Domain parçaları kontrolü
-    const domainParts = domainPart.split('.');
+    const domainParts = domainPart.split(".");
     for (const part of domainParts) {
       if (part.length === 0 || part.length > 63) {
         return false;
@@ -99,7 +99,7 @@ export class Email {
    * @returns Domain (örn: "gmail.com")
    */
   public getDomain(): string {
-    return this._value.split('@')[1];
+    return this._value.split("@")[1];
   }
 
   /**
@@ -108,7 +108,7 @@ export class Email {
    * @returns Local part (@ işaretinden önceki kısım)
    */
   public getLocalPart(): string {
-    return this._value.split('@')[0];
+    return this._value.split("@")[0];
   }
 
   /**

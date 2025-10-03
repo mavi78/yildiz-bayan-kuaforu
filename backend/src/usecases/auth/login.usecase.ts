@@ -7,8 +7,8 @@
  * @module usecases/auth
  */
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService, LoginResult } from '../../services/auth.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { AuthService, LoginResult } from "../../services/auth.service";
 
 /**
  * Giriş için gerekli kimlik bilgileri
@@ -53,10 +53,7 @@ export class LoginUsecase {
    */
   async execute(input: LoginInput): Promise<LoginResult> {
     // 1. Kimlik bilgileri doğrulama
-    const user = await this.authService.validateUser(
-      input.emailOrPhone,
-      input.password,
-    );
+    const user = await this.authService.validateUser(input.emailOrPhone, input.password);
 
     // 2. JWT token üretimi ve son giriş zamanını güncelleme
     const loginResult = await this.authService.login(user);
@@ -73,7 +70,7 @@ export class LoginUsecase {
    * @returns Email ise true, telefon ise false
    */
   isEmail(input: string): boolean {
-    return input.includes('@');
+    return input.includes("@");
   }
 
   /**
@@ -92,7 +89,7 @@ export class LoginUsecase {
    */
   normalizePhone(phone: string): string | null {
     // Boşlukları ve tire işaretlerini temizle
-    const cleaned = phone.replace(/[\s\-()]/g, '');
+    const cleaned = phone.replace(/[\s\-()]/g, "");
 
     // +90XXXXXXXXXX formatı
     if (/^\+90[1-9][0-9]{9}$/.test(cleaned)) {
@@ -134,12 +131,12 @@ export class LoginUsecase {
 
     // Email veya telefon boş olamaz
     if (!input.emailOrPhone || input.emailOrPhone.trim().length === 0) {
-      errors.push('Email veya telefon numarası gereklidir');
+      errors.push("Email veya telefon numarası gereklidir");
     }
 
     // Şifre boş olamaz
     if (!input.password || input.password.length === 0) {
-      errors.push('Şifre gereklidir');
+      errors.push("Şifre gereklidir");
     }
 
     // Email/telefon format kontrolü
@@ -150,13 +147,13 @@ export class LoginUsecase {
         // Email formatı basit kontrolü
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(input.emailOrPhone)) {
-          errors.push('Geçersiz email formatı');
+          errors.push("Geçersiz email formatı");
         }
       } else {
         // Telefon formatı kontrolü
         const normalized = this.normalizePhone(input.emailOrPhone);
         if (!normalized) {
-          errors.push('Geçersiz telefon formatı');
+          errors.push("Geçersiz telefon formatı");
         }
       }
     }
@@ -198,9 +195,9 @@ export class LoginUsecase {
     const value = parseInt(match[1], 10);
     const unit = match[2];
 
-    if (unit === 'h') {
+    if (unit === "h") {
       return value * 60 * 60; // Saat → saniye
-    } else if (unit === 'd') {
+    } else if (unit === "d") {
       return value * 24 * 60 * 60; // Gün → saniye
     }
 

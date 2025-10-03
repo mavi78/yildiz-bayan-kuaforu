@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { Notification, DeliveryStatus, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { Notification, DeliveryStatus, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * Notification Repository
@@ -37,10 +37,7 @@ export class NotificationRepository {
    * @param data - Güncellenecek veriler
    * @returns Güncellenmiş bildirim
    */
-  async update(
-    id: string,
-    data: Prisma.NotificationUpdateInput,
-  ): Promise<Notification> {
+  async update(id: string, data: Prisma.NotificationUpdateInput): Promise<Notification> {
     return this.prisma.notification.update({
       where: { id },
       data,
@@ -69,7 +66,7 @@ export class NotificationRepository {
         customer: true,
         appointment: true,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -89,7 +86,7 @@ export class NotificationRepository {
           lt: cutoffDate,
         },
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
     });
   }
 
@@ -167,10 +164,7 @@ export class NotificationRepository {
    * @param limit - Limit (varsayılan: 50)
    * @returns Bildirim listesi
    */
-  async findByCustomer(
-    customerId: string,
-    limit = 50,
-  ): Promise<Notification[]> {
+  async findByCustomer(customerId: string, limit = 50): Promise<Notification[]> {
     return this.prisma.notification.findMany({
       where: { customerId },
       include: {
@@ -180,7 +174,7 @@ export class NotificationRepository {
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: limit,
     });
   }
@@ -194,8 +188,7 @@ export class NotificationRepository {
   async findByAppointment(appointmentId: string): Promise<Notification[]> {
     return this.prisma.notification.findMany({
       where: { appointmentId },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
     });
   }
 }
-

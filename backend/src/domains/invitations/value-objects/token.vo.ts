@@ -7,7 +7,7 @@
  * @module domains/invitations/value-objects
  */
 
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
+import { v4 as uuidv4, validate as uuidValidate } from "uuid";
 
 /**
  * Token Value Object
@@ -47,7 +47,7 @@ export class Token {
    */
   public static fromString(token: string): Token {
     if (!token) {
-      throw new Error('Token is required');
+      throw new Error("Token is required");
     }
 
     if (!this.isValid(token)) {
@@ -104,7 +104,7 @@ export class Token {
    * @returns Maskelenmiş token
    */
   public getMasked(): string {
-    const parts = this._value.split('-');
+    const parts = this._value.split("-");
     if (parts.length !== 5) {
       return this._value;
     }
@@ -141,9 +141,9 @@ export class Token {
     collisionProbability: string;
   } {
     return {
-      possibleValues: '5.3 x 10^36',
+      possibleValues: "5.3 x 10^36",
       collisionProbability:
-        'Negligible (1 in a billion chance after generating 103 trillion UUIDs)',
+        "Negligible (1 in a billion chance after generating 103 trillion UUIDs)",
     };
   }
 

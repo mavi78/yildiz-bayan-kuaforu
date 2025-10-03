@@ -3,9 +3,9 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
-} from '@nestjs/common';
-import { Customer, CustomerType } from '@prisma/client';
-import { CustomerRepository } from '../repositories/customer.repository';
+} from "@nestjs/common";
+import { Customer, CustomerType } from "@prisma/client";
+import { CustomerRepository } from "../repositories/customer.repository";
 
 /**
  * Customer Service (İş Mantığı Katmanı)
@@ -65,7 +65,7 @@ export class CustomerService {
     // Kayıtlı müşteri varsa hata fırlat
     if (existingGuest && existingGuest.type === CustomerType.REGISTERED) {
       throw new ConflictException(
-        'Bu telefon numarası kayıtlı bir müşteriye ait. Lütfen kayıtlı müşteri girişi yapın.',
+        "Bu telefon numarası kayıtlı bir müşteriye ait. Lütfen kayıtlı müşteri girişi yapın.",
       );
     }
 
@@ -114,9 +114,7 @@ export class CustomerService {
   }): Promise<Customer> {
     // userId zorunlu kontrolü
     if (!data.userId) {
-      throw new BadRequestException(
-        'Kayıtlı müşteri için userId zorunludur.',
-      );
+      throw new BadRequestException("Kayıtlı müşteri için userId zorunludur.");
     }
 
     // Telefon formatını doğrula
@@ -128,13 +126,13 @@ export class CustomerService {
     // Telefon kullanımda mı kontrol et
     const phoneExists = await this.customerRepository.isPhoneTaken(data.phone);
     if (phoneExists) {
-      throw new ConflictException('Bu telefon numarası zaten kullanımda.');
+      throw new ConflictException("Bu telefon numarası zaten kullanımda.");
     }
 
     // Email kullanımda mı kontrol et
     const existingEmail = await this.customerRepository.findByEmail(data.email);
     if (existingEmail) {
-      throw new ConflictException('Bu email adresi zaten kullanımda.');
+      throw new ConflictException("Bu email adresi zaten kullanımda.");
     }
 
     // Kayıtlı müşteri oluştur
@@ -175,14 +173,8 @@ export class CustomerService {
    *
    * @throws {NotFoundException} Müşteri bulunamadı
    */
-  async findById(
-    id: string,
-    includeRelations = false,
-  ): Promise<Customer> {
-    const customer = await this.customerRepository.findById(
-      id,
-      includeRelations,
-    );
+  async findById(id: string, includeRelations = false): Promise<Customer> {
+    const customer = await this.customerRepository.findById(id, includeRelations);
 
     if (!customer) {
       throw new NotFoundException(`Müşteri bulunamadı: ${id}`);
@@ -212,15 +204,12 @@ export class CustomerService {
    * );
    * ```
    */
-  async convertGuestToRegistered(
-    customerId: string,
-    userId: string,
-  ): Promise<Customer> {
+  async convertGuestToRegistered(customerId: string, userId: string): Promise<Customer> {
     const customer = await this.findById(customerId);
 
     // Zaten kayıtlı mı kontrol et
     if (customer.type === CustomerType.REGISTERED) {
-      throw new BadRequestException('Müşteri zaten kayıtlı durumda.');
+      throw new BadRequestException("Müşteri zaten kayıtlı durumda.");
     }
 
     // Misafiri kayıtlı müşteriye dönüştür
@@ -254,12 +243,9 @@ export class CustomerService {
     // Telefon güncellenmişse, duplicate kontrolü
     if (data.phone) {
       this.validatePhoneFormat(data.phone);
-      const phoneExists = await this.customerRepository.isPhoneTaken(
-        data.phone,
-        id,
-      );
+      const phoneExists = await this.customerRepository.isPhoneTaken(data.phone, id);
       if (phoneExists) {
-        throw new ConflictException('Bu telefon numarası zaten kullanımda.');
+        throw new ConflictException("Bu telefon numarası zaten kullanımda.");
       }
     }
 
@@ -290,16 +276,16 @@ export class CustomerService {
         ...(type && { type }),
         ...(search && {
           OR: [
-            { firstName: { contains: search, mode: 'insensitive' } },
-            { lastName: { contains: search, mode: 'insensitive' } },
+            { firstName: { contains: search, mode: "insensitive" } },
+            { lastName: { contains: search, mode: "insensitive" } },
             { phone: { contains: search } },
-            { email: { contains: search, mode: 'insensitive' } },
+            { email: { contains: search, mode: "insensitive" } },
           ],
         }),
       },
       take: limit,
       skip: offset,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -321,11 +307,7 @@ export class CustomerService {
     spentIncrement: number,
   ): Promise<Customer> {
     await this.findById(customerId); // Müşteri var mı kontrol
-    return this.customerRepository.incrementStats(
-      customerId,
-      appointmentIncrement,
-      spentIncrement,
-    );
+    return this.customerRepository.incrementStats(customerId, appointmentIncrement, spentIncrement);
   }
 
   /**
@@ -345,7 +327,7 @@ export class CustomerService {
     // Randevu kontrolü
     if (customer.appointments && customer.appointments.length > 0) {
       throw new BadRequestException(
-        'Randevusu olan müşteri silinemez. Önce randevuları silin veya iptal edin.',
+        "Randevusu olan müşteri silinemez. Önce randevuları silin veya iptal edin.",
       );
     }
 
@@ -398,9 +380,7 @@ export class CustomerService {
   private validatePhoneFormat(phone: string): void {
     const phoneRegex = /^\+90[0-9]{10}$/;
     if (!phoneRegex.test(phone)) {
-      throw new BadRequestException(
-        'Geçersiz telefon formatı. Format: +90XXXXXXXXXX',
-      );
+      throw new BadRequestException("Geçersiz telefon formatı. Format: +90XXXXXXXXXX");
     }
   }
 
@@ -413,8 +393,7 @@ export class CustomerService {
   private validateEmailFormat(email: string): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new BadRequestException('Geçersiz email formatı.');
+      throw new BadRequestException("Geçersiz email formatı.");
     }
   }
 }
-

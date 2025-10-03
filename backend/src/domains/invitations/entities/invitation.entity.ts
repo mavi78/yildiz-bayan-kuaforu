@@ -8,7 +8,7 @@
  * @module domains/invitations/entities
  */
 
-import { Token } from '../value-objects/token.vo';
+import { Token } from "../value-objects/token.vo";
 
 /**
  * Davet edilebilecek roller
@@ -17,8 +17,8 @@ import { Token } from '../value-objects/token.vo';
  * rolleri için kullanıcı eklenebilir.
  */
 export enum InvitationRole {
-  STAFF = 'STAFF',
-  CUSTOMER = 'CUSTOMER',
+  STAFF = "STAFF",
+  CUSTOMER = "CUSTOMER",
 }
 
 /**
@@ -80,9 +80,7 @@ export class Invitation {
    * @returns Invitation entity instance
    * @throws Error - Geçersiz özellikler durumunda
    */
-  public static create(
-    props: Omit<InvitationProps, 'token' | 'expiresAt'>,
-  ): Invitation {
+  public static create(props: Omit<InvitationProps, "token" | "expiresAt">): Invitation {
     // Token'ı otomatik oluştur
     const token = Token.generate();
 
@@ -108,7 +106,7 @@ export class Invitation {
    * @returns Invitation entity instance
    */
   public static reconstitute(
-    props: Omit<InvitationProps, 'token'> & { token: string },
+    props: Omit<InvitationProps, "token"> & { token: string },
   ): Invitation {
     const token = Token.fromString(props.token);
 
@@ -126,17 +124,17 @@ export class Invitation {
    */
   private static validate(props: InvitationProps): void {
     if (!props.email || props.email.trim().length === 0) {
-      throw new Error('Email is required');
+      throw new Error("Email is required");
     }
 
     // Email formatı basit kontrolü (detaylı kontrol Email VO'da)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(props.email)) {
-      throw new Error('Invalid email format');
+      throw new Error("Invalid email format");
     }
 
     if (!props.inviterId || props.inviterId.trim().length === 0) {
-      throw new Error('Inviter ID is required');
+      throw new Error("Inviter ID is required");
     }
 
     if (!Object.values(InvitationRole).includes(props.role)) {
@@ -144,7 +142,7 @@ export class Invitation {
     }
 
     if (props.expiresAt <= new Date()) {
-      throw new Error('Expiration date must be in the future');
+      throw new Error("Expiration date must be in the future");
     }
   }
 
@@ -177,11 +175,11 @@ export class Invitation {
    */
   public markAsUsed(): void {
     if (this._isUsed) {
-      throw new Error('Invitation has already been used');
+      throw new Error("Invitation has already been used");
     }
 
     if (this.isExpired()) {
-      throw new Error('Invitation has expired');
+      throw new Error("Invitation has expired");
     }
 
     this._isUsed = true;

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { Review, ReviewStatus, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { Review, ReviewStatus, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * Review Repository
@@ -103,7 +103,7 @@ export class ReviewRepository {
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: limit,
     });
   }
@@ -125,7 +125,7 @@ export class ReviewRepository {
           },
         },
       },
-      orderBy: { approvedAt: 'desc' },
+      orderBy: { approvedAt: "desc" },
       take: limit,
     });
   }
@@ -136,9 +136,7 @@ export class ReviewRepository {
    * @param where - Filtre koşulları
    * @returns Ortalama rating
    */
-  async calculateAverageRating(
-    where?: Prisma.ReviewWhereInput,
-  ): Promise<number> {
+  async calculateAverageRating(where?: Prisma.ReviewWhereInput): Promise<number> {
     const result = await this.prisma.review.aggregate({
       where: {
         ...where,
@@ -242,8 +240,7 @@ export class ReviewRepository {
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 }
-

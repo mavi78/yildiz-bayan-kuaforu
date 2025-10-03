@@ -7,17 +7,17 @@
  * @module domains/auth/entities
  */
 
-import { Email } from '../value-objects/email.vo';
-import { Phone } from '../value-objects/phone.vo';
-import { Password } from '../value-objects/password.vo';
+import { Email } from "../value-objects/email.vo";
+import { Phone } from "../value-objects/phone.vo";
+import { Password } from "../value-objects/password.vo";
 
 /**
  * Kullanıcı rolleri
  */
 export enum Role {
-  ADMIN = 'ADMIN',
-  STAFF = 'STAFF',
-  CUSTOMER = 'CUSTOMER',
+  ADMIN = "ADMIN",
+  STAFF = "STAFF",
+  CUSTOMER = "CUSTOMER",
 }
 
 /**
@@ -100,15 +100,15 @@ export class User {
    */
   private static validate(props: UserProps): void {
     if (!props.firstName || props.firstName.trim().length === 0) {
-      throw new Error('First name is required');
+      throw new Error("First name is required");
     }
 
     if (!props.lastName || props.lastName.trim().length === 0) {
-      throw new Error('Last name is required');
+      throw new Error("Last name is required");
     }
 
     if (!props.passwordHash || props.passwordHash.length === 0) {
-      throw new Error('Password hash is required');
+      throw new Error("Password hash is required");
     }
 
     if (!Object.values(Role).includes(props.role)) {
@@ -201,7 +201,7 @@ export class User {
    */
   public updatePasswordHash(passwordHash: string): void {
     if (!passwordHash || passwordHash.length === 0) {
-      throw new Error('Password hash is required');
+      throw new Error("Password hash is required");
     }
     this._passwordHash = passwordHash;
     this._updatedAt = new Date();

@@ -10,17 +10,29 @@
 import "reflect-metadata";
 import { setupTestDb, teardownTestDb, clearTables } from "./helpers/db-helper";
 
+const skipDbSetup = process.env.SKIP_DB_SETUP === "true";
+
+if (skipDbSetup) {
+  console.log("⚙️  DB kurulum adımı SKIP_DB_SETUP bayrağı nedeniyle atlanıyor.");
+}
+
 // Test timeout'u artır (veritabanı işlemleri için)
 jest.setTimeout(30000);
 
 // Global test konfigürasyonu
 beforeAll(async () => {
   console.log("🧪 Test ortamı başlatılıyor...");
+  if (skipDbSetup) {
+    return;
+  }
   await setupTestDb();
 });
 
 afterAll(async () => {
   console.log("🧹 Test ortamı temizleniyor...");
+  if (skipDbSetup) {
+    return;
+  }
   await teardownTestDb();
 });
 
@@ -29,6 +41,9 @@ beforeEach(async () => {
   // Mock'ları temizle
   jest.clearAllMocks();
   // Veritabanını temizle
+  if (skipDbSetup) {
+    return;
+  }
   await clearTables();
 });
 

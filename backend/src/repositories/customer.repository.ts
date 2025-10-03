@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { Customer, CustomerType, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { Customer, CustomerType, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * Customer Repository
@@ -46,10 +46,7 @@ export class CustomerRepository {
    * @param includeRelations - İlişkileri dahil et (appointments, reviews)
    * @returns Müşteri veya null
    */
-  async findById(
-    id: string,
-    includeRelations = false,
-  ): Promise<Customer | null> {
+  async findById(id: string, includeRelations = false): Promise<Customer | null> {
     return this.prisma.customer.findUnique({
       where: { id },
       include: includeRelations
@@ -57,11 +54,11 @@ export class CustomerRepository {
             user: true,
             appointments: {
               take: 10,
-              orderBy: { createdAt: 'desc' },
+              orderBy: { createdAt: "desc" },
             },
             reviews: {
               take: 5,
-              orderBy: { createdAt: 'desc' },
+              orderBy: { createdAt: "desc" },
             },
           }
         : undefined,
@@ -101,10 +98,7 @@ export class CustomerRepository {
    * @param data - Güncellenecek veriler
    * @returns Güncellenmiş müşteri
    */
-  async update(
-    id: string,
-    data: Prisma.CustomerUpdateInput,
-  ): Promise<Customer> {
+  async update(id: string, data: Prisma.CustomerUpdateInput): Promise<Customer> {
     return this.prisma.customer.update({
       where: { id },
       data,
@@ -123,7 +117,7 @@ export class CustomerRepository {
       where: { type: CustomerType.GUEST },
       take: limit,
       skip: offset,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -192,11 +186,7 @@ export class CustomerRepository {
    * @param totalSpent - Toplam harcama
    * @returns Güncellenmiş müşteri
    */
-  async updateStats(
-    id: string,
-    totalAppointments: number,
-    totalSpent: number,
-  ): Promise<Customer> {
+  async updateStats(id: string, totalAppointments: number, totalSpent: number): Promise<Customer> {
     return this.prisma.customer.update({
       where: { id },
       data: {
@@ -275,4 +265,3 @@ export class CustomerRepository {
     return count > 0;
   }
 }
-

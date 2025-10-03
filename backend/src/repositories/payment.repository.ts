@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { Payment, PaymentMethod, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { Payment, PaymentMethod, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * Payment Repository
@@ -98,7 +98,7 @@ export class PaymentRepository {
           },
         },
       },
-      orderBy: { veresiyeDueDate: 'asc' },
+      orderBy: { veresiyeDueDate: "asc" },
     });
   }
 
@@ -201,7 +201,7 @@ export class PaymentRepository {
           },
         },
       },
-      orderBy: { veresiyeDueDate: 'asc' },
+      orderBy: { veresiyeDueDate: "asc" },
     });
   }
 
@@ -228,7 +228,7 @@ export class PaymentRepository {
           },
         },
       },
-      orderBy: { paidAt: 'desc' },
+      orderBy: { paidAt: "desc" },
     });
   }
 
@@ -248,4 +248,3 @@ export class PaymentRepository {
     return Number(result._sum.amount || 0);
   }
 }
-

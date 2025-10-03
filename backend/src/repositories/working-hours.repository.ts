@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { WorkingHours, Prisma } from '@prisma/client';
-import { PrismaService } from '../common/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { WorkingHours, Prisma } from "@prisma/client";
+import { PrismaService } from "../common/prisma.service";
 
 /**
  * WorkingHours Repository
@@ -46,7 +46,7 @@ export class WorkingHoursRepository {
    */
   async upsert(
     dayOfWeek: number,
-    data: Omit<Prisma.WorkingHoursCreateInput, 'dayOfWeek'>,
+    data: Omit<Prisma.WorkingHoursCreateInput, "dayOfWeek">,
   ): Promise<WorkingHours> {
     return this.prisma.workingHours.upsert({
       where: { dayOfWeek },
@@ -65,7 +65,7 @@ export class WorkingHoursRepository {
    */
   async findAll(): Promise<WorkingHours[]> {
     return this.prisma.workingHours.findMany({
-      orderBy: { dayOfWeek: 'asc' },
+      orderBy: { dayOfWeek: "asc" },
     });
   }
 
@@ -76,10 +76,7 @@ export class WorkingHoursRepository {
    * @param data - Güncellenecek veriler
    * @returns Güncellenmiş çalışma saati
    */
-  async update(
-    dayOfWeek: number,
-    data: Prisma.WorkingHoursUpdateInput,
-  ): Promise<WorkingHours> {
+  async update(dayOfWeek: number, data: Prisma.WorkingHoursUpdateInput): Promise<WorkingHours> {
     return this.prisma.workingHours.update({
       where: { dayOfWeek },
       data,
@@ -121,11 +118,7 @@ export class WorkingHoursRepository {
    * @param closeTime - Kapanış saati (HH:mm)
    * @returns Güncellenmiş çalışma saati
    */
-  async markOpen(
-    dayOfWeek: number,
-    openTime: string,
-    closeTime: string,
-  ): Promise<WorkingHours> {
+  async markOpen(dayOfWeek: number, openTime: string, closeTime: string): Promise<WorkingHours> {
     return this.prisma.workingHours.update({
       where: { dayOfWeek },
       data: {
@@ -169,7 +162,7 @@ export class WorkingHoursRepository {
   async findOpenDays(): Promise<WorkingHours[]> {
     return this.prisma.workingHours.findMany({
       where: { isClosed: false },
-      orderBy: { dayOfWeek: 'asc' },
+      orderBy: { dayOfWeek: "asc" },
     });
   }
 
@@ -199,4 +192,3 @@ export class WorkingHoursRepository {
     return count;
   }
 }
-

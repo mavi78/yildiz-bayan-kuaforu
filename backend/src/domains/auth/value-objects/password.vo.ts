@@ -7,7 +7,7 @@
  * @module domains/auth/value-objects
  */
 
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 
 /**
  * Şifre gereksinimleri
@@ -60,7 +60,7 @@ export class Password {
     requirements: PasswordRequirements = DEFAULT_REQUIREMENTS,
   ): Promise<Password> {
     if (!plainPassword) {
-      throw new Error('Password is required');
+      throw new Error("Password is required");
     }
 
     // Şifre gereksinimlerini kontrol et
@@ -83,12 +83,12 @@ export class Password {
    */
   public static fromHash(hash: string): Password {
     if (!hash) {
-      throw new Error('Password hash is required');
+      throw new Error("Password hash is required");
     }
 
     // Bcrypt hash formatını kontrol et ($2a$, $2b$ veya $2y$ ile başlamalı)
     if (!this.isValidBcryptHash(hash)) {
-      throw new Error('Invalid bcrypt hash format');
+      throw new Error("Invalid bcrypt hash format");
     }
 
     return new Password(hash);
@@ -113,10 +113,7 @@ export class Password {
    * @param requirements - Gereksinimler
    * @throws Error - Gereksinimler karşılanmazsa
    */
-  private static validate(
-    password: string,
-    requirements: PasswordRequirements,
-  ): void {
+  private static validate(password: string, requirements: PasswordRequirements): void {
     const errors: string[] = [];
 
     // Minimum uzunluk kontrolü
@@ -126,39 +123,36 @@ export class Password {
 
     // Büyük harf kontrolü
     if (requirements.requireUppercase && !/[A-Z]/.test(password)) {
-      errors.push('Password must contain at least one uppercase letter');
+      errors.push("Password must contain at least one uppercase letter");
     }
 
     // Küçük harf kontrolü
     if (requirements.requireLowercase && !/[a-z]/.test(password)) {
-      errors.push('Password must contain at least one lowercase letter');
+      errors.push("Password must contain at least one lowercase letter");
     }
 
     // Rakam kontrolü
     if (requirements.requireNumbers && !/\d/.test(password)) {
-      errors.push('Password must contain at least one number');
+      errors.push("Password must contain at least one number");
     }
 
     // Özel karakter kontrolü
-    if (requirements.requireSpecialChars && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      errors.push('Password must contain at least one special character');
+    if (
+      requirements.requireSpecialChars &&
+      !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    ) {
+      errors.push("Password must contain at least one special character");
     }
 
     // Yaygın zayıf şifreler kontrolü
-    const weakPasswords = [
-      'password',
-      '12345678',
-      'qwerty123',
-      'admin123',
-      'letmein',
-    ];
+    const weakPasswords = ["password", "12345678", "qwerty123", "admin123", "letmein"];
 
     if (weakPasswords.includes(password.toLowerCase())) {
-      errors.push('Password is too weak. Please choose a stronger password');
+      errors.push("Password is too weak. Please choose a stronger password");
     }
 
     if (errors.length > 0) {
-      throw new Error(errors.join('; '));
+      throw new Error(errors.join("; "));
     }
   }
 
@@ -282,7 +276,7 @@ export class Password {
    * @returns Maskelenmiş hash
    */
   public toString(): string {
-    return '[PROTECTED]';
+    return "[PROTECTED]";
   }
 
   /**
@@ -293,6 +287,6 @@ export class Password {
    * @returns Güvenli representation
    */
   public toJSON(): string {
-    return '[PROTECTED]';
+    return "[PROTECTED]";
   }
 }

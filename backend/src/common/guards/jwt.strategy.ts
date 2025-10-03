@@ -7,12 +7,12 @@
  * @module common/guards
  */
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { RedisService } from '../redis.service';
-import { JwtPayload } from '../../services/auth.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { PassportStrategy } from "@nestjs/passport";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { RedisService } from "../redis.service";
+import { JwtPayload } from "../../services/auth.service";
 
 /**
  * Request'e eklenen kullanıcı bilgisi
@@ -57,7 +57,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      secretOrKey: configService.get<string>("JWT_SECRET"),
     });
   }
 
@@ -76,9 +76,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const isBlacklisted = await this.redisService.isBlacklisted(payload.jti);
 
     if (isBlacklisted) {
-      throw new UnauthorizedException(
-        'Token iptal edilmiş. Lütfen tekrar giriş yapın.',
-      );
+      throw new UnauthorizedException("Token iptal edilmiş. Lütfen tekrar giriş yapın.");
     }
 
     // 2. Kullanıcı bilgilerini döndür

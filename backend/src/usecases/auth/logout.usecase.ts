@@ -7,9 +7,9 @@
  * @module usecases/auth
  */
 
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { RedisService } from '../../common/redis.service';
-import { AuthService } from '../../services/auth.service';
+import { Injectable, BadRequestException } from "@nestjs/common";
+import { RedisService } from "../../common/redis.service";
+import { AuthService } from "../../services/auth.service";
 
 /**
  * Logout için gerekli bilgiler
@@ -68,9 +68,7 @@ export class LogoutUsecase {
     try {
       payload = await this.authService.verifyToken(input.token);
     } catch (error) {
-      throw new BadRequestException(
-        'Geçersiz token. Lütfen tekrar giriş yapın.',
-      );
+      throw new BadRequestException("Geçersiz token. Lütfen tekrar giriş yapın.");
     }
 
     // 2. JTI ve expiry çıkar
@@ -78,9 +76,7 @@ export class LogoutUsecase {
     const exp = payload.exp;
 
     if (!jti || !exp) {
-      throw new BadRequestException(
-        'Token formatı geçersiz. JTI veya expiry eksik.',
-      );
+      throw new BadRequestException("Token formatı geçersiz. JTI veya expiry eksik.");
     }
 
     // 3. TTL hesapla (token expire olana kadar)
@@ -88,9 +84,7 @@ export class LogoutUsecase {
     const ttl = exp - now;
 
     if (ttl <= 0) {
-      throw new BadRequestException(
-        'Token süresi dolmuş. Zaten geçersiz durumda.',
-      );
+      throw new BadRequestException("Token süresi dolmuş. Zaten geçersiz durumda.");
     }
 
     // 4. JTI'yi blacklist'e ekle
@@ -98,7 +92,7 @@ export class LogoutUsecase {
 
     return {
       success: true,
-      message: 'Başarıyla çıkış yapıldı',
+      message: "Başarıyla çıkış yapıldı",
     };
   }
 
@@ -155,7 +149,7 @@ export class LogoutUsecase {
     // Şimdilik sadece placeholder
 
     throw new Error(
-      'Tüm session logout özelliği henüz implementasyonu yapılmadı (T027 scope dışı)',
+      "Tüm session logout özelliği henüz implementasyonu yapılmadı (T027 scope dışı)",
     );
   }
 
@@ -196,7 +190,7 @@ export class LogoutUsecase {
   async cleanupExpiredBlacklist(): Promise<number> {
     // Redis'te TTL bitmiş key'ler otomatik silinir
     // Bu method ek kontrol için kullanılabilir
-    const pattern = 'blacklist:*';
+    const pattern = "blacklist:*";
     const keys = await this.redisService.keys(pattern);
 
     let cleanedCount = 0;

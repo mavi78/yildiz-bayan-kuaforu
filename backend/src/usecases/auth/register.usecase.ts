@@ -7,15 +7,11 @@
  * @module usecases/auth
  */
 
-import {
-  Injectable,
-  BadRequestException,
-  ConflictException,
-} from '@nestjs/common';
-import { Role } from '@prisma/client';
-import { InvitationService } from '../../services/invitation.service';
-import { UserRepository } from '../../repositories/user.repository';
-import { AuthService } from '../../services/auth.service';
+import { Injectable, BadRequestException, ConflictException } from "@nestjs/common";
+import { Role } from "@prisma/client";
+import { InvitationService } from "../../services/invitation.service";
+import { UserRepository } from "../../repositories/user.repository";
+import { AuthService } from "../../services/auth.service";
 
 /**
  * Kayıt için gerekli kullanıcı bilgileri
@@ -79,36 +75,26 @@ export class RegisterUsecase {
    */
   async execute(input: RegisterInput): Promise<RegisterResult> {
     // 1. Davet doğrulama
-    const validation = await this.invitationService.validateNotExpired(
-      input.token,
-    );
+    const validation = await this.invitationService.validateNotExpired(input.token);
 
     if (!validation.isValid) {
-      throw new BadRequestException(
-        validation.reason || 'Davet geçersiz veya süresi dolmuş',
-      );
+      throw new BadRequestException(validation.reason || "Davet geçersiz veya süresi dolmuş");
     }
 
     const invitation = validation.invitation!;
 
     // 2. Email benzersizlik kontrolü (davet email'i kullanılacak)
-    const existingUserByEmail =
-      await this.userRepository.findByEmail(invitation.email);
+    const existingUserByEmail = await this.userRepository.findByEmail(invitation.email);
 
     if (existingUserByEmail) {
-      throw new ConflictException(
-        `${invitation.email} email adresi zaten kullanılıyor`,
-      );
+      throw new ConflictException(`${invitation.email} email adresi zaten kullanılıyor`);
     }
 
     // 3. Telefon numarası benzersizlik kontrolü
-    const existingUserByPhone =
-      await this.userRepository.findByPhone(input.phone);
+    const existingUserByPhone = await this.userRepository.findByPhone(input.phone);
 
     if (existingUserByPhone) {
-      throw new ConflictException(
-        `${input.phone} telefon numarası zaten kullanılıyor`,
-      );
+      throw new ConflictException(`${input.phone} telefon numarası zaten kullanılıyor`);
     }
 
     // 4. Şifre hash'leme
@@ -154,18 +140,14 @@ export class RegisterUsecase {
     expiresAt: Date;
     remainingHours: number;
   }> {
-    const validation =
-      await this.invitationService.validateNotExpired(token);
+    const validation = await this.invitationService.validateNotExpired(token);
 
     if (!validation.isValid) {
-      throw new BadRequestException(
-        validation.reason || 'Davet geçersiz veya süresi dolmuş',
-      );
+      throw new BadRequestException(validation.reason || "Davet geçersiz veya süresi dolmuş");
     }
 
     const invitation = validation.invitation!;
-    const remainingHours =
-      this.invitationService.getRemainingHours(invitation);
+    const remainingHours = this.invitationService.getRemainingHours(invitation);
 
     return {
       email: invitation.email,
@@ -196,19 +178,19 @@ export class RegisterUsecase {
     const errors: string[] = [];
 
     if (password.length < 8) {
-      errors.push('Şifre en az 8 karakter olmalıdır');
+      errors.push("Şifre en az 8 karakter olmalıdır");
     }
 
     if (!/[A-Z]/.test(password)) {
-      errors.push('Şifre en az 1 büyük harf içermelidir');
+      errors.push("Şifre en az 1 büyük harf içermelidir");
     }
 
     if (!/[a-z]/.test(password)) {
-      errors.push('Şifre en az 1 küçük harf içermelidir');
+      errors.push("Şifre en az 1 küçük harf içermelidir");
     }
 
     if (!/[0-9]/.test(password)) {
-      errors.push('Şifre en az 1 rakam içermelidir');
+      errors.push("Şifre en az 1 rakam içermelidir");
     }
 
     return {
@@ -235,19 +217,17 @@ export class RegisterUsecase {
     if (!phoneRegex.test(phone)) {
       return {
         isValid: false,
-        error:
-          'Geçersiz telefon formatı. Beklenen format: +90XXXXXXXXXX (Türkiye)',
+        error: "Geçersiz telefon formatı. Beklenen format: +90XXXXXXXXXX (Türkiye)",
       };
     }
 
     // Operatör kodu kontrolü (5XX mobil, diğerleri sabit hat)
     const operatorCode = phone.charAt(3);
 
-    if (operatorCode !== '5') {
+    if (operatorCode !== "5") {
       return {
         isValid: false,
-        error:
-          'Sadece mobil telefon numaraları kabul edilir (+905XXXXXXXXX)',
+        error: "Sadece mobil telefon numaraları kabul edilir (+905XXXXXXXXX)",
       };
     }
 

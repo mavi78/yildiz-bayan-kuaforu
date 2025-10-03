@@ -48,7 +48,7 @@ modules/           # NestJS modules (controllers, DI setup)
 - **Vertical Slice Architecture**: Rejected because Constitution explicitly requires horizontal layering
 - **Feature-based modules**: Considered but layered approach better enforces repository isolation
 
-**context7-mcp References**:
+**context7 References**:
 
 - NestJS Modules: https://docs.nestjs.com/modules
 - NestJS Custom Providers: https://docs.nestjs.com/fundamentals/custom-providers
@@ -110,7 +110,7 @@ app/
 - **Pages Router**: Rejected, App Router is stable and provides better DX for layouts
 - **Material-UI**: Rejected, Shadcn/UI is lighter and follows Tailwind conventions
 
-**context7-mcp References**:
+**context7 References**:
 
 - Next.js 15 App Router: https://nextjs.org/docs/app
 - Next.js Server Components: https://nextjs.org/docs/app/building-your-application/rendering/server-components
@@ -214,7 +214,7 @@ class NotificationProcessor {
 - **Twilio SMS**: Rejected, spec explicitly requires İleti Merkezi (Turkish SMS provider)
 - **WebSockets**: Considered native WebSocket, but Socket.io provides auto-reconnect and room management
 
-**context7-mcp References**:
+**context7 References**:
 
 - Nodemailer: https://nodemailer.com/about/
 - NestJS WebSocket Gateways: https://docs.nestjs.com/websockets/gateways
@@ -328,7 +328,7 @@ computeHash(log: AuditLog, previousHash: string | null): string {
 - **Blockchain**: Overkill for salon scale, high complexity
 - **Database-only retention**: Violates FR-062 (must archive to files)
 
-**context7-mcp References**:
+**context7 References**:
 
 - NestJS Scheduling: https://docs.nestjs.com/techniques/task-scheduling
 - Node.js Crypto: https://nodejs.org/api/crypto.html
@@ -450,7 +450,7 @@ async createInvitation(@Body() dto: CreateInvitationDto) {
 - **Refresh Token**: Not required for FR-008, can be added in future if needed
 - **Session-based auth**: Rejected, Constitution implies JWT (stateless)
 
-**context7-mcp References**:
+**context7 References**:
 
 - NestJS JWT: https://docs.nestjs.com/security/authentication#jwt-functionality
 - NestJS Guards: https://docs.nestjs.com/guards
@@ -573,7 +573,7 @@ export default function RootLayout({ children }) {
 - **Redux**: Overkill for salon app scale, more boilerplate than Zustand
 - **SWR**: TanStack Query has better TypeScript support and more features (optimistic updates)
 
-**context7-mcp References**:
+**context7 References**:
 
 - Zustand: https://docs.pmnd.rs/zustand/getting-started/introduction
 - TanStack Query: https://tanstack.com/query/latest/docs/react/overview
@@ -710,7 +710,7 @@ input:focus-visible {
 - **Radix UI Primitives**: Considered for accessible components, but Shadcn/UI already uses Radix under the hood
 - **Manual ARIA**: Too error-prone, prefer library-based solutions (Shadcn/Headless UI)
 
-**context7-mcp References**:
+**context7 References**:
 
 - WCAG 2.1 Guidelines: https://www.w3.org/WAI/WCAG21/quickref/
 - ARIA Live Regions: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions
@@ -838,7 +838,7 @@ async exportLargeReport(res: Response) {
 - **json2csv**: Simpler but CSV-only, xlsx library handles both formats
 - **Client-side export**: Rejected for security (exposes full dataset to client)
 
-**context7-mcp References**:
+**context7 References**:
 
 - xlsx (SheetJS): https://docs.sheetjs.com/
 - NestJS Streaming: https://docs.nestjs.com/techniques/streaming-files
