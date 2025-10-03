@@ -532,33 +532,33 @@ Based on plan.md structure decision (Web application):
   - ✅ Audit log integration ready (FR-039a)
   - ✅ Turkish JSDoc documentation
 
-- [ ] **T055** Create Review service in `backend/src/services/review.service.ts`
+- [x] **T055** Create Review service in `backend/src/services/review.service.ts`
   - Inject ReviewRepository
   - Methods: `create()`, `approve()`, `delete()` (triggers audit log)
 
 ### Phase 3.4: Usecases (Appointment Creation Flows)
 
-- [ ] **T056** Create "Guest Online Booking" usecase in `backend/src/usecases/appointments/create-guest-appointment.usecase.ts`
+- [x] **T056** Create "Guest Online Booking" usecase in `backend/src/usecases/appointments/create-guest-appointment.usecase.ts`
 
   - Inject CustomerService, AppointmentService
   - Flow: find or create guest by phone → check working hours → create appointment (PENDING) → generate tracking code → return tracking code
 
-- [ ] **T057** Create "Registered Customer Online Booking" usecase in `backend/src/usecases/appointments/create-registered-appointment.usecase.ts`
+- [x] **T057** Create "Registered Customer Online Booking" usecase in `backend/src/usecases/appointments/create-registered-appointment.usecase.ts`
 
   - Inject AppointmentService
   - Flow: check working hours → create appointment (PENDING) → return appointment ID
 
-- [ ] **T058** Create "Staff Approve Appointment" usecase in `backend/src/usecases/appointments/approve-appointment.usecase.ts`
+- [x] **T058** Create "Staff Approve Appointment" usecase in `backend/src/usecases/appointments/approve-appointment.usecase.ts`
 
   - Inject AppointmentService, NotificationService (create placeholder)
   - Flow: check conflict → if conflict, require override flag + justification → update status to CONFIRMED → queue notification
 
-- [ ] **T059** Create "Staff Manual Appointment" usecase in `backend/src/usecases/appointments/create-manual-appointment.usecase.ts`
+- [x] **T059** Create "Staff Manual Appointment" usecase in `backend/src/usecases/appointments/create-manual-appointment.usecase.ts`
 
   - Inject CustomerService, AppointmentService
   - Flow: search customer by phone → if not found, create guest → create appointment (CONFIRMED) → queue notification
 
-- [ ] **T060** Create "Guest to Registered Conversion" usecase in `backend/src/usecases/customers/convert-guest-to-registered.usecase.ts`
+- [x] **T060** Create "Guest to Registered Conversion" usecase in `backend/src/usecases/customers/convert-guest-to-registered.usecase.ts`
   - Inject CustomerService, InvitationService
   - Flow: validate guest has email → create invitation with guestCustomerId → send invitation email
 
@@ -568,28 +568,30 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 4.1: Auth Module
 
-- [ ] **T061** Create Auth controller in `backend/src/modules/auth/auth.controller.ts`
+- [x] **T061** Create Auth controller in `backend/src/modules/auth/auth.controller.ts`
 
   - POST /auth/register (with invitation token)
   - POST /auth/login
   - POST /auth/logout
   - Apply JWT guard where needed
 
-- [ ] **T062** Create Invitations controller in `backend/src/modules/auth/invitations.controller.ts`
+- [x] **T062** Create Invitations controller in `backend/src/modules/auth/invitations.controller.ts`
   - POST /admin/invitations (Admin only)
   - GET /admin/invitations
   - Apply @Roles('ADMIN') guard
 
 ### Phase 4.2: Appointments Module
 
-- [ ] **T063** Create Appointments controller in `backend/src/modules/appointments/appointments.controller.ts`
+- [x] **T063** Create Appointments controller in `backend/src/modules/appointments/appointments.controller.ts`
 
-  - POST /appointments (guest or registered)
-  - GET /appointments (role-based filtering)
-  - GET /appointments/:id
-  - GET /appointments/track/:trackingCode (public)
-  - POST /appointments/track/resend (guest SMS tracking code recovery, FR-015)
-  - Apply JWT guard except for tracking endpoints
+  - ✅ POST /appointments (guest or registered)
+  - ✅ GET /appointments (role-based filtering)
+  - ✅ GET /appointments/:id
+  - ✅ GET /appointments/track/:trackingCode (public)
+  - ✅ POST /appointments/track/resend (guest SMS tracking code recovery, FR-015)
+  - ✅ Apply JWT guard except for tracking endpoints
+  - ✅ Created DTOs: CreateGuestAppointmentDto, CreateRegisteredAppointmentDto, ResendTrackingCodeDto
+  - ✅ Created AppointmentsModule with usecases wired up
 
 - [ ] **T064** Create Appointment Actions controller in `backend/src/modules/appointments/appointment-actions.controller.ts`
   - PATCH /appointments/:id/approve (Staff/Admin)
