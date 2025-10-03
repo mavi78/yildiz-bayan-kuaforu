@@ -81,7 +81,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ### I. Güvenli ve Resmi Kaynak Tabanlı Geliştirme
 
-- ✅ **Context7 Documentation**: All tech stack items (NestJS, Next.js 15, Prisma, Shadcn/UI, TanStack Query) must reference official Context7 MCP docs before implementation
+- ✅ **context7-mcp Documentation**: All tech stack items (NestJS, Next.js 15, Prisma, Shadcn/UI, TanStack Query) must reference official context7-mcp MCP docs before implementation
 - ✅ **Security Baseline**: Helmet, CORS, @nestjs/throttler, JWT, bcrypt are explicitly specified
 - ⚠️ **Secret Management**: `.env` files mentioned but vault/parameter store integration needed for production
   - **Justification**: Development phase accepts `.env`; production deployment will use Docker secrets or AWS Parameter Store
@@ -128,7 +128,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ### Geliştirme Süreci
 
-- ✅ **Context7 Referencing**: Phase 0 will document all tech stack references
+- ✅ **context7-mcp Referencing**: Phase 0 will document all tech stack references
 - ✅ **Design Review**: Phase 1 design must re-check constitution compliance
 - ✅ **Tests First**: TDD enforced via Phase 1 contract test generation before implementation
 - ✅ **Code Review**: Tasks will include review steps for security/performance/maintainability
@@ -323,7 +323,7 @@ Will document:
 - **Decision**: Chosen approach for each research area
 - **Rationale**: Why this approach fits constitution and requirements
 - **Alternatives Considered**: Other options evaluated
-- **Implementation Notes**: Key patterns, gotchas, references to Context7 docs
+- **Implementation Notes**: Key patterns, gotchas, references to context7-mcp docs
 
 **Output**: `research.md` with 8 research topics documented
 

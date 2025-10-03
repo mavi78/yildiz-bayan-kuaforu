@@ -22,7 +22,7 @@ Follow-up TODOs:
 
 ### I. Güvenli ve Resmi Kaynak Tabanlı Geliştirme
 
-- Her teknoloji, kütüphane ve çerçeve, resmi Context7 MCP dokümantasyonu okunup özetlendiğinde uygulanabilir; referans bağlantıları tasarım ve kod incelemelerinde kayıt altına alınır.
+- Her teknoloji, kütüphane ve çerçeve, resmi context7-mcp MCP dokümantasyonu okunup özetlendiğinde uygulanabilir; referans bağlantıları tasarım ve kod incelemelerinde kayıt altına alınır.
 - Tüm servisler Helmet, CORS, @nestjs/throttler, JWT ve bcrypt yapı taşlarını varsayılan olarak etkinleştirerek en az ayrıcalık prensibini uygular.
 - Çevresel gizli bilgiler `.env` yönetimine kapalı, güvenli gizli yönetim (ör. Vault, parameter store) üzerinden sürdürülür; sır dökümü ve rotasyonu yarıyıllık olarak belgelenir.
   Rasyonel: Yetkisiz erişim ve konfigürasyon sapmaları, salon verilerinin gizliliğini ve KVKK uyumunu doğrudan etkiler.
@@ -70,7 +70,7 @@ Follow-up TODOs:
 
 ## Geliştirme Süreci
 
-1. Her çalışma paketinde kullanılacak teknoloji için resmi Context7 dokümantasyonuna atıf yapılır ve logbook’a eklenir.
+1. Her çalışma paketinde kullanılacak teknoloji için resmi context7-mcp MCP dokümantasyonuna atıf yapılır ve logbook’a eklenir.
 2. Tasarım incelemesi, katmanlı mimari uyumu, veri erişim izolasyonu ve güvenlik varsayımlarını kontrol eder; başarısız inceleme kodlanamaz.
 3. Test senaryoları (unit, integration, e2e) koddan önce yazılır ve CI’da başarısızlıkları gözlemlenene kadar implementasyon bekletilir.
 4. Kod incelemeleri güvenlik, performans, sürdürülebilirlik ve Davet/Ödeme/Audit kurallarına uyumu doğrular; eksikler için ret sebebi yazılır.
