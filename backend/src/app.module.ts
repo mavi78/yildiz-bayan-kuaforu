@@ -11,6 +11,7 @@ import { PaymentsModule } from "@modules/payments/payments.module";
 import { ReportsModule } from "@modules/reports/reports.module";
 import { WorkingHoursModule } from "@modules/working-hours/working-hours.module";
 import { AuditModule } from "@modules/audit/audit.module";
+import { NotificationsModule } from "@modules/notifications/notifications.module";
 
 /**
  * Ana uygulama modülü
@@ -47,7 +48,7 @@ import { AuditModule } from "@modules/audit/audit.module";
     ReportsModule,
     WorkingHoursModule,
     AuditModule,
-    // NotificationsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
