@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { AuditLogsController } from './audit-logs.controller';
-import { AuditLogRepository } from '../../repositories/audit-log.repository';
-import { PrismaService } from '../../common/prisma.service';
+import { Module } from "@nestjs/common";
+import { AuditLogsController } from "./audit-logs.controller";
+import { AuditLogRepository } from "../../repositories/audit-log.repository";
+import { PrismaService } from "../../common/prisma.service";
 
 /**
  * Audit Module

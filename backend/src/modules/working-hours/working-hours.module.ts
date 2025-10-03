@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { SharedModule } from '@modules/shared';
-import { WorkingHoursController } from './working-hours.controller';
+import { Module } from "@nestjs/common";
+import { SharedModule } from "@modules/shared";
+import { WorkingHoursController } from "./working-hours.controller";
 
 /**
  * WorkingHoursModule

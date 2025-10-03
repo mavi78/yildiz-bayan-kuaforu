@@ -1,17 +1,10 @@
-import {
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { AuditLogRepository } from '../../repositories/audit-log.repository';
-import { AuditLogFiltersDto } from './dto';
-import { Prisma } from '@prisma/client';
+import { Controller, Get, Query, UseGuards, HttpCode, HttpStatus } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "../../common/guards/roles.guard";
+import { Roles } from "../../common/decorators/roles.decorator";
+import { AuditLogRepository } from "../../repositories/audit-log.repository";
+import { AuditLogFiltersDto } from "./dto";
+import { Prisma } from "@prisma/client";
 
 /**
  * Audit Logs Controller
@@ -33,8 +26,8 @@ import { Prisma } from '@prisma/client';
  *
  * @class AuditLogsController
  */
-@Controller('admin/audit-logs')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Controller("admin/audit-logs")
+@UseGuards(AuthGuard("jwt"), RolesGuard)
 export class AuditLogsController {
   constructor(private readonly auditLogRepository: AuditLogRepository) {}
 
@@ -105,7 +98,7 @@ export class AuditLogsController {
    * ```
    */
   @Get()
-  @Roles('ADMIN')
+  @Roles("ADMIN")
   @HttpCode(HttpStatus.OK)
   async getAuditLogs(@Query() filters: AuditLogFiltersDto) {
     const { page = 1, limit = 50, ...filterParams } = filters;
@@ -149,7 +142,7 @@ export class AuditLogsController {
         skip,
         take,
         where,
-        orderBy: { timestamp: 'desc' }, // En yeni kayıtlar önce
+        orderBy: { timestamp: "desc" }, // En yeni kayıtlar önce
       }),
       this.auditLogRepository.count(where),
     ]);

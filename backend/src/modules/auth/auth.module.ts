@@ -29,14 +29,7 @@ import { JwtStrategy } from "@common/guards/jwt.strategy";
     }),
   ],
   controllers: [AuthController, InvitationsController],
-  providers: [
-    AuthService,
-    RegisterUsecase,
-    LoginUsecase,
-    LogoutUsecase,
-    RolesGuard,
-    JwtStrategy,
-  ],
+  providers: [AuthService, RegisterUsecase, LoginUsecase, LogoutUsecase, RolesGuard, JwtStrategy],
   exports: [AuthService, RegisterUsecase, LoginUsecase, LogoutUsecase, JwtStrategy],
 })
 export class AuthModule {}

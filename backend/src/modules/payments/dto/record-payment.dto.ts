@@ -56,7 +56,7 @@ export class RecordPaymentDto {
    *
    * @example "2025-11-03"
    */
-  @ValidateIf((o) => o.method === PaymentMethod.VERESIYE)
+  @ValidateIf(o => o.method === PaymentMethod.VERESIYE)
   @IsDateString()
   veresiyeDueDate?: string;
 
@@ -65,7 +65,7 @@ export class RecordPaymentDto {
    *
    * @example "Çek: 123456, Banka: XYZ"
    */
-  @ValidateIf((o) => o.method === PaymentMethod.VERESIYE)
+  @ValidateIf(o => o.method === PaymentMethod.VERESIYE)
   @IsString()
   veresiyeCollateral?: string;
 
@@ -74,7 +74,7 @@ export class RecordPaymentDto {
    *
    * @example "Ahmet Yılmaz (Müdür)"
    */
-  @ValidateIf((o) => o.method === PaymentMethod.VERESIYE)
+  @ValidateIf(o => o.method === PaymentMethod.VERESIYE)
   @IsString()
   veresiyeResponsible?: string;
 }

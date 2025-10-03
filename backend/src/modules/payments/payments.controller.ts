@@ -142,9 +142,7 @@ export class PaymentsController {
       );
 
       // Method filtresi uygula
-      const filteredPayments = method
-        ? payments.filter((p) => p.method === method)
-        : payments;
+      const filteredPayments = method ? payments.filter(p => p.method === method) : payments;
 
       return {
         success: true,
@@ -183,10 +181,7 @@ export class PaymentsController {
   @Get("veresiye")
   @UseGuards(AuthGuard("jwt"), RolesGuard)
   @Roles("STAFF", "ADMIN")
-  async findVeresiye(
-    @Query("overdue") overdue?: string,
-    @Query("upcoming") upcoming?: string,
-  ) {
+  async findVeresiye(@Query("overdue") overdue?: string, @Query("upcoming") upcoming?: string) {
     let payments;
     let message = "";
 
@@ -240,11 +235,7 @@ export class PaymentsController {
   @UseGuards(AuthGuard("jwt"), RolesGuard)
   @Roles("STAFF", "ADMIN")
   @HttpCode(HttpStatus.OK)
-  async update(
-    @Param("id") id: string,
-    @Body() dto: UpdatePaymentDto,
-    @CurrentUser() user: any,
-  ) {
+  async update(@Param("id") id: string, @Body() dto: UpdatePaymentDto, @CurrentUser() user: any) {
     const payment = await this.paymentService.updatePayment(id, {
       amount: dto.amount,
       method: dto.method,

@@ -1,22 +1,10 @@
-import {
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-  Res,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
-import { Response } from 'express';
-import { ReportsService } from '../../services/reports.service';
-import {
-  AppointmentReportFiltersDto,
-  PaymentReportFiltersDto,
-  ExportFormatQueryDto,
-} from './dto';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Controller, Get, Query, UseGuards, Res, HttpCode, HttpStatus } from "@nestjs/common";
+import { Response } from "express";
+import { ReportsService } from "../../services/reports.service";
+import { AppointmentReportFiltersDto, PaymentReportFiltersDto, ExportFormatQueryDto } from "./dto";
+import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "../../common/guards/roles.guard";
+import { Roles } from "../../common/decorators/roles.decorator";
 
 /**
  * Reports Controller
@@ -35,8 +23,8 @@ import { Roles } from '../../common/decorators/roles.decorator';
  *
  * @class ReportsController
  */
-@Controller('reports')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Controller("reports")
+@UseGuards(AuthGuard("jwt"), RolesGuard)
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
@@ -61,12 +49,11 @@ export class ReportsController {
    * Authorization: Bearer <admin-token>
    * ```
    */
-  @Get('appointments')
-  @Roles('ADMIN')
+  @Get("appointments")
+  @Roles("ADMIN")
   @HttpCode(HttpStatus.OK)
   async getAppointmentsReport(@Query() filters: AppointmentReportFiltersDto) {
-    const appointments =
-      await this.reportsService.getAppointmentsReport(filters);
+    const appointments = await this.reportsService.getAppointmentsReport(filters);
     return {
       success: true,
       data: appointments,
@@ -94,8 +81,8 @@ export class ReportsController {
    * Authorization: Bearer <admin-token>
    * ```
    */
-  @Get('payments')
-  @Roles('ADMIN')
+  @Get("payments")
+  @Roles("ADMIN")
   @HttpCode(HttpStatus.OK)
   async getPaymentsReport(@Query() filters: PaymentReportFiltersDto) {
     const payments = await this.reportsService.getPaymentsReport(filters);
@@ -132,18 +119,14 @@ export class ReportsController {
    * # Browser'da dosya indirme başlar: randevular.xlsx
    * ```
    */
-  @Get('export')
-  @Roles('ADMIN')
+  @Get("export")
+  @Roles("ADMIN")
   async exportReport(
     @Query() formatQuery: ExportFormatQueryDto,
     @Query() filters: AppointmentReportFiltersDto,
     @Res() res: Response,
   ): Promise<void> {
-    await this.reportsService.exportAppointmentsReport(
-      filters,
-      formatQuery.format,
-      res,
-    );
+    await this.reportsService.exportAppointmentsReport(filters, formatQuery.format, res);
   }
 
   /**
@@ -170,17 +153,13 @@ export class ReportsController {
    * # Browser'da dosya indirme başlar: odemeler.xlsx
    * ```
    */
-  @Get('export/payments')
-  @Roles('ADMIN')
+  @Get("export/payments")
+  @Roles("ADMIN")
   async exportPaymentsReport(
     @Query() formatQuery: ExportFormatQueryDto,
     @Query() filters: PaymentReportFiltersDto,
     @Res() res: Response,
   ): Promise<void> {
-    await this.reportsService.exportPaymentsReport(
-      filters,
-      formatQuery.format,
-      res,
-    );
+    await this.reportsService.exportPaymentsReport(filters, formatQuery.format, res);
   }
 }

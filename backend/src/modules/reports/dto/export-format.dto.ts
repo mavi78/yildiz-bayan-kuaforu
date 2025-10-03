@@ -1,4 +1,4 @@
-import { IsEnum } from 'class-validator';
+import { IsEnum } from "class-validator";
 
 /**
  * Export Format DTO
@@ -8,8 +8,8 @@ import { IsEnum } from 'class-validator';
  * @class ExportFormatDto
  */
 export enum ExportFormat {
-  CSV = 'csv',
-  XLSX = 'xlsx',
+  CSV = "csv",
+  XLSX = "xlsx",
 }
 
 /**

@@ -116,12 +116,10 @@ export class ReviewsController {
     const reviews = await this.reviewService.findByCustomer(customerId);
 
     // FR-036: DELETED durumu için özel mesaj
-    const reviewsWithMessage = reviews.map((review) => ({
+    const reviewsWithMessage = reviews.map(review => ({
       ...review,
       displayMessage:
-        review.status === "DELETED"
-          ? "Yorumunuz yönetici tarafından kaldırıldı"
-          : undefined,
+        review.status === "DELETED" ? "Yorumunuz yönetici tarafından kaldırıldı" : undefined,
     }));
 
     return {

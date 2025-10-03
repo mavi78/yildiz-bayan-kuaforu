@@ -1,6 +1,6 @@
-import { IsOptional, IsEnum, IsDateString, IsBoolean } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
-import { PaymentMethod } from '@prisma/client';
+import { IsOptional, IsEnum, IsDateString, IsBoolean } from "class-validator";
+import { Type, Transform } from "class-transformer";
+import { PaymentMethod } from "@prisma/client";
 
 /**
  * Ödeme Raporu Filtreleme DTO
@@ -49,8 +49,8 @@ export class PaymentReportFiltersDto {
   @IsOptional()
   @IsBoolean()
   @Transform(({ value }) => {
-    if (value === 'true') return true;
-    if (value === 'false') return false;
+    if (value === "true") return true;
+    if (value === "false") return false;
     return value;
   })
   veresiyeOnly?: boolean;

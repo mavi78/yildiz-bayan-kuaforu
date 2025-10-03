@@ -195,13 +195,13 @@ model Service {
 /// WorkingHours (Çalışma Saatleri) modeli
 /// Normal salon çalışma saatleri (haftanın günlerine göre)
 model WorkingHours {
-  id        String    @id @default(cuid())
-  dayOfWeek Int       @unique // 0=Pazar, 1=Pazartesi, ..., 6=Cumartesi
+  id        String   @id @default(cuid())
+  dayOfWeek Int      @unique // 0=Pazar, 1=Pazartesi, ..., 6=Cumartesi
   openTime  String? // Format: "HH:mm" (örn: "09:00")
   closeTime String? // Format: "HH:mm" (örn: "19:00")
-  isClosed  Boolean   @default(false) // true ise openTime/closeTime yoksayılır
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  isClosed  Boolean  @default(false) // true ise openTime/closeTime yoksayılır
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([dayOfWeek])
   @@map("working_hours")
@@ -292,17 +292,17 @@ model ServiceNote {
 /// Payment (Ödeme) modeli
 /// Offline ödeme takibi (online ödeme entegrasyonu yok)
 model Payment {
-  id                   String        @id @default(cuid())
-  appointmentId        String        @unique
-  amount               Decimal       @db.Decimal(10, 2)
-  method               PaymentMethod
-  paidAt               DateTime
-  veresiyeDueDate      DateTime?     @db.Date // method=VERESIYE ise zorunlu
-  veresiyeCollateral   String? // method=VERESIYE ise zorunlu
-  veresiyeResponsible  String? // method=VERESIYE ise zorunlu (personel adı)
-  recordedById         String
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  id                  String        @id @default(cuid())
+  appointmentId       String        @unique
+  amount              Decimal       @db.Decimal(10, 2)
+  method              PaymentMethod
+  paidAt              DateTime
+  veresiyeDueDate     DateTime?     @db.Date // method=VERESIYE ise zorunlu
+  veresiyeCollateral  String? // method=VERESIYE ise zorunlu
+  veresiyeResponsible String? // method=VERESIYE ise zorunlu (personel adı)
+  recordedById        String
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 
   // Relations
   appointment Appointment @relation(fields: [appointmentId], references: [id])
@@ -332,10 +332,10 @@ model Review {
   updatedAt     DateTime     @updatedAt
 
   // Relations
-  customer    Customer     @relation(fields: [customerId], references: [id])
-  appointment Appointment  @relation(fields: [appointmentId], references: [id])
-  approvedBy  User?        @relation("ApprovedByUser", fields: [approvedById], references: [id])
-  deletedBy   User?        @relation("DeletedByUser", fields: [deletedById], references: [id])
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  approvedBy  User?       @relation("ApprovedByUser", fields: [approvedById], references: [id])
+  deletedBy   User?       @relation("DeletedByUser", fields: [deletedById], references: [id])
 
   @@index([customerId])
   @@index([appointmentId])

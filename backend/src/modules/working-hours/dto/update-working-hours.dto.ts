@@ -1,6 +1,6 @@
-import { IsArray, ValidateNested, ArrayMinSize, ArrayMaxSize } from 'class-validator';
-import { Type } from 'class-transformer';
-import { DayWorkingHoursDto } from './day-working-hours.dto';
+import { IsArray, ValidateNested, ArrayMinSize, ArrayMaxSize } from "class-validator";
+import { Type } from "class-transformer";
+import { DayWorkingHoursDto } from "./day-working-hours.dto";
 
 /**
  * Çalışma Saatleri Güncelleme DTO

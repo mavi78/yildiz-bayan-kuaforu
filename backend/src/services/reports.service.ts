@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { Response } from 'express';
-import * as XLSX from 'xlsx';
-import { AppointmentRepository } from '../repositories/appointment.repository';
-import { PaymentRepository } from '../repositories/payment.repository';
-import { AppointmentStatus, PaymentMethod } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { Response } from "express";
+import * as XLSX from "xlsx";
+import { AppointmentRepository } from "../repositories/appointment.repository";
+import { PaymentRepository } from "../repositories/payment.repository";
+import { AppointmentStatus, PaymentMethod } from "@prisma/client";
 
 /**
  * Raporlama İşlemleri Servisi
@@ -96,7 +96,7 @@ export class ReportsService {
           },
         },
       },
-      orderBy: { date: 'desc' },
+      orderBy: { date: "desc" },
     });
 
     return appointments;
@@ -139,7 +139,7 @@ export class ReportsService {
     // (appointment, customer, service, recordedBy)
     const payments = await this.paymentRepository.findMany({
       where,
-      orderBy: { paidAt: 'desc' },
+      orderBy: { paidAt: "desc" },
     });
 
     return payments;
@@ -167,54 +167,48 @@ export class ReportsService {
       staffId?: string;
       serviceId?: string;
     },
-    format: 'csv' | 'xlsx',
+    format: "csv" | "xlsx",
     res: Response,
   ): Promise<void> {
     // Veriyi hazırla
     const appointments = await this.getAppointmentsReport(filters);
 
     // Excel/CSV için formatla
-    const data = appointments.map((a) => ({
+    const data = appointments.map(a => ({
       Tarih: this.formatDate(a.date),
       Saat: a.time,
-      'Müşteri Adı': `${a.customer.firstName} ${a.customer.lastName}`,
+      "Müşteri Adı": `${a.customer.firstName} ${a.customer.lastName}`,
       Telefon: a.customer.phone,
       Hizmet: a.service.name,
       Personel: `${a.staff.firstName} ${a.staff.lastName}`,
       Durum: this.translateStatus(a.status),
-      'Hizmet Ücreti': a.service.price.toString(),
-      'Ödeme Durumu': a.payment
+      "Hizmet Ücreti": a.service.price.toString(),
+      "Ödeme Durumu": a.payment
         ? `${a.payment.amount} TL (${this.translatePaymentMethod(a.payment.method)})`
-        : 'Beklemede',
-      'Oluşturma Yöntemi': this.translateCreationMethod(a.creationMethod),
+        : "Beklemede",
+      "Oluşturma Yöntemi": this.translateCreationMethod(a.creationMethod),
     }));
 
     // SheetJS worksheet oluştur
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Randevular');
+    XLSX.utils.book_append_sheet(wb, ws, "Randevular");
 
-    if (format === 'csv') {
+    if (format === "csv") {
       // CSV formatında export (UTF-8 BOM ile Excel uyumluluğu için)
       const csv = XLSX.utils.sheet_to_csv(ws);
-      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader(
-        'Content-Disposition',
-        'attachment; filename="randevular.csv"',
-      );
+      res.setHeader("Content-Type", "text/csv; charset=utf-8");
+      res.setHeader("Content-Disposition", 'attachment; filename="randevular.csv"');
       // BOM ekle (Excel'in UTF-8'i tanıması için)
-      res.send('\uFEFF' + csv);
+      res.send("\uFEFF" + csv);
     } else {
       // XLSX formatında export
-      const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+      const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
       res.setHeader(
-        'Content-Type',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       );
-      res.setHeader(
-        'Content-Disposition',
-        'attachment; filename="randevular.xlsx"',
-      );
+      res.setHeader("Content-Disposition", 'attachment; filename="randevular.xlsx"');
       res.send(buffer);
     }
   }
@@ -235,45 +229,40 @@ export class ReportsService {
       method?: PaymentMethod;
       veresiyeOnly?: boolean;
     },
-    format: 'csv' | 'xlsx',
+    format: "csv" | "xlsx",
     res: Response,
   ): Promise<void> {
     const payments = await this.getPaymentsReport(filters);
 
-    const data = payments.map((p) => ({
-      'Ödeme Tarihi': this.formatDate(p.paidAt),
-      'Müşteri Adı': `${p.appointment.customer.firstName} ${p.appointment.customer.lastName}`,
+    const data = payments.map(p => ({
+      "Ödeme Tarihi": this.formatDate(p.paidAt),
+      "Müşteri Adı": `${p.appointment.customer.firstName} ${p.appointment.customer.lastName}`,
       Telefon: p.appointment.customer.phone,
       Hizmet: p.appointment.service.name,
       Tutar: `${p.amount} TL`,
-      'Ödeme Yöntemi': this.translatePaymentMethod(p.method),
-      'Veresiye Vade': p.veresiyeDueDate
-        ? this.formatDate(p.veresiyeDueDate)
-        : '-',
-      'Veresiye Teminat': p.veresiyeCollateral || '-',
-      'Sorumlu Personel': p.veresiyeResponsible || '-',
-      'Kaydeden': `${p.recordedBy.firstName} ${p.recordedBy.lastName}`,
+      "Ödeme Yöntemi": this.translatePaymentMethod(p.method),
+      "Veresiye Vade": p.veresiyeDueDate ? this.formatDate(p.veresiyeDueDate) : "-",
+      "Veresiye Teminat": p.veresiyeCollateral || "-",
+      "Sorumlu Personel": p.veresiyeResponsible || "-",
+      Kaydeden: `${p.recordedBy.firstName} ${p.recordedBy.lastName}`,
     }));
 
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Ödemeler');
+    XLSX.utils.book_append_sheet(wb, ws, "Ödemeler");
 
-    if (format === 'csv') {
+    if (format === "csv") {
       const csv = XLSX.utils.sheet_to_csv(ws);
-      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader('Content-Disposition', 'attachment; filename="odemeler.csv"');
-      res.send('\uFEFF' + csv);
+      res.setHeader("Content-Type", "text/csv; charset=utf-8");
+      res.setHeader("Content-Disposition", 'attachment; filename="odemeler.csv"');
+      res.send("\uFEFF" + csv);
     } else {
-      const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+      const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
       res.setHeader(
-        'Content-Type',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       );
-      res.setHeader(
-        'Content-Disposition',
-        'attachment; filename="odemeler.xlsx"',
-      );
+      res.setHeader("Content-Disposition", 'attachment; filename="odemeler.xlsx"');
       res.send(buffer);
     }
   }
@@ -285,8 +274,8 @@ export class ReportsService {
    */
   private formatDate(date: Date | string): string {
     const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
   }
@@ -296,11 +285,11 @@ export class ReportsService {
    */
   private translateStatus(status: AppointmentStatus): string {
     const translations: Record<AppointmentStatus, string> = {
-      PENDING: 'Beklemede',
-      CONFIRMED: 'Onaylandı',
-      COMPLETED: 'Tamamlandı',
-      CANCELLED: 'İptal Edildi',
-      NO_SHOW: 'Gelmedi',
+      PENDING: "Beklemede",
+      CONFIRMED: "Onaylandı",
+      COMPLETED: "Tamamlandı",
+      CANCELLED: "İptal Edildi",
+      NO_SHOW: "Gelmedi",
     };
     return translations[status] || status;
   }
@@ -310,10 +299,10 @@ export class ReportsService {
    */
   private translatePaymentMethod(method: PaymentMethod): string {
     const translations: Record<PaymentMethod, string> = {
-      CASH: 'Nakit',
-      BANK_TRANSFER: 'Havale',
-      POS_CARD: 'Kredi Kartı',
-      VERESIYE: 'Veresiye',
+      CASH: "Nakit",
+      BANK_TRANSFER: "Havale",
+      POS_CARD: "Kredi Kartı",
+      VERESIYE: "Veresiye",
     };
     return translations[method] || method;
   }
@@ -323,9 +312,9 @@ export class ReportsService {
    */
   private translateCreationMethod(method: string): string {
     const translations: Record<string, string> = {
-      ONLINE_GUEST: 'Online (Misafir)',
-      ONLINE_REGISTERED: 'Online (Üye)',
-      MANUAL: 'Manuel',
+      ONLINE_GUEST: "Online (Misafir)",
+      ONLINE_REGISTERED: "Online (Üye)",
+      MANUAL: "Manuel",
     };
     return translations[method] || method;
   }

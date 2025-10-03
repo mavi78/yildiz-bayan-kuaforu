@@ -20,9 +20,9 @@
  * - SOCKET: Socket.io üzerinden gerçek zamanlı bildirim (FR-045)
  */
 export enum NotificationChannel {
-  EMAIL = 'email',
-  SMS = 'sms',
-  SOCKET = 'socket',
+  EMAIL = "email",
+  SMS = "sms",
+  SOCKET = "socket",
 }
 
 /**
@@ -36,11 +36,11 @@ export function toNotificationChannel(channelName: string): NotificationChannel 
   const normalized = channelName.toLowerCase().trim();
 
   switch (normalized) {
-    case 'email':
+    case "email":
       return NotificationChannel.EMAIL;
-    case 'sms':
+    case "sms":
       return NotificationChannel.SMS;
-    case 'socket':
+    case "socket":
       return NotificationChannel.SOCKET;
     default:
       throw new Error(
@@ -58,10 +58,10 @@ export function toNotificationChannel(channelName: string): NotificationChannel 
  */
 export function toNotificationChannels(channels: string[]): NotificationChannel[] {
   if (!channels || channels.length === 0) {
-    throw new Error('At least one notification channel is required');
+    throw new Error("At least one notification channel is required");
   }
 
-  return channels.map((channel) => toNotificationChannel(channel));
+  return channels.map(channel => toNotificationChannel(channel));
 }
 
 /**
@@ -81,7 +81,7 @@ export function fromNotificationChannel(channel: NotificationChannel): string {
  * @returns Kanal adları string array'i
  */
 export function fromNotificationChannels(channels: NotificationChannel[]): string[] {
-  return channels.map((channel) => fromNotificationChannel(channel));
+  return channels.map(channel => fromNotificationChannel(channel));
 }
 
 /**
@@ -92,7 +92,7 @@ export function fromNotificationChannels(channels: NotificationChannel[]): strin
  */
 export function isValidChannel(channelName: string): boolean {
   const normalized = channelName.toLowerCase().trim();
-  return normalized === 'email' || normalized === 'sms' || normalized === 'socket';
+  return normalized === "email" || normalized === "sms" || normalized === "socket";
 }
 
 /**
@@ -113,11 +113,11 @@ export function getAllChannels(): NotificationChannel[] {
 export function getChannelDescription(channel: NotificationChannel): string {
   switch (channel) {
     case NotificationChannel.EMAIL:
-      return 'E-posta (Gmail SMTP)';
+      return "E-posta (Gmail SMTP)";
     case NotificationChannel.SMS:
-      return 'SMS (İleti Merkezi)';
+      return "SMS (İleti Merkezi)";
     case NotificationChannel.SOCKET:
-      return 'Gerçek Zamanlı (Socket.io)';
+      return "Gerçek Zamanlı (Socket.io)";
   }
 }
 
@@ -130,10 +130,10 @@ export function getChannelDescription(channel: NotificationChannel): string {
 export function getChannelDetails(channel: NotificationChannel): string {
   switch (channel) {
     case NotificationChannel.EMAIL:
-      return 'Gmail SMTP (smtp.gmail.com:587, TLS enabled)';
+      return "Gmail SMTP (smtp.gmail.com:587, TLS enabled)";
     case NotificationChannel.SMS:
-      return 'İleti Merkezi REST API with DLR tracking';
+      return "İleti Merkezi REST API with DLR tracking";
     case NotificationChannel.SOCKET:
-      return 'Socket.io with JWT authentication and room management';
+      return "Socket.io with JWT authentication and room management";
   }
 }

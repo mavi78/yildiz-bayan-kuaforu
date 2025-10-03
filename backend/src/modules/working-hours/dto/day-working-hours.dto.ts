@@ -1,4 +1,13 @@
-import { IsInt, IsBoolean, IsOptional, IsString, Matches, Min, Max, ValidateIf } from 'class-validator';
+import {
+  IsInt,
+  IsBoolean,
+  IsOptional,
+  IsString,
+  Matches,
+  Min,
+  Max,
+  ValidateIf,
+} from "class-validator";
 
 /**
  * Günlük Çalışma Saati DTO
@@ -31,9 +40,9 @@ export class DayWorkingHoursDto {
   @IsOptional()
   @IsString()
   @Matches(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/, {
-    message: 'openTime must be in HH:mm format (e.g., 09:00)',
+    message: "openTime must be in HH:mm format (e.g., 09:00)",
   })
-  @ValidateIf((o) => !o.isClosed)
+  @ValidateIf(o => !o.isClosed)
   openTime?: string;
 
   /**
@@ -44,9 +53,9 @@ export class DayWorkingHoursDto {
   @IsOptional()
   @IsString()
   @Matches(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/, {
-    message: 'closeTime must be in HH:mm format (e.g., 19:00)',
+    message: "closeTime must be in HH:mm format (e.g., 19:00)",
   })
-  @ValidateIf((o) => !o.isClosed)
+  @ValidateIf(o => !o.isClosed)
   closeTime?: string;
 
   /**

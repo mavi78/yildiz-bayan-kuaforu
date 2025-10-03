@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Role, CustomerType } from "@prisma/client";
@@ -58,10 +49,7 @@ export class CustomersController {
   @ApiResponse({ status: 201, description: "Müşteri başarıyla oluşturuldu" })
   @ApiResponse({ status: 400, description: "Geçersiz istek" })
   @ApiResponse({ status: 403, description: "Yetkisiz erişim" })
-  async createGuestCustomer(
-    @Body() body: CreateGuestCustomerDto,
-    @CurrentUser() user: JwtUser,
-  ) {
+  async createGuestCustomer(@Body() body: CreateGuestCustomerDto, @CurrentUser() user: JwtUser) {
     const customer = await this.customerService.createGuest({
       firstName: body.firstName,
       lastName: body.lastName,
@@ -118,7 +106,7 @@ export class CustomersController {
     });
 
     return {
-      data: customers.map((c) => ({
+      data: customers.map(c => ({
         id: c.id,
         type: c.type,
         firstName: c.firstName,
@@ -239,7 +227,10 @@ export class CustomersController {
     summary: "Misafir müşteriyi kayıtlı müşteriye dönüştürme (davetiye gönder)",
   })
   @ApiResponse({ status: 200, description: "Davetiye başarıyla oluşturuldu" })
-  @ApiResponse({ status: 400, description: "Geçersiz istek (müşteri zaten kayıtlı veya email yok)" })
+  @ApiResponse({
+    status: 400,
+    description: "Geçersiz istek (müşteri zaten kayıtlı veya email yok)",
+  })
   @ApiResponse({ status: 404, description: "Müşteri bulunamadı" })
   @ApiResponse({ status: 403, description: "Yetkisiz erişim" })
   async inviteGuest(

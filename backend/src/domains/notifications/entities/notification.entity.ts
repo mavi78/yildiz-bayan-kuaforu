@@ -10,7 +10,7 @@
  * @module domains/notifications/entities
  */
 
-import { NotificationChannel } from '../value-objects/channel.vo';
+import { NotificationChannel } from "../value-objects/channel.vo";
 
 /**
  * Bildirim olay tipleri
@@ -18,11 +18,11 @@ import { NotificationChannel } from '../value-objects/channel.vo';
  * FR-043 ve FR-044'e göre desteklenen bildirim olayları
  */
 export enum NotificationEvent {
-  APPOINTMENT_CREATED = 'APPOINTMENT_CREATED',
-  APPOINTMENT_CONFIRMED = 'APPOINTMENT_CONFIRMED',
-  APPOINTMENT_CANCELLED = 'APPOINTMENT_CANCELLED',
-  APPOINTMENT_REMINDER = 'APPOINTMENT_REMINDER',
-  PAYMENT_REMINDER = 'PAYMENT_REMINDER',
+  APPOINTMENT_CREATED = "APPOINTMENT_CREATED",
+  APPOINTMENT_CONFIRMED = "APPOINTMENT_CONFIRMED",
+  APPOINTMENT_CANCELLED = "APPOINTMENT_CANCELLED",
+  APPOINTMENT_REMINDER = "APPOINTMENT_REMINDER",
+  PAYMENT_REMINDER = "PAYMENT_REMINDER",
 }
 
 /**
@@ -31,9 +31,9 @@ export enum NotificationEvent {
  * Her kanal için ayrı durum takibi yapılır
  */
 export enum DeliveryStatus {
-  PENDING = 'PENDING',
-  SENT = 'SENT',
-  FAILED = 'FAILED',
+  PENDING = "PENDING",
+  SENT = "SENT",
+  FAILED = "FAILED",
 }
 
 /**
@@ -151,11 +151,11 @@ export class Notification {
     }
 
     if (!props.customerId || props.customerId.trim().length === 0) {
-      throw new Error('Customer ID is required');
+      throw new Error("Customer ID is required");
     }
 
     if (!props.channels || props.channels.length === 0) {
-      throw new Error('At least one notification channel is required');
+      throw new Error("At least one notification channel is required");
     }
 
     if (props.attemptCount && props.attemptCount > this.MAX_ATTEMPTS) {
@@ -263,13 +263,13 @@ export class Notification {
     } else {
       switch (result.channel) {
         case NotificationChannel.EMAIL:
-          this.markEmailFailed(result.error ?? 'Unknown error');
+          this.markEmailFailed(result.error ?? "Unknown error");
           break;
         case NotificationChannel.SMS:
-          this.markSmsFailed(result.error ?? 'Unknown error');
+          this.markSmsFailed(result.error ?? "Unknown error");
           break;
         case NotificationChannel.SOCKET:
-          this.markSocketFailed(result.error ?? 'Unknown error');
+          this.markSocketFailed(result.error ?? "Unknown error");
           break;
       }
     }
@@ -291,11 +291,13 @@ export class Notification {
    */
   public hasAllChannelsFailed(): boolean {
     const emailFailed =
-      this._channels.includes(NotificationChannel.EMAIL) && this._emailStatus === DeliveryStatus.FAILED;
+      this._channels.includes(NotificationChannel.EMAIL) &&
+      this._emailStatus === DeliveryStatus.FAILED;
     const smsFailed =
       this._channels.includes(NotificationChannel.SMS) && this._smsStatus === DeliveryStatus.FAILED;
     const socketFailed =
-      this._channels.includes(NotificationChannel.SOCKET) && this._socketStatus === DeliveryStatus.FAILED;
+      this._channels.includes(NotificationChannel.SOCKET) &&
+      this._socketStatus === DeliveryStatus.FAILED;
 
     const activeChannelCount = this._channels.length;
     const failedChannelCount = [emailFailed, smsFailed, socketFailed].filter(Boolean).length;
@@ -436,7 +438,7 @@ export class Notification {
       eventType: this._eventType,
       customerId: this._customerId,
       appointmentId: this._appointmentId,
-      channels: this._channels.map((c) => c.toString()),
+      channels: this._channels.map(c => c.toString()),
       emailStatus: this._emailStatus,
       smsStatus: this._smsStatus,
       socketStatus: this._socketStatus,

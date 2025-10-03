@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { SharedModule } from '@modules/shared';
-import { ReportsController } from './reports.controller';
-import { ReportsService } from '@services/reports.service';
+import { Module } from "@nestjs/common";
+import { SharedModule } from "@modules/shared";
+import { ReportsController } from "./reports.controller";
+import { ReportsService } from "@services/reports.service";
 
 /**
  * ReportsModule

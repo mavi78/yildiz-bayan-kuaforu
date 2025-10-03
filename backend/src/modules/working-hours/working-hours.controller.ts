@@ -10,14 +10,14 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { WorkingHoursRepository } from '../../repositories/working-hours.repository';
-import { SpecialWorkingDayRepository } from '../../repositories/special-working-day.repository';
-import { UpdateWorkingHoursDto, CreateSpecialDayDto } from './dto';
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "../../common/guards/roles.guard";
+import { Roles } from "../../common/decorators/roles.decorator";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { WorkingHoursRepository } from "../../repositories/working-hours.repository";
+import { SpecialWorkingDayRepository } from "../../repositories/special-working-day.repository";
+import { UpdateWorkingHoursDto, CreateSpecialDayDto } from "./dto";
 
 /**
  * Working Hours Controller
@@ -71,7 +71,7 @@ export class WorkingHoursController {
    * # Public endpoint, no auth required
    * ```
    */
-  @Get('working-hours')
+  @Get("working-hours")
   @HttpCode(HttpStatus.OK)
   async getWorkingHours() {
     const workingHours = await this.workingHoursRepository.findAll();
@@ -118,17 +118,15 @@ export class WorkingHoursController {
    * Body: { "workingHours": [...] }
    * ```
    */
-  @Put('admin/working-hours')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('ADMIN')
+  @Put("admin/working-hours")
+  @UseGuards(AuthGuard("jwt"), RolesGuard)
+  @Roles("ADMIN")
   @HttpCode(HttpStatus.OK)
   async updateWorkingHours(@Body() dto: UpdateWorkingHoursDto) {
     // Validasyon: dayOfWeek benzersiz mi?
-    const dayOfWeekSet = new Set(dto.workingHours.map((wh) => wh.dayOfWeek));
+    const dayOfWeekSet = new Set(dto.workingHours.map(wh => wh.dayOfWeek));
     if (dayOfWeekSet.size !== 7) {
-      throw new BadRequestException(
-        'Each dayOfWeek (0-6) must appear exactly once',
-      );
+      throw new BadRequestException("Each dayOfWeek (0-6) must appear exactly once");
     }
 
     // Validasyon: openTime < closeTime kontrolü
@@ -140,16 +138,14 @@ export class WorkingHoursController {
           );
         }
         if (wh.openTime >= wh.closeTime) {
-          throw new BadRequestException(
-            `Day ${wh.dayOfWeek}: openTime must be before closeTime`,
-          );
+          throw new BadRequestException(`Day ${wh.dayOfWeek}: openTime must be before closeTime`);
         }
       }
     }
 
     // Toplu güncelleme (upsert)
     await this.workingHoursRepository.bulkUpsert(
-      dto.workingHours.map((wh) => ({
+      dto.workingHours.map(wh => ({
         dayOfWeek: wh.dayOfWeek,
         openTime: wh.isClosed ? null : wh.openTime,
         closeTime: wh.isClosed ? null : wh.closeTime,
@@ -161,7 +157,7 @@ export class WorkingHoursController {
     const updatedWorkingHours = await this.workingHoursRepository.findAll();
     return {
       success: true,
-      message: 'Working hours updated successfully',
+      message: "Working hours updated successfully",
       data: updatedWorkingHours,
     };
   }
@@ -203,7 +199,7 @@ export class WorkingHoursController {
    * # Public endpoint, no auth required
    * ```
    */
-  @Get('special-working-days')
+  @Get("special-working-days")
   @HttpCode(HttpStatus.OK)
   async getSpecialWorkingDays() {
     const specialDays = await this.specialWorkingDayRepository.findUpcoming();
@@ -249,40 +245,33 @@ export class WorkingHoursController {
    * }
    * ```
    */
-  @Post('admin/special-working-days')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('ADMIN')
+  @Post("admin/special-working-days")
+  @UseGuards(AuthGuard("jwt"), RolesGuard)
+  @Roles("ADMIN")
   @HttpCode(HttpStatus.CREATED)
-  async createSpecialDay(
-    @Body() dto: CreateSpecialDayDto,
-    @CurrentUser() user: any,
-  ) {
+  async createSpecialDay(@Body() dto: CreateSpecialDayDto, @CurrentUser() user: any) {
     const date = new Date(dto.date);
 
     // Validasyon: Geçmiş tarih kontrolü
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     if (date < today) {
-      throw new BadRequestException('Date cannot be in the past');
+      throw new BadRequestException("Date cannot be in the past");
     }
 
     // Validasyon: Duplicate kontrolü
     const exists = await this.specialWorkingDayRepository.existsByDate(date);
     if (exists) {
-      throw new BadRequestException(
-        'Special working day already exists for this date',
-      );
+      throw new BadRequestException("Special working day already exists for this date");
     }
 
     // Validasyon: openTime < closeTime kontrolü
     if (!dto.isClosed) {
       if (!dto.openTime || !dto.closeTime) {
-        throw new BadRequestException(
-          'openTime and closeTime are required when isClosed=false',
-        );
+        throw new BadRequestException("openTime and closeTime are required when isClosed=false");
       }
       if (dto.openTime >= dto.closeTime) {
-        throw new BadRequestException('openTime must be before closeTime');
+        throw new BadRequestException("openTime must be before closeTime");
       }
     }
 
@@ -300,7 +289,7 @@ export class WorkingHoursController {
 
     return {
       success: true,
-      message: 'Special working day created successfully',
+      message: "Special working day created successfully",
       data: specialDay,
     };
   }
@@ -321,15 +310,15 @@ export class WorkingHoursController {
    * Authorization: Bearer <admin-token>
    * ```
    */
-  @Delete('admin/special-working-days/:id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('ADMIN')
+  @Delete("admin/special-working-days/:id")
+  @UseGuards(AuthGuard("jwt"), RolesGuard)
+  @Roles("ADMIN")
   @HttpCode(HttpStatus.OK)
-  async deleteSpecialDay(@Param('id') id: string) {
+  async deleteSpecialDay(@Param("id") id: string) {
     // Validasyon: Özel gün var mı?
     const specialDay = await this.specialWorkingDayRepository.findById(id);
     if (!specialDay) {
-      throw new BadRequestException('Special working day not found');
+      throw new BadRequestException("Special working day not found");
     }
 
     // Sil
@@ -337,7 +326,7 @@ export class WorkingHoursController {
 
     return {
       success: true,
-      message: 'Special working day deleted successfully',
+      message: "Special working day deleted successfully",
     };
   }
 }

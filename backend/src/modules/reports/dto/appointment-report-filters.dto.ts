@@ -1,6 +1,6 @@
-import { IsOptional, IsEnum, IsDateString, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
-import { AppointmentStatus } from '@prisma/client';
+import { IsOptional, IsEnum, IsDateString, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { AppointmentStatus } from "@prisma/client";
 
 /**
  * Randevu Raporu Filtreleme DTO

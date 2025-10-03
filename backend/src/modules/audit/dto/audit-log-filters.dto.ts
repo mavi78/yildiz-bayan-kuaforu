@@ -1,12 +1,5 @@
-import {
-  IsOptional,
-  IsString,
-  IsDateString,
-  IsInt,
-  Min,
-  Max,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsOptional, IsString, IsDateString, IsInt, Min, Max } from "class-validator";
+import { Type } from "class-transformer";
 
 /**
  * Audit Log Filtreleme DTO
