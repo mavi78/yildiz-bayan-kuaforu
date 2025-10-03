@@ -608,12 +608,15 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 4.3: Customers Module
 
-- [ ] **T065** Create Customers controller in `backend/src/modules/customers/customers.controller.ts`
-  - POST /customers (manual guest creation, Staff/Admin)
-  - GET /customers
-  - GET /customers/:id
-  - PATCH /customers/:id
-  - POST /customers/:id/invite (convert guest → registered)
+- [x] **T065** Create Customers controller in `backend/src/modules/customers/customers.controller.ts`
+  - ✅ POST /customers (manual guest creation, Staff/Admin)
+  - ✅ GET /customers
+  - ✅ GET /customers/:id
+  - ✅ PATCH /customers/:id
+  - ✅ POST /customers/:id/invite (convert guest → registered)
+  - ✅ Created DTOs: CreateGuestCustomerDto, UpdateCustomerDto, InviteGuestDto
+  - ✅ Created CustomersModule and wired up dependencies
+  - ✅ Integrated with CustomerService and ConvertGuestToRegisteredUsecase
 
 ### Phase 4.4: Reviews Module
 

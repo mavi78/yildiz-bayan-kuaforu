@@ -6,6 +6,7 @@ import { ConfigModule } from "./config/config.module";
 import { SharedModule } from "@modules/shared";
 import { AuthModule } from "@modules/auth/auth.module";
 import { AppointmentsModule } from "@modules/appointments/appointments.module";
+import { CustomersModule } from "@modules/customers/customers.module";
 
 /**
  * Ana uygulama modülü
@@ -37,7 +38,7 @@ import { AppointmentsModule } from "@modules/appointments/appointments.module";
     SharedModule,
     AuthModule,
     AppointmentsModule,
-    // CustomersModule,
+    CustomersModule,
     // PaymentsModule,
     // ReportsModule,
     // NotificationsModule,

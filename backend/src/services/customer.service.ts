@@ -138,7 +138,7 @@ export class CustomerService {
     // Kayıtlı müşteri oluştur
     return this.customerRepository.create({
       type: CustomerType.REGISTERED,
-      userId: data.userId,
+      user: { connect: { id: data.userId } },
       firstName: data.firstName,
       lastName: data.lastName,
       phone: data.phone,
@@ -322,7 +322,7 @@ export class CustomerService {
    * @throws {BadRequestException} Müşterinin randevuları var
    */
   async delete(id: string): Promise<Customer> {
-    const customer = await this.findById(id, true);
+    const customer: any = await this.findById(id, true);
 
     // Randevu kontrolü
     if (customer.appointments && customer.appointments.length > 0) {
