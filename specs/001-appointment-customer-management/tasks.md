@@ -698,9 +698,15 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 4.8: Audit Module
 
-- [ ] **T071** Create Audit Logs controller in `backend/src/modules/audit/audit-logs.controller.ts`
-  - GET /admin/audit-logs (Admin only, with filters)
-  - Apply pagination
+- [x] **T071** Create Audit Logs controller in `backend/src/modules/audit/audit-logs.controller.ts`
+  - ✅ GET /admin/audit-logs (Admin only, with filters)
+  - ✅ Created AuditLogFiltersDto with validation
+  - ✅ Pagination support (page, limit params, default: 50/page, max: 100)
+  - ✅ Multiple filter options: action, actorId, targetEntity, targetId, date range
+  - ✅ Integrated with AuditLogRepository
+  - ✅ Created AuditModule and added to AppModule
+  - ✅ Turkish JSDoc documentation
+  - ✅ Role-based access control (ADMIN only)
 
 ---
 
