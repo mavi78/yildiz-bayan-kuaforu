@@ -733,7 +733,7 @@ Based on plan.md structure decision (Web application):
   - ✅ Immutable value objects with self-validation
   - ✅ Turkish JSDoc documentation
 
-- [ ] **T073** Create Email channel in `backend/src/services/notifications/channels/email.channel.ts`
+- [x] **T073** Create Email channel in `backend/src/services/notifications/channels/email.channel.ts`
 
   - ✅ Use Nodemailer
   - ✅ Gmail SMTP configuration
