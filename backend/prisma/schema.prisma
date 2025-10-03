@@ -1,6 +1,7 @@
-/// Prisma schema placeholder - Phase 1 setup
+/// Prisma Schema for Yıldız Bayan Kuaförü
 ///
-/// Models and enums will be implemented in Phase 3 (T018-T040).
+/// Appointment & Customer Management System
+/// Complete schema with all entities
 
 generator client {
   provider = "prisma-client-js"
@@ -9,4 +10,399 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+/// Kullanıcı rolleri
+enum Role {
+  ADMIN /// Sistem yöneticisi
+  STAFF /// Salon personeli
+  CUSTOMER /// Müşteri
+}
+
+/// Müşteri tipi (Kayıtlı / Misafir)
+enum CustomerType {
+  REGISTERED /// Kayıtlı müşteri (User ile ilişkili)
+  GUEST /// Misafir müşteri (User olmadan)
+}
+
+/// Randevu durumu
+enum AppointmentStatus {
+  PENDING /// Onay bekliyor
+  CONFIRMED /// Onaylandı
+  COMPLETED /// Tamamlandı
+  CANCELLED /// İptal edildi
+  NO_SHOW /// Müşteri gelmedi
+}
+
+/// Randevu oluşturma yöntemi
+enum CreationMethod {
+  ONLINE_GUEST /// Online (misafir)
+  ONLINE_REGISTERED /// Online (kayıtlı)
+  MANUAL /// Manuel (personel tarafından)
+}
+
+/// Ödeme yöntemi
+enum PaymentMethod {
+  CASH /// Nakit
+  BANK_TRANSFER /// Banka transferi
+  POS_CARD /// POS ile kart
+  VERESIYE /// Veresiye
+}
+
+/// Yorum durumu
+enum ReviewStatus {
+  PENDING /// Onay bekliyor
+  APPROVED /// Onaylandı
+  DELETED /// Silindi
+}
+
+/// Bildirim eventi
+enum NotificationEvent {
+  APPOINTMENT_CREATED /// Randevu oluşturuldu
+  APPOINTMENT_CONFIRMED /// Randevu onaylandı
+  APPOINTMENT_CANCELLED /// Randevu iptal edildi
+  APPOINTMENT_REMINDER /// Randevu hatırlatması
+  PAYMENT_REMINDER /// Ödeme hatırlatması
+}
+
+/// Bildirim gönderim durumu
+enum DeliveryStatus {
+  PENDING /// Gönderilmedi
+  SENT /// Gönderildi
+  FAILED /// Başarısız
+}
+
+// ============================================================================
+// MODELS - Authentication & Authorization
+// ============================================================================
+
+/// User (Kullanıcı) modeli
+/// Sistemdeki tüm kullanıcıları temsil eder (Admin/Staff/Customer)
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  phone        String    @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         Role
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  customer            Customer?
+  sentInvitations     Invitation[]        @relation("InviterToInvitation")
+  staffAppointments   Appointment[]       @relation("StaffToAppointment")
+  auditLogs           AuditLog[]
+  createdServiceNotes ServiceNote[]
+  createdSpecialDays  SpecialWorkingDay[]
+  recordedPayments    Payment[]
+  approvedReviews     Review[]            @relation("ApprovedByUser")
+  deletedReviews      Review[]            @relation("DeletedByUser")
+
+  @@index([email])
+  @@index([phone])
+  @@index([role])
+  @@map("users")
+}
+
+/// Invitation (Davet) modeli
+/// Kullanıcı kayıt davetleri için (invitation-only sistem)
+model Invitation {
+  id              String    @id @default(cuid())
+  token           String    @unique
+  email           String
+  role            Role // STAFF veya CUSTOMER (Admin doğrudan oluşturulur)
+  inviterId       String
+  guestCustomerId String?
+  isUsed          Boolean   @default(false)
+  expiresAt       DateTime // 72 saat sonra
+  usedAt          DateTime?
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  inviter       User      @relation("InviterToInvitation", fields: [inviterId], references: [id])
+  guestCustomer Customer? @relation(fields: [guestCustomerId], references: [id])
+
+  @@index([token])
+  @@index([email])
+  @@index([expiresAt])
+  @@index([isUsed])
+  @@map("invitations")
+}
+
+// ============================================================================
+// MODELS - Customer & Services
+// ============================================================================
+
+/// Customer (Müşteri) modeli
+/// Hem kayıtlı hem misafir müşterileri destekler
+model Customer {
+  id                String       @id @default(cuid())
+  userId            String?      @unique
+  type              CustomerType
+  firstName         String
+  lastName          String
+  email             String?
+  phone             String
+  birthDate         DateTime?
+  notes             String?      @db.Text // Müşteri tercihleri için personel notları
+  totalAppointments Int          @default(0)
+  totalSpent        Decimal      @default(0) @db.Decimal(10, 2)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  // Relations
+  user          User?          @relation(fields: [userId], references: [id])
+  invitations   Invitation[]
+  appointments  Appointment[]
+  reviews       Review[]
+  notifications Notification[]
+
+  @@index([userId])
+  @@index([phone])
+  @@index([type])
+  @@index([email])
+  @@map("customers")
+}
+
+/// Service (Hizmet) modeli
+/// Salon hizmet kataloğu (saç kesimi, boyama, manikür vb.)
+model Service {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?  @db.Text
+  durationMinutes Int // Slot hesaplaması için (FR-056)
+  price           Decimal  @db.Decimal(10, 2)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  appointments Appointment[]
+
+  @@index([isActive])
+  @@index([name])
+  @@map("services")
+}
+
+/// WorkingHours (Çalışma Saatleri) modeli
+/// Normal salon çalışma saatleri (haftanın günlerine göre)
+model WorkingHours {
+  id        String    @id @default(cuid())
+  dayOfWeek Int       @unique // 0=Pazar, 1=Pazartesi, ..., 6=Cumartesi
+  openTime  String? // Format: "HH:mm" (örn: "09:00")
+  closeTime String? // Format: "HH:mm" (örn: "19:00")
+  isClosed  Boolean   @default(false) // true ise openTime/closeTime yoksayılır
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([dayOfWeek])
+  @@map("working_hours")
+}
+
+/// SpecialWorkingDay (Özel Çalışma Günü) modeli
+/// Belirli tarihler için çalışma saatleri (tatiller, özel günler)
+model SpecialWorkingDay {
+  id          String   @id @default(cuid())
+  date        DateTime @unique @db.Date
+  openTime    String? // Format: "HH:mm"
+  closeTime   String? // Format: "HH:mm"
+  isClosed    Boolean  @default(false)
+  description String? // "Resmi Tatil", "Özel Etkinlik" vb.
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  createdBy User @relation(fields: [createdById], references: [id])
+
+  @@index([date])
+  @@map("special_working_days")
+}
+
+// ============================================================================
+// MODELS - Appointments
+// ============================================================================
+
+/// Appointment (Randevu) modeli
+/// Randevu/rezervasyon entity'si
+model Appointment {
+  id                 String            @id @default(cuid())
+  customerId         String
+  staffId            String
+  serviceId          String
+  date               DateTime          @db.Date
+  time               String // Format: "HH:mm"
+  status             AppointmentStatus @default(PENDING)
+  creationMethod     CreationMethod
+  trackingCode       String?           @unique // 8 karakterlik kod (ONLINE_GUEST için zorunlu)
+  notes              String?           @db.Text // Genel notlar (müşteri görebilir)
+  cancellationReason String?           @db.Text
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  // Relations
+  customer      Customer       @relation(fields: [customerId], references: [id])
+  staff         User           @relation("StaffToAppointment", fields: [staffId], references: [id])
+  service       Service        @relation(fields: [serviceId], references: [id])
+  serviceNotes  ServiceNote[]
+  payment       Payment?
+  review        Review?
+  notifications Notification[]
+
+  @@index([trackingCode])
+  @@index([customerId])
+  @@index([staffId])
+  @@index([serviceId])
+  @@index([date, time])
+  @@index([status])
+  @@index([creationMethod])
+  @@map("appointments")
+}
+
+/// ServiceNote (Hizmet Notu) modeli
+/// Randevu sonrası personel notları (sadece Admin/Staff görebilir)
+model ServiceNote {
+  id            String   @id @default(cuid())
+  appointmentId String
+  content       String   @db.Text // Max 1000 karakter (uygulama katmanında kontrol)
+  createdById   String
+  createdAt     DateTime @default(now())
+
+  // Relations
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  createdBy   User        @relation(fields: [createdById], references: [id])
+
+  @@index([appointmentId])
+  @@index([createdAt])
+  @@map("service_notes")
+}
+
+// ============================================================================
+// MODELS - Payments & Reviews
+// ============================================================================
+
+/// Payment (Ödeme) modeli
+/// Offline ödeme takibi (online ödeme entegrasyonu yok)
+model Payment {
+  id                   String        @id @default(cuid())
+  appointmentId        String        @unique
+  amount               Decimal       @db.Decimal(10, 2)
+  method               PaymentMethod
+  paidAt               DateTime
+  veresiyeDueDate      DateTime?     @db.Date // method=VERESIYE ise zorunlu
+  veresiyeCollateral   String? // method=VERESIYE ise zorunlu
+  veresiyeResponsible  String? // method=VERESIYE ise zorunlu (personel adı)
+  recordedById         String
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  // Relations
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  recordedBy  User        @relation(fields: [recordedById], references: [id])
+
+  @@index([appointmentId])
+  @@index([method])
+  @@index([veresiyeDueDate])
+  @@index([recordedById])
+  @@map("payments")
+}
+
+/// Review (Yorum) modeli
+/// Müşteri yorumları (sadece kayıtlı müşteriler)
+model Review {
+  id            String       @id @default(cuid())
+  customerId    String
+  appointmentId String       @unique
+  rating        Int // 1-5
+  comment       String?      @db.Text
+  status        ReviewStatus @default(PENDING)
+  approvedById  String?
+  approvedAt    DateTime?
+  deletedById   String?
+  deletedAt     DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // Relations
+  customer    Customer     @relation(fields: [customerId], references: [id])
+  appointment Appointment  @relation(fields: [appointmentId], references: [id])
+  approvedBy  User?        @relation("ApprovedByUser", fields: [approvedById], references: [id])
+  deletedBy   User?        @relation("DeletedByUser", fields: [deletedById], references: [id])
+
+  @@index([customerId])
+  @@index([appointmentId])
+  @@index([status])
+  @@index([rating])
+  @@map("reviews")
+}
+
+// ============================================================================
+// MODELS - Notifications & Audit
+// ============================================================================
+
+/// Notification (Bildirim) modeli
+/// Multi-channel bildirim kayıtları
+model Notification {
+  id            String            @id @default(cuid())
+  eventType     NotificationEvent
+  customerId    String
+  appointmentId String?
+  channels      Json // ["email", "sms", "socket"]
+  emailStatus   DeliveryStatus?
+  smsStatus     DeliveryStatus?
+  socketStatus  DeliveryStatus?
+  emailSentAt   DateTime?
+  smsSentAt     DateTime?
+  socketSentAt  DateTime?
+  attemptCount  Int               @default(0) // Max 3 deneme (FR-046)
+  lastError     String?           @db.Text
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  // Relations
+  customer    Customer     @relation(fields: [customerId], references: [id])
+  appointment Appointment? @relation(fields: [appointmentId], references: [id])
+
+  @@index([customerId])
+  @@index([appointmentId])
+  @@index([emailStatus])
+  @@index([smsStatus])
+  @@index([socketStatus])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+/// AuditLog (Denetim Kaydı) modeli
+/// Kritik işlem denetim izi (90 gün sonra arşivlenir)
+model AuditLog {
+  id            String   @id @default(cuid())
+  timestamp     DateTime @default(now())
+  action        String // "appointment.override", "review.delete", vb.
+  actorId       String
+  targetEntity  String // "Appointment", "Review", "Payment", vb.
+  targetId      String
+  details       Json // Değişiklik detayları, öncesi/sonrası değerler
+  justification String?  @db.Text // Override/force işlemleri için zorunlu (FR-017)
+  hash          String // SHA-256 hash (bu kayıt + previousHash)
+  previousHash  String? // Önceki kaydın hash'i (ilk kayıt için null)
+  archived      Boolean  @default(false) // Arşivlenmeden önce true olarak işaretlenir
+  createdAt     DateTime @default(now())
+
+  // Relations
+  actor User @relation(fields: [actorId], references: [id])
+
+  @@index([action])
+  @@index([actorId])
+  @@index([targetEntity, targetId])
+  @@index([timestamp])
+  @@index([archived])
+  @@map("audit_logs")
 }

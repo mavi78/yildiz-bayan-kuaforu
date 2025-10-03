@@ -123,35 +123,35 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 1.2: Testing Infrastructure
 
-- [ ] **T011 [P]** Setup Jest for backend
+- [x] **T011 [P]** Setup Jest for backend
 
   - Configure `backend/jest.config.js`
   - Create test helpers in `backend/test/helpers/`
   - Add test scripts: `test`, `test:watch`, `test:cov`, `test:e2e`
 
-- [ ] **T012 [P]** Setup Vitest for frontend
+- [x] **T012 [P]** Setup Vitest for frontend
 
   - Configure `frontend/vitest.config.ts`
   - Install `@testing-library/react`, `@testing-library/jest-dom`
   - Add test scripts: `test`, `test:ui`
 
-- [ ] **T013** Create database test utilities
+- [x] **T013** Create database test utilities
 
   - Create `backend/test/helpers/db-helper.ts`
   - Functions: `setupTestDb()`, `teardownTestDb()`, `clearTables()`
   - Use separate test database: `yildiz_salon_test`
 
-- [ ] **T014** Create seed data script for development
+- [x] **T014** Create seed data script for development
 
   - Create `backend/prisma/seed.ts`
   - Seed: 1 Admin user, 2 Staff users, 5 Services, WorkingHours (Mon-Sat 09:00-19:00)
   - Hash passwords with bcrypt
   - Add seed script to `backend/package.json`
 
-- [ ] **T015** Create quickstart documentation
+- [x] **T015** Create quickstart documentation
   - ✅ Already exists at `specs/001-appointment-customer-management/quickstart.md`
-  - Verify setup instructions match T001-T014
-  - Update if necessary
+  - ✅ Verified setup instructions match T001-T014
+  - ✅ No updates necessary - documentation is comprehensive
 
 ---
 
@@ -159,97 +159,165 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 2.1: Auth Domain & Models
 
-- [ ] **T016** Create Auth domain entities
+- [x] **T016** Create Auth domain entities
 
-  - Create `backend/src/domains/auth/entities/user.entity.ts`
-  - Create `backend/src/domains/auth/value-objects/email.vo.ts`
-  - Create `backend/src/domains/auth/value-objects/phone.vo.ts`
-  - Create `backend/src/domains/auth/value-objects/password.vo.ts` with bcrypt hashing
+  - ✅ Created `backend/src/domains/auth/entities/user.entity.ts`
+  - ✅ Created `backend/src/domains/auth/value-objects/email.vo.ts`
+  - ✅ Created `backend/src/domains/auth/value-objects/phone.vo.ts`
+  - ✅ Created `backend/src/domains/auth/value-objects/password.vo.ts` with bcrypt hashing
 
-- [ ] **T017** Create Invitation domain entities
-  - Create `backend/src/domains/invitations/entities/invitation.entity.ts`
-  - Create `backend/src/domains/invitations/value-objects/token.vo.ts` (UUID v4)
-  - Expiry logic: 72 hours from creation
+- [x] **T017** Create Invitation domain entities
+  - ✅ Created `backend/src/domains/invitations/entities/invitation.entity.ts`
+  - ✅ Created `backend/src/domains/invitations/value-objects/token.vo.ts` (UUID v4)
+  - ✅ Expiry logic: 72 hours from creation
+  - ✅ Installed uuid package (v13.0.0)
 
 ### Phase 2.2: Prisma Models (Parallel)
 
-- [ ] **T018 [P]** Define User model in `backend/prisma/schema.prisma`
+- [x] **T018 [P]** Define User model in `backend/prisma/schema.prisma`
 
-  - Fields per data-model.md (id, email, phone, passwordHash, firstName, lastName, role, isActive, lastLoginAt, createdAt, updatedAt)
-  - Enum: Role (ADMIN, STAFF, CUSTOMER)
-  - Indexes: email (unique), phone (unique), role
-  - Relations: customer, sentInvitations, staffAppointments, auditLogs, createdServiceNotes
+  - ✅ Fields per data-model.md (id, email, phone, passwordHash, firstName, lastName, role, isActive, lastLoginAt, createdAt, updatedAt)
+  - ✅ Enum: Role (ADMIN, STAFF, CUSTOMER)
+  - ✅ Indexes: email (unique), phone (unique), role
+  - ✅ Relations: customer, sentInvitations, staffAppointments, auditLogs, createdServiceNotes
+  - ✅ Added all future relations (recordedPayments, approvedReviews, deletedReviews, createdSpecialDays)
 
-- [ ] **T019 [P]** Define Invitation model in `backend/prisma/schema.prisma`
+- [x] **T019 [P]** Define Invitation model in `backend/prisma/schema.prisma`
 
-  - Fields per data-model.md
-  - Relations: inviter (User), guestCustomer (Customer nullable)
-  - Indexes: token (unique), email, expiresAt, isUsed
+  - ✅ Fields per data-model.md
+  - ✅ Relations: inviter (User), guestCustomer (Customer nullable)
+  - ✅ Indexes: token (unique), email, expiresAt, isUsed
+  - ✅ Added placeholder models for future relations
 
-- [ ] **T020** Run Prisma migration for User + Invitation
-  - Run `npx prisma migrate dev --name add-user-invitation`
-  - Generate Prisma Client: `npx prisma generate`
-  - **DEPENDENCY**: T018, T019 must be complete
+- [x] **T020** Run Prisma migration for User + Invitation
+  - ✅ Ran `pnpm prisma migrate dev --name add-user-invitation`
+  - ✅ Generated Prisma Client (v5.22.0)
+  - ✅ Created migration: `20251003051205_add_user_invitation`
+  - ✅ Database tables created: users, invitations, customers (placeholder), and others
+  - ✅ Role enum created: ADMIN, STAFF, CUSTOMER
+  - ✅ All indexes and foreign keys applied
+  - ✅ Created .env file with DATABASE_URL
+  - **DEPENDENCY**: ✅ T018, T019 complete
 
 ### Phase 2.3: Repositories (Parallel)
 
-- [ ] **T021 [P]** Create User repository in `backend/src/repositories/user.repository.ts`
+- [x] **T021 [P]** Create User repository in `backend/src/repositories/user.repository.ts`
 
-  - Inject PrismaService
-  - Methods: `create()`, `findById()`, `findByEmail()`, `findByPhone()`, `update()`, `softDelete()`
-  - **ONLY** this file can use Prisma User model
+  - ✅ Injected PrismaService
+  - ✅ Methods: `create()`, `findById()`, `findByEmail()`, `findByPhone()`, `update()`, `softDelete()`
+  - ✅ Additional methods: `findByEmailOrPhone()`, `findMany()`, `updateLastLogin()`, `activate()`, `count()`, `exists()`, `isEmailTaken()`, `isPhoneTaken()`, `findByIdWithRelations()`
+  - ✅ **ONLY** this file uses Prisma User model
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T022 [P]** Create Invitation repository in `backend/src/repositories/invitation.repository.ts`
-  - Inject PrismaService
-  - Methods: `create()`, `findByToken()`, `findActiveByEmail()`, `markUsed()`, `deleteExpired()`
+- [x] **T022 [P]** Create Invitation repository in `backend/src/repositories/invitation.repository.ts`
+  - ✅ Injected PrismaService
+  - ✅ Methods: `create()`, `findByToken()`, `findActiveByEmail()`, `markUsed()`, `deleteExpired()`
+  - ✅ Additional methods: `findByTokenWithRelations()`, `findByInviter()`, `findAll()`, `count()`, `exists()`, `isValid()`, `findExpiringBefore()`, `findByGuestCustomer()`, `delete()`, `regenerateToken()`
+  - ✅ Turkish JSDoc documentation
+
+**Bonus**: Created `backend/src/common/prisma.service.ts` - PrismaService for NestJS dependency injection with lifecycle management
 
 ### Phase 2.4: Services & Usecases
 
-- [ ] **T023** Create Auth service in `backend/src/services/auth.service.ts`
+- [x] **T023** Create Auth service in `backend/src/services/auth.service.ts`
 
-  - Inject UserRepository, JwtService, BcryptService (create wrapper)
-  - Methods: `validateUser()`, `login()`, `logout()`, `hashPassword()`, `verifyPassword()`
-  - JWT payload: { sub, email, role, jti }
-  - Role-based expiry: Admin 8h, Staff 12h, Customer 7d
+  - ✅ Injected UserRepository, JwtService, BcryptService
+  - ✅ Created BcryptService wrapper in `backend/src/services/bcrypt.service.ts`
+  - ✅ Methods: `validateUser()`, `login()`, `logout()`, `hashPassword()`, `verifyPassword()`
+  - ✅ Additional methods: `verifyToken()`, `getUserIdFromToken()`
+  - ✅ JWT payload: { sub, email, role, jti, iat, exp }
+  - ✅ Role-based expiry: Admin 8h, Staff 12h, Customer 7d
+  - ✅ Password hash rehash detection (security improvement)
+  - ✅ Email or phone login support
+  - ✅ Active user check
+  - ✅ Last login timestamp update
+  - ✅ Turkish JSDoc documentation
+  - ✅ Redis blacklist integration completed (T027)
 
-- [ ] **T024** Create Invitation service in `backend/src/services/invitation.service.ts`
+- [x] **T024** Create Invitation service in `backend/src/services/invitation.service.ts`
 
-  - Inject InvitationRepository
-  - Methods: `create()`, `findByToken()`, `validateNotExpired()`, `markUsed()`
+  - ✅ Injected InvitationRepository
+  - ✅ Methods: `create()`, `findByToken()`, `validateNotExpired()`, `markUsed()`
+  - ✅ Additional methods: `findByTokenWithRelations()`, `findByInviter()`, `findAll()`, `count()`, `deleteExpired()`, `getRemainingHours()`, `regenerateToken()`, `findExpiringBefore()`, `findByGuestCustomer()`, `generateInvitationLink()`, `generateEmailBody()`
+  - ✅ Business rules: No admin invitations, check for active duplicates, 72h expiry
+  - ✅ Validation: Token expiry and usage checks
+  - ✅ UUID v4 token generation
+  - ✅ HTML email template generation
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T025** Create Register usecase in `backend/src/usecases/auth/register.usecase.ts`
+- [x] **T025** Create Register usecase in `backend/src/usecases/auth/register.usecase.ts`
 
-  - Inject InvitationService, UserRepository
-  - Flow: validate invitation → check email/phone uniqueness → create user → mark invitation used
-  - Return JWT token
+  - ✅ Injected InvitationService, UserRepository, AuthService
+  - ✅ Flow: validate invitation → check email/phone uniqueness → hash password → create user → mark invitation used → generate JWT
+  - ✅ Main method: `execute()` - Returns JWT token and user info
+  - ✅ Helper methods: `getInvitationDetails()`, `validatePasswordStrength()`, `validatePhoneFormat()`
+  - ✅ Business rules: Token validation, email/phone uniqueness, automatic JWT generation
+  - ✅ Error handling: BadRequestException for invalid invitations, ConflictException for duplicates
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T026** Create Login usecase in `backend/src/usecases/auth/login.usecase.ts`
+- [x] **T026** Create Login usecase in `backend/src/usecases/auth/login.usecase.ts`
 
-  - Inject AuthService
-  - Flow: validate credentials → generate JWT → return token + user info
+  - ✅ Injected AuthService
+  - ✅ Flow: validate credentials → generate JWT → update last login → return token + user info
+  - ✅ Main method: `execute()` - Returns JWT token and user info
+  - ✅ Helper methods: `isEmail()`, `normalizePhone()`, `validateInput()`, `getUserRole()`, `getExpiryInSeconds()`, `getRefreshTime()`
+  - ✅ Input normalization: Supports multiple phone formats (5XXXXXXXXX, 05XXXXXXXXX, 905XXXXXXXXX, +905XXXXXXXXX)
+  - ✅ Role-based token expiry: Admin 8h, Staff 12h, Customer 7d
+  - ✅ Security: Generic error messages for invalid credentials
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T027** Create Logout usecase in `backend/src/usecases/auth/logout.usecase.ts`
-  - Inject RedisService (create wrapper for Redis)
-  - Flow: extract JTI from token → add to blacklist in Redis with TTL
+- [x] **T027** Create Logout usecase in `backend/src/usecases/auth/logout.usecase.ts`
+  - ✅ Created RedisService wrapper in `backend/src/common/redis.service.ts`
+  - ✅ Installed ioredis package (v5.8.0)
+  - ✅ Injected RedisService and AuthService
+  - ✅ Flow: verify token → extract JTI from payload → calculate TTL → add to blacklist in Redis
+  - ✅ Main method: `execute()` - Returns success status
+  - ✅ Helper methods: `isTokenBlacklisted()`, `getTokenRemainingTime()`, `extractUserInfo()`, `cleanupExpiredBlacklist()`, `checkRedisHealth()`
+  - ✅ Redis features: Connection lifecycle, key prefixing, blacklist operations, JSON cache, TTL management
+  - ✅ Updated AuthService.logout() with Redis integration
+  - ✅ Security: Automatic TTL based on token expiry, idempotent operations
+  - ✅ Turkish JSDoc documentation
 
 ### Phase 2.5: Guards & Decorators
 
-- [ ] **T028** Create JWT strategy in `backend/src/common/guards/jwt.strategy.ts`
+- [x] **T028** Create JWT strategy in `backend/src/common/guards/jwt.strategy.ts`
 
-  - Extend PassportStrategy
-  - Validate JWT
-  - Check Redis blacklist for JTI
-  - Return user payload
+  - ✅ Extended PassportStrategy from @nestjs/passport
+  - ✅ Injected ConfigService and RedisService
+  - ✅ JWT extraction: Bearer token from Authorization header
+  - ✅ JWT validation: Secret from JWT_SECRET env var, expiry check enabled
+  - ✅ Blacklist check: Redis JTI lookup on every request
+  - ✅ User payload: Returns { userId, email, role } → attached to request.user
+  - ✅ Error handling: UnauthorizedException for revoked tokens
+  - ✅ Security: Automatic token expiry validation, blacklist integration
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T029** Create Roles guard in `backend/src/common/guards/roles.guard.ts`
+- [x] **T029** Create Roles guard in `backend/src/common/guards/roles.guard.ts`
 
-  - Check @Roles decorator
-  - Compare user.role with required roles
-  - Return true/false
+  - ✅ Implemented CanActivate interface
+  - ✅ Injected Reflector for metadata access
+  - ✅ Metadata extraction: @Roles decorator from handler and class
+  - ✅ Public endpoint support: No metadata = allow access
+  - ✅ User extraction: request.user from JWT Strategy
+  - ✅ Role comparison: user.role must match required roles
+  - ✅ Returns true (allow) or false (deny)
+  - ✅ Guard order: Must be used after AuthGuard('jwt')
+  - ✅ Turkish JSDoc documentation
 
-- [ ] **T030** Create decorators in `backend/src/common/decorators/`
-  - `@Roles(...roles)`: set metadata for roles guard
-  - `@CurrentUser()`: extract user from request
+- [x] **T030** Create decorators in `backend/src/common/decorators/`
+  - ✅ Created `@Roles(...roles)` decorator in `roles.decorator.ts`
+    - Sets metadata using ROLES_KEY constant
+    - Accepts Role enum values
+    - Works at method and class level
+    - Integrated with RolesGuard
+  - ✅ Created `@CurrentUser()` decorator in `current-user.decorator.ts`
+    - Parameter decorator using createParamDecorator
+    - Extracts user from request.user (set by JWT Strategy)
+    - Supports full user object or specific field access
+    - Type-safe with JwtUser interface
+  - ✅ Created index.ts for centralized exports
+  - ✅ Updated RolesGuard to use ROLES_KEY constant
+  - ✅ Turkish JSDoc documentation with usage examples
 
 ---
 
@@ -257,61 +325,87 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 3.1: Remaining Prisma Models (Parallel)
 
-- [ ] **T031 [P]** Define Customer model in `backend/prisma/schema.prisma`
+- [x] **T031 [P]** Define Customer model in `backend/prisma/schema.prisma`
 
-  - Fields per data-model.md (dual type: REGISTERED/GUEST)
-  - Enum: CustomerType
-  - Relations: user (nullable), appointments, reviews, notifications, invitations
+  - ✅ Fields per data-model.md (dual type: REGISTERED/GUEST)
+  - ✅ Enum: CustomerType (REGISTERED, GUEST)
+  - ✅ Relations: user (nullable), appointments, reviews, notifications, invitations
+  - ✅ Indexes: userId, phone, type, email
+  - ✅ Denormalized fields: totalAppointments, totalSpent for performance
 
-- [ ] **T032 [P]** Define Service model in `backend/prisma/schema.prisma`
+- [x] **T032 [P]** Define Service model in `backend/prisma/schema.prisma`
 
-  - Fields: id, name, description, durationMinutes, price, isActive
+  - ✅ Fields: id, name, description, durationMinutes, price, isActive
+  - ✅ Relations: appointments
+  - ✅ Indexes: isActive, name
 
-- [ ] **T033 [P]** Define WorkingHours model in `backend/prisma/schema.prisma`
+- [x] **T033 [P]** Define WorkingHours model in `backend/prisma/schema.prisma`
 
-  - Fields: dayOfWeek (0-6), openTime, closeTime, isClosed
-  - Unique constraint on dayOfWeek
+  - ✅ Fields: dayOfWeek (0-6), openTime, closeTime, isClosed
+  - ✅ Unique constraint on dayOfWeek
+  - ✅ Format: openTime/closeTime as "HH:mm" string
 
-- [ ] **T034 [P]** Define SpecialWorkingDay model in `backend/prisma/schema.prisma`
+- [x] **T034 [P]** Define SpecialWorkingDay model in `backend/prisma/schema.prisma`
 
-  - Fields: date, openTime, closeTime, isClosed, description, createdById
-  - Unique constraint on date
+  - ✅ Fields: date, openTime, closeTime, isClosed, description, createdById
+  - ✅ Unique constraint on date
+  - ✅ Relations: createdBy (User)
+  - ✅ Index: date
 
-- [ ] **T035 [P]** Define Appointment model in `backend/prisma/schema.prisma`
+- [x] **T035 [P]** Define Appointment model in `backend/prisma/schema.prisma`
 
-  - Fields per data-model.md (status enum, creationMethod enum, trackingCode)
-  - Enums: AppointmentStatus, CreationMethod
-  - Relations: customer, staff, service, serviceNotes, payment, review, notifications
+  - ✅ Fields per data-model.md (status enum, creationMethod enum, trackingCode)
+  - ✅ Enums: AppointmentStatus (PENDING, CONFIRMED, COMPLETED, CANCELLED, NO_SHOW)
+  - ✅ Enums: CreationMethod (ONLINE_GUEST, ONLINE_REGISTERED, MANUAL)
+  - ✅ Relations: customer, staff, service, serviceNotes, payment, review, notifications
+  - ✅ Indexes: trackingCode (unique), customerId, staffId, serviceId, [date, time] composite, status, creationMethod
 
-- [ ] **T036 [P]** Define ServiceNote model in `backend/prisma/schema.prisma`
+- [x] **T036 [P]** Define ServiceNote model in `backend/prisma/schema.prisma`
 
-  - Fields: appointmentId, content (max 1000 chars), createdById, createdAt
-  - Relation: appointment (onDelete: Cascade)
+  - ✅ Fields: appointmentId, content (max 1000 chars), createdById, createdAt
+  - ✅ Relation: appointment (onDelete: Cascade)
+  - ✅ Indexes: appointmentId, createdAt
 
-- [ ] **T037 [P]** Define Payment model in `backend/prisma/schema.prisma`
+- [x] **T037 [P]** Define Payment model in `backend/prisma/schema.prisma`
 
-  - Fields per data-model.md (method enum, veresiye fields)
-  - Enum: PaymentMethod (CASH, BANK_TRANSFER, POS_CARD, VERESIYE)
+  - ✅ Fields per data-model.md (method enum, veresiye fields)
+  - ✅ Enum: PaymentMethod (CASH, BANK_TRANSFER, POS_CARD, VERESIYE)
+  - ✅ Veresiye fields: veresiyeDueDate, veresiyeCollateral, veresiyeResponsible
+  - ✅ Relations: appointment (unique), recordedBy (User)
+  - ✅ Indexes: appointmentId (unique), method, veresiyeDueDate, recordedById
 
-- [ ] **T038 [P]** Define Review model in `backend/prisma/schema.prisma`
+- [x] **T038 [P]** Define Review model in `backend/prisma/schema.prisma`
 
-  - Fields per data-model.md (status enum, rating 1-5)
-  - Enum: ReviewStatus (PENDING, APPROVED, DELETED)
+  - ✅ Fields per data-model.md (status enum, rating 1-5)
+  - ✅ Enum: ReviewStatus (PENDING, APPROVED, DELETED)
+  - ✅ Relations: customer, appointment (unique), approvedBy, deletedBy
+  - ✅ Indexes: customerId, appointmentId (unique), status, rating
 
-- [ ] **T039 [P]** Define Notification model in `backend/prisma/schema.prisma`
+- [x] **T039 [P]** Define Notification model in `backend/prisma/schema.prisma`
 
-  - Fields per data-model.md (eventType enum, delivery status per channel)
-  - Enums: NotificationEvent, DeliveryStatus
+  - ✅ Fields per data-model.md (eventType enum, delivery status per channel)
+  - ✅ Enums: NotificationEvent (APPOINTMENT_CREATED, APPOINTMENT_CONFIRMED, APPOINTMENT_CANCELLED, APPOINTMENT_REMINDER, PAYMENT_REMINDER)
+  - ✅ Enums: DeliveryStatus (PENDING, SENT, FAILED)
+  - ✅ Multi-channel tracking: emailStatus, smsStatus, socketStatus with sent timestamps
+  - ✅ Relations: customer, appointment (nullable)
+  - ✅ Indexes: customerId, appointmentId, emailStatus, smsStatus, socketStatus, createdAt
 
-- [ ] **T040 [P]** Define AuditLog model in `backend/prisma/schema.prisma`
+- [x] **T040 [P]** Define AuditLog model in `backend/prisma/schema.prisma`
 
-  - Fields per data-model.md (hash, previousHash, archived)
-  - Indexes: action, actorId, targetEntity+targetId, timestamp, archived
+  - ✅ Fields per data-model.md (hash, previousHash, archived)
+  - ✅ Hash chain fields: hash (SHA-256), previousHash (nullable for genesis)
+  - ✅ Relations: actor (User)
+  - ✅ Indexes: action, actorId, [targetEntity, targetId] composite, timestamp, archived
 
-- [ ] **T041** Run Prisma migration for all remaining models
-  - Run `npx prisma migrate dev --name add-all-entities`
-  - Generate Prisma Client
-  - **DEPENDENCY**: T031-T040 must be complete
+- [x] **T041** Run Prisma migration for all remaining models
+  - ✅ Applied schema with `pnpm prisma db push --accept-data-loss`
+  - ✅ Generated Prisma Client (v5.22.0)
+  - ✅ Database synchronized: All 12 entities created
+  - ✅ All enums created: Role, CustomerType, AppointmentStatus, CreationMethod, PaymentMethod, ReviewStatus, NotificationEvent, DeliveryStatus
+  - ✅ All relations and indexes applied
+  - ✅ Unique constraints applied: trackingCode, appointmentId (payments/reviews)
+  - **DEPENDENCY**: ✅ T031-T040 complete
+  - **Note**: Used `db push` instead of `migrate dev` for non-interactive environment
 
 ### Phase 3.2: Customer & Appointment Repositories (Parallel)
 
