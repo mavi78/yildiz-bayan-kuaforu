@@ -3,9 +3,9 @@ import {
   NotFoundException,
   BadRequestException,
   ConflictException,
-} from '@nestjs/common';
-import { Payment, PaymentMethod } from '@prisma/client';
-import { PaymentRepository } from '../repositories/payment.repository';
+} from "@nestjs/common";
+import { Payment, PaymentMethod } from "@prisma/client";
+import { PaymentRepository } from "../repositories/payment.repository";
 
 /**
  * Payment Service (İş Mantığı Katmanı)
@@ -61,24 +61,20 @@ export class PaymentService {
   }): Promise<Payment> {
     // Amount validation
     if (data.amount <= 0) {
-      throw new BadRequestException('Ödeme tutarı 0\'dan büyük olmalıdır.');
+      throw new BadRequestException("Ödeme tutarı 0'dan büyük olmalıdır.");
     }
 
     // VERESIYE validasyonu (FR-040)
     if (data.method === PaymentMethod.VERESIYE) {
       if (!data.veresiyeDueDate) {
-        throw new BadRequestException(
-          'Veresiye ödemeler için vade tarihi zorunludur.',
-        );
+        throw new BadRequestException("Veresiye ödemeler için vade tarihi zorunludur.");
       }
       if (!data.veresiyeCollateral) {
-        throw new BadRequestException(
-          'Veresiye ödemeler için teminat bilgisi zorunludur.',
-        );
+        throw new BadRequestException("Veresiye ödemeler için teminat bilgisi zorunludur.");
       }
       if (!data.veresiyeResponsible) {
         throw new BadRequestException(
-          'Veresiye ödemeler için sorumlu personel bilgisi zorunludur.',
+          "Veresiye ödemeler için sorumlu personel bilgisi zorunludur.",
         );
       }
 
@@ -86,18 +82,14 @@ export class PaymentService {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (data.veresiyeDueDate < today) {
-        throw new BadRequestException('Vade tarihi geçmişte olamaz.');
+        throw new BadRequestException("Vade tarihi geçmişte olamaz.");
       }
     }
 
     // Randevu için ödeme zaten var mı kontrol et
-    const existingPayment = await this.paymentRepository.findByAppointment(
-      data.appointmentId,
-    );
+    const existingPayment = await this.paymentRepository.findByAppointment(data.appointmentId);
     if (existingPayment) {
-      throw new ConflictException(
-        'Bu randevu için zaten ödeme kaydı mevcut.',
-      );
+      throw new ConflictException("Bu randevu için zaten ödeme kaydı mevcut.");
     }
 
     // Ödeme kaydı oluştur
@@ -169,24 +161,20 @@ export class PaymentService {
 
     // Amount güncellenmişse, pozitif kontrolü
     if (data.amount !== undefined && data.amount <= 0) {
-      throw new BadRequestException('Ödeme tutarı 0\'dan büyük olmalıdır.');
+      throw new BadRequestException("Ödeme tutarı 0'dan büyük olmalıdır.");
     }
 
     // VERESIYE'ye dönüştürülüyorsa, gerekli alanları kontrol et
     if (data.method === PaymentMethod.VERESIYE) {
       if (!data.veresiyeDueDate) {
-        throw new BadRequestException(
-          'Veresiye ödemeler için vade tarihi zorunludur.',
-        );
+        throw new BadRequestException("Veresiye ödemeler için vade tarihi zorunludur.");
       }
       if (!data.veresiyeCollateral) {
-        throw new BadRequestException(
-          'Veresiye ödemeler için teminat bilgisi zorunludur.',
-        );
+        throw new BadRequestException("Veresiye ödemeler için teminat bilgisi zorunludur.");
       }
       if (!data.veresiyeResponsible) {
         throw new BadRequestException(
-          'Veresiye ödemeler için sorumlu personel bilgisi zorunludur.',
+          "Veresiye ödemeler için sorumlu personel bilgisi zorunludur.",
         );
       }
     }
@@ -306,22 +294,18 @@ export class PaymentService {
    * @throws {NotFoundException} Ödeme bulunamadı
    * @throws {BadRequestException} Veresiye değilse veya yeni method VERESIYE
    */
-  async closeVeresiye(
-    id: string,
-    newMethod: PaymentMethod,
-    paidAt: Date,
-  ): Promise<Payment> {
+  async closeVeresiye(id: string, newMethod: PaymentMethod, paidAt: Date): Promise<Payment> {
     const payment = await this.findById(id);
 
     // Veresiye kontrolü
     if (payment.method !== PaymentMethod.VERESIYE) {
-      throw new BadRequestException('Bu ödeme veresiye değil.');
+      throw new BadRequestException("Bu ödeme veresiye değil.");
     }
 
     // Yeni method VERESIYE olamaz
     if (newMethod === PaymentMethod.VERESIYE) {
       throw new BadRequestException(
-        'Veresiye ödemeyi kapatırken yeni ödeme yöntemi VERESIYE olamaz.',
+        "Veresiye ödemeyi kapatırken yeni ödeme yöntemi VERESIYE olamaz.",
       );
     }
 
@@ -344,22 +328,19 @@ export class PaymentService {
    * @throws {NotFoundException} Ödeme bulunamadı
    * @throws {BadRequestException} Veresiye değilse veya tarih geçersiz
    */
-  async extendVeresiyeDueDate(
-    id: string,
-    newDueDate: Date,
-  ): Promise<Payment> {
+  async extendVeresiyeDueDate(id: string, newDueDate: Date): Promise<Payment> {
     const payment = await this.findById(id);
 
     // Veresiye kontrolü
     if (payment.method !== PaymentMethod.VERESIYE) {
-      throw new BadRequestException('Bu ödeme veresiye değil.');
+      throw new BadRequestException("Bu ödeme veresiye değil.");
     }
 
     // Tarih kontrolü
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     if (newDueDate < today) {
-      throw new BadRequestException('Yeni vade tarihi geçmişte olamaz.');
+      throw new BadRequestException("Yeni vade tarihi geçmişte olamaz.");
     }
 
     return this.paymentRepository.update(id, {
@@ -372,9 +353,7 @@ export class PaymentService {
    *
    * @returns Yöntem bazında sayı
    */
-  async getPaymentMethodDistribution(): Promise<
-    Record<PaymentMethod, number>
-  > {
+  async getPaymentMethodDistribution(): Promise<Record<PaymentMethod, number>> {
     const distribution: Record<PaymentMethod, number> = {
       [PaymentMethod.CASH]: 0,
       [PaymentMethod.BANK_TRANSFER]: 0,
@@ -415,4 +394,3 @@ export class PaymentService {
     };
   }
 }
-
