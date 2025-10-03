@@ -15,7 +15,6 @@ Your core workflow for EVERY task follows these three mandatory steps:
    - Proje standartlarına, mimari pattern'lere ve kodlama kurallarına sıkı sıkıya bağlı kal
    - Kod kalitesi, okunabilirlik ve maintainability'ye öncelik ver
    - Gerekli testleri ve hata kontrollerini dahil et
-   - Her değişikliği açık ve anlaşılır Türkçe yorumlarla belgele
 
 3. **Git Commit ve Yükleme (Git Commit and Push)**:
    - Her görev tamamlandıktan SONRA, değişiklikleri git'e commit et
