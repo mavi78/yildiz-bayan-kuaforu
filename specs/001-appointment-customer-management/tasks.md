@@ -766,11 +766,41 @@ Based on plan.md structure decision (Web application):
   - ✅ Environment variables: ILETI_MERKEZI_API_KEY, ILETI_MERKEZI_API_SECRET, ILETI_MERKEZI_SENDER
   - ✅ Installed axios ^1.12.2 dependency
 
-- [ ] **T075** Create Socket.io gateway in `backend/src/modules/notifications/notifications.gateway.ts`
-
-  - JWT authentication
-  - User rooms: `user:${userId}`, `guest:${trackingCode}`
-  - Events: appointment.created, appointment.confirmed, appointment.cancelled, payment.reminder
+- [x] **T075** Create Socket.io gateway in `backend/src/modules/notifications/notifications.gateway.ts`
+  - [x] NestJS @WebSocketGateway decorator with CORS support
+  - [x] Namespace: /notifications
+  - [x] JWT authentication for registered users
+    - [x] Token verification using JwtService
+    - [x] Token via auth.token or query.token
+    - [x] User info attachment to socket (userId, email, role)
+  - [x] Tracking code authentication for guest users
+    - [x] 8-char alphanumeric validation
+    - [x] Guest info attachment to socket
+  - [x] Room management
+    - [x] User rooms: `user:${userId}` for registered customers
+    - [x] Guest rooms: `guest:${trackingCode}` for guests
+    - [x] Automatic join on connection
+    - [x] Automatic leave on disconnect
+  - [x] Event emitters for all notification types:
+    - [x] notifyAppointmentCreated() - appointment.created event
+    - [x] notifyAppointmentConfirmed() - appointment.confirmed event
+    - [x] notifyAppointmentCancelled() - appointment.cancelled event
+    - [x] notifyAppointmentReminder() - appointment.reminder event
+    - [x] notifyPaymentReminder() - payment.reminder event
+  - [x] Helper methods:
+    - [x] sendToUser() - Send to registered user
+    - [x] sendToGuest() - Send to guest user
+    - [x] broadcast() - Broadcast to all clients
+    - [x] isUserOnline() - Check user online status
+    - [x] isGuestOnline() - Check guest online status
+    - [x] getConnectedClientsCount() - Total connected clients
+    - [x] getRoomMembersCount() - Room member count
+  - [x] Ping-pong mechanism for connection keep-alive
+  - [x] Connection lifecycle hooks (afterInit, handleConnection, handleDisconnect)
+  - [x] Comprehensive error handling and logging
+  - [x] Created NotificationsModule and added to AppModule
+  - [x] Turkish JSDoc documentation
+  - [x] Installed dependencies: @nestjs/websockets, @nestjs/platform-socket.io, socket.io
 
 - [ ] **T076** Create Notification service in `backend/src/services/notifications/notification.service.ts`
   - Inject all channels + NotificationRepository
