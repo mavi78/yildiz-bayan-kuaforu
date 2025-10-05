@@ -866,11 +866,20 @@ Based on plan.md structure decision (Web application):
   - ✅ Added ScheduleModule to JobsModule
   - ✅ Integrated with AuditLogRepository and NotificationRepository
 
-- [ ] **T080** Create Veresiye Reminder Job in `backend/src/jobs/veresiye-reminder.job.ts`
-  - @Cron('0 9 \* \* \*') - daily at 9 AM
-  - Query payments with due dates: -3 days, today, +N days
-  - Check customer preferences (FR-042b)
-  - Queue reminder notifications
+- [x] **T080** Create Veresiye Reminder Job in `backend/src/jobs/veresiye-reminder.job.ts`
+  - ✅ @Cron('0 9 * * *') - daily at 9 AM (Europe/Istanbul timezone)
+  - ✅ Query payments with due dates: -3 days, today, +N days (overdue)
+  - ✅ Check customer preferences (FR-042b) - DISABLE_VERESIYE_REMINDERS flag in Customer.notes
+  - ✅ Queue reminder notifications via veresiyeRemindersQueue
+  - ✅ Three reminder scenarios:
+    - ✅ -3 days: 3 gün önce uyarı (upcoming)
+    - ✅ 0 days: Bugün vadesi dolanlar (due today)
+    - ✅ +N days: Vadesi geçmişler (overdue, her gün)
+  - ✅ Payload includes: paymentId, customerId, dueDate, amount, daysUntilDue
+  - ✅ Job ID format: veresiye-reminder-{paymentId}-{YYYY-MM-DD}
+  - ✅ Customer reminder preferences check via Customer.notes field
+  - ✅ Integrated with PaymentRepository and QueueManager
+  - ✅ Added to JobsModule
 
 ---
 
