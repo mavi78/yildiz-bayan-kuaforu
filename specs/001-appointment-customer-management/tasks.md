@@ -849,15 +849,22 @@ Based on plan.md structure decision (Web application):
   - ✅ Created JobsModule and added to AppModule
   - ✅ Integration with NotificationService and NotificationRepository
 
-- [ ] **T079** Create Audit Archive Job in `backend/src/jobs/audit-archive.job.ts`
+- [x] **T079** Create Audit Archive Job in `backend/src/jobs/audit-archive.job.ts`
 
-  - @Cron('0 2 \* \* \*') - daily at 2 AM
-  - Query logs older than 90 days
-  - Also archive notification failures older than 30 days (FR-047a)
-  - Append to JSONL file
-  - Verify hash chain
-  - Mark as archived + delete from DB
-  - Make file immutable (chattr +i on Linux)
+  - ✅ @Cron('0 2 * * *') - daily at 2 AM (Europe/Istanbul timezone)
+  - ✅ Query logs older than 90 days
+  - ✅ Also archive notification failures older than 30 days (FR-047a)
+  - ✅ Append to JSONL file format (JSON Lines)
+  - ✅ Verify hash chain (SHA-256 integrity check)
+  - ✅ Mark as archived + delete from DB
+  - ✅ Make file immutable (chattr +i on Linux, read-only on other platforms)
+  - ✅ Archive directory: AUDIT_ARCHIVE_DIR env var (default: ./storage/audit-archive)
+  - ✅ File naming: audit-logs-YYYY-MM-DD.jsonl, notifications-YYYY-MM-DD.jsonl
+  - ✅ WORM storage: Immutable files for 5-year retention
+  - ✅ Hash chain verification: Ensures data integrity before archival
+  - ✅ Installed @nestjs/schedule package (v6.0.1)
+  - ✅ Added ScheduleModule to JobsModule
+  - ✅ Integrated with AuditLogRepository and NotificationRepository
 
 - [ ] **T080** Create Veresiye Reminder Job in `backend/src/jobs/veresiye-reminder.job.ts`
   - @Cron('0 9 \* \* \*') - daily at 9 AM
