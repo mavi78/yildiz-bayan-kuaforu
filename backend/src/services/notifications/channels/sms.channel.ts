@@ -184,9 +184,7 @@ export class SmsChannel {
       // Mesaj uzunluğunu kontrol et (160 karakter = 1 SMS, 306 karakter = 2 SMS)
       const messageLength = options.message.length;
       const smsCount = Math.ceil(messageLength / 160);
-      this.logger.debug(
-        `SMS length: ${messageLength} chars, estimated ${smsCount} SMS credit(s)`,
-      );
+      this.logger.debug(`SMS length: ${messageLength} chars, estimated ${smsCount} SMS credit(s)`);
 
       // İleti Merkezi API request body
       const requestBody = {
@@ -211,10 +209,7 @@ export class SmsChannel {
       this.logger.debug(`Sending SMS to ${normalizedPhone} via İleti Merkezi`);
 
       // API request gönder
-      const response = await this.apiClient.post<IletiMerkeziResponse>(
-        "/send-sms",
-        requestBody,
-      );
+      const response = await this.apiClient.post<IletiMerkeziResponse>("/send-sms", requestBody);
 
       // Yanıtı kontrol et
       if (response.data.status.code === 200) {
@@ -559,11 +554,7 @@ export class SmsChannel {
    * @param dueDate - Vade tarihi
    * @returns SMS mesajı
    */
-  generatePaymentReminderSms(
-    customerName: string,
-    amount: number,
-    dueDate: string,
-  ): string {
+  generatePaymentReminderSms(customerName: string, amount: number, dueDate: string): string {
     let message = `Merhaba ${customerName},\n\n`;
     message += `Odeme Hatirlatmasi:\n\n`;
     message += `Tutar: ${amount} TL\n`;

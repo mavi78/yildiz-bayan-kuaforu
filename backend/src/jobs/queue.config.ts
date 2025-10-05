@@ -1,15 +1,15 @@
-import { Queue, QueueOptions, Worker, Job } from 'bullmq';
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
+import { Queue, QueueOptions, Worker, Job } from "bullmq";
+import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import Redis from "ioredis";
 
 /**
  * BullMQ kuyruk isimleri
  */
 export enum QueueName {
-  NOTIFICATIONS = 'notifications',
-  AUDIT_ARCHIVE = 'audit-archive',
-  VERESIYE_REMINDERS = 'veresiye-reminders',
+  NOTIFICATIONS = "notifications",
+  AUDIT_ARCHIVE = "audit-archive",
+  VERESIYE_REMINDERS = "veresiye-reminders",
 }
 
 /**
@@ -20,7 +20,7 @@ export interface NotificationJobPayload {
   eventType: string;
   customerId?: string;
   appointmentId?: string;
-  channels: ('email' | 'sms' | 'socket')[];
+  channels: ("email" | "sms" | "socket")[];
 }
 
 /**
@@ -106,14 +106,14 @@ export class QueueManager implements OnModuleInit, OnModuleDestroy {
    */
   async onModuleInit() {
     // Redis bağlantısı oluştur
-    const redisHost = this.configService.get<string>('REDIS_HOST', 'localhost');
-    const redisPort = this.configService.get<number>('REDIS_PORT', 6379);
+    const redisHost = this.configService.get<string>("REDIS_HOST", "localhost");
+    const redisPort = this.configService.get<number>("REDIS_PORT", 6379);
 
     this.redisConnection = new Redis({
       host: redisHost,
       port: redisPort,
       maxRetriesPerRequest: null, // BullMQ için önerilen
-      enableReadyCheck: false,     // BullMQ için önerilen
+      enableReadyCheck: false, // BullMQ için önerilen
     });
 
     // Genel queue seçenekleri
@@ -137,7 +137,7 @@ export class QueueManager implements OnModuleInit, OnModuleDestroy {
         ...defaultQueueOptions.defaultJobOptions,
         attempts: 3, // 3 deneme
         backoff: {
-          type: 'exponential',
+          type: "exponential",
           delay: 2000, // İlk retry 2 saniye sonra
         },
       },
@@ -159,13 +159,13 @@ export class QueueManager implements OnModuleInit, OnModuleDestroy {
         ...defaultQueueOptions.defaultJobOptions,
         attempts: 3, // 3 deneme
         backoff: {
-          type: 'exponential',
+          type: "exponential",
           delay: 1000,
         },
       },
     });
 
-    console.log('[QueueManager] All queues initialized successfully');
+    console.log("[QueueManager] All queues initialized successfully");
   }
 
   /**
@@ -178,7 +178,7 @@ export class QueueManager implements OnModuleInit, OnModuleDestroy {
     await this.veresiyeRemindersQueue.close();
     await this.redisConnection.quit();
 
-    console.log('[QueueManager] All queues and Redis connection closed');
+    console.log("[QueueManager] All queues and Redis connection closed");
   }
 
   /**
@@ -197,8 +197,8 @@ export class QueueManager implements OnModuleInit, OnModuleDestroy {
       veresiyeReminders,
       redis: {
         status: this.redisConnection.status,
-        host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-        port: this.configService.get<number>('REDIS_PORT', 6379),
+        host: this.configService.get<string>("REDIS_HOST", "localhost"),
+        port: this.configService.get<number>("REDIS_PORT", 6379),
       },
     };
   }

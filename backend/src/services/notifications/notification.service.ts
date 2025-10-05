@@ -173,13 +173,9 @@ export class NotificationService {
               });
 
               if (result.success) {
-                this.logger.log(
-                  `Appointment created email sent to ${appointment.customer.email}`,
-                );
+                this.logger.log(`Appointment created email sent to ${appointment.customer.email}`);
               } else {
-                this.logger.error(
-                  `Failed to send appointment created email: ${result.error}`,
-                );
+                this.logger.error(`Failed to send appointment created email: ${result.error}`);
               }
             }
             break;
@@ -203,17 +199,13 @@ export class NotificationService {
 
           case NotificationChannel.SOCKET:
             // Guest mi yoksa registered customer mı?
-            this.socketGateway.notifyAppointmentCreated(
-              appointment.customer.userId,
-              trackingCode,
-              {
-                appointmentId: appointment.id,
-                date: appointmentDate,
-                time: appointmentTime,
-                serviceName,
-                staffName,
-              },
-            );
+            this.socketGateway.notifyAppointmentCreated(appointment.customer.userId, trackingCode, {
+              appointmentId: appointment.id,
+              date: appointmentDate,
+              time: appointmentTime,
+              serviceName,
+              staffName,
+            });
 
             this.logger.log(`Appointment created socket notification sent`);
             break;
@@ -267,7 +259,9 @@ export class NotificationService {
               });
 
               if (result.success) {
-                this.logger.log(`Appointment confirmed email sent to ${appointment.customer.email}`);
+                this.logger.log(
+                  `Appointment confirmed email sent to ${appointment.customer.email}`,
+                );
               } else {
                 this.logger.error(`Failed to send appointment confirmed email: ${result.error}`);
               }
@@ -358,7 +352,9 @@ export class NotificationService {
               });
 
               if (result.success) {
-                this.logger.log(`Appointment cancelled email sent to ${appointment.customer.email}`);
+                this.logger.log(
+                  `Appointment cancelled email sent to ${appointment.customer.email}`,
+                );
               } else {
                 this.logger.error(`Failed to send appointment cancelled email: ${result.error}`);
               }
@@ -503,10 +499,10 @@ export class NotificationService {
    * @returns DD.MM.YYYY formatında tarih
    */
   private formatDate(date: Date): string {
-    return date.toLocaleDateString('tr-TR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+    return date.toLocaleDateString("tr-TR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     });
   }
 

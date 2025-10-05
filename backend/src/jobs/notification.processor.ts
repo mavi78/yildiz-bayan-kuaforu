@@ -1,11 +1,11 @@
-import { Processor, Worker, Job } from 'bullmq';
-import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
-import { NotificationRepository } from '../repositories/notification.repository';
-import { NotificationService } from '../services/notifications/notification.service';
-import { QueueName, NotificationJobPayload } from './queue.config';
-import { DeliveryStatus } from '@prisma/client';
+import { Processor, Worker, Job } from "bullmq";
+import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import Redis from "ioredis";
+import { NotificationRepository } from "../repositories/notification.repository";
+import { NotificationService } from "../services/notifications/notification.service";
+import { QueueName, NotificationJobPayload } from "./queue.config";
+import { DeliveryStatus } from "@prisma/client";
 
 /**
  * Notification Processor
@@ -45,8 +45,8 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
    * NestJS modül başlatıldığında worker'ı oluşturur
    */
   async onModuleInit() {
-    const redisHost = this.configService.get<string>('REDIS_HOST', 'localhost');
-    const redisPort = this.configService.get<number>('REDIS_PORT', 6379);
+    const redisHost = this.configService.get<string>("REDIS_HOST", "localhost");
+    const redisPort = this.configService.get<number>("REDIS_PORT", 6379);
 
     // Redis bağlantısı oluştur
     this.redisConnection = new Redis({
@@ -69,19 +69,19 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
     );
 
     // Worker event listeners
-    this.worker.on('completed', (job) => {
+    this.worker.on("completed", job => {
       this.logger.log(`Job ${job.id} completed successfully`);
     });
 
-    this.worker.on('failed', (job, err) => {
+    this.worker.on("failed", (job, err) => {
       this.logger.error(`Job ${job?.id} failed: ${err.message}`, err.stack);
     });
 
-    this.worker.on('error', (err) => {
+    this.worker.on("error", err => {
       this.logger.error(`Worker error: ${err.message}`, err.stack);
     });
 
-    this.logger.log('NotificationProcessor worker started');
+    this.logger.log("NotificationProcessor worker started");
   }
 
   /**
@@ -90,7 +90,7 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
   async onModuleDestroy() {
     await this.worker?.close();
     await this.redisConnection?.quit();
-    this.logger.log('NotificationProcessor worker stopped');
+    this.logger.log("NotificationProcessor worker stopped");
   }
 
   /**
@@ -119,7 +119,7 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
       for (const channel of channels) {
         try {
           switch (channel) {
-            case 'email':
+            case "email":
               // Email gönderimi NotificationService'den yapılacak
               // Şimdilik sadece status güncellemesi
               await this.notificationRepository.update(notificationId, {
@@ -130,7 +130,7 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
               this.logger.debug(`Email sent for notification ${notificationId}`);
               break;
 
-            case 'sms':
+            case "sms":
               // SMS gönderimi NotificationService'den yapılacak
               await this.notificationRepository.update(notificationId, {
                 smsStatus: DeliveryStatus.SENT,
@@ -140,7 +140,7 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
               this.logger.debug(`SMS sent for notification ${notificationId}`);
               break;
 
-            case 'socket':
+            case "socket":
               // Socket.io gönderimi NotificationService'den yapılacak
               await this.notificationRepository.update(notificationId, {
                 socketStatus: DeliveryStatus.SENT,
@@ -164,9 +164,9 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
 
           // Kanal başarısız, status'ü FAILED yap
           const updateData: any = {};
-          if (channel === 'email') updateData.emailStatus = DeliveryStatus.FAILED;
-          if (channel === 'sms') updateData.smsStatus = DeliveryStatus.FAILED;
-          if (channel === 'socket') updateData.socketStatus = DeliveryStatus.FAILED;
+          if (channel === "email") updateData.emailStatus = DeliveryStatus.FAILED;
+          if (channel === "sms") updateData.smsStatus = DeliveryStatus.FAILED;
+          if (channel === "socket") updateData.socketStatus = DeliveryStatus.FAILED;
 
           await this.notificationRepository.update(notificationId, updateData);
         }
@@ -179,11 +179,11 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
       });
 
       // 4. Tüm kanallar başarısız mı kontrol et
-      const allFailed = Object.values(results).every((r) => !r.success);
+      const allFailed = Object.values(results).every(r => !r.success);
       if (allFailed) {
         const errorMessages = Object.entries(results)
           .map(([ch, res]) => `${ch}: ${res.error}`)
-          .join(', ');
+          .join(", ");
 
         await this.notificationRepository.update(notificationId, {
           lastError: errorMessages,
@@ -196,14 +196,15 @@ export class NotificationProcessor implements OnModuleInit, OnModuleDestroy {
       const successChannels = Object.entries(results)
         .filter(([_, res]) => res.success)
         .map(([ch]) => ch)
-        .join(', ');
+        .join(", ");
 
       return `Notification sent successfully via: ${successChannels}`;
     } catch (error) {
       // Hata durumunda NotificationRepository'ye log kaydet
       await this.notificationRepository.update(notificationId, {
         lastError: error.message,
-        attemptCount: (await this.notificationRepository.findById(notificationId))!.attemptCount + 1,
+        attemptCount:
+          (await this.notificationRepository.findById(notificationId))!.attemptCount + 1,
       });
 
       // BullMQ retry mekanizması için error throw et

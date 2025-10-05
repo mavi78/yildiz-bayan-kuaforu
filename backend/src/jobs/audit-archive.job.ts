@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { createHash } from 'crypto';
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import { AuditLogRepository } from '../repositories/audit-log.repository';
-import { NotificationRepository } from '../repositories/notification.repository';
+import { Injectable, Logger } from "@nestjs/common";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { createHash } from "crypto";
+import { promises as fs } from "fs";
+import { join } from "path";
+import { AuditLogRepository } from "../repositories/audit-log.repository";
+import { NotificationRepository } from "../repositories/notification.repository";
 
 /**
  * Audit Archive Job
@@ -33,7 +33,7 @@ import { NotificationRepository } from '../repositories/notification.repository'
 @Injectable()
 export class AuditArchiveJob {
   private readonly logger = new Logger(AuditArchiveJob.name);
-  private readonly archiveDir = process.env.AUDIT_ARCHIVE_DIR || './storage/audit-archive';
+  private readonly archiveDir = process.env.AUDIT_ARCHIVE_DIR || "./storage/audit-archive";
 
   constructor(
     private readonly auditLogRepository: AuditLogRepository,
@@ -45,12 +45,12 @@ export class AuditArchiveJob {
    *
    * @Cron('0 2 * * *') - 02:00:00 daily
    */
-  @Cron('0 2 * * *', {
-    name: 'audit-archive-job',
-    timeZone: 'Europe/Istanbul',
+  @Cron("0 2 * * *", {
+    name: "audit-archive-job",
+    timeZone: "Europe/Istanbul",
   })
   async handleAuditArchive() {
-    this.logger.log('Starting audit archive job...');
+    this.logger.log("Starting audit archive job...");
 
     try {
       // 1. Audit log arşivleme (90+ gün)
@@ -59,7 +59,7 @@ export class AuditArchiveJob {
       // 2. Notification arşivleme (30+ gün, başarısız olanlar)
       await this.archiveFailedNotifications();
 
-      this.logger.log('Audit archive job completed successfully');
+      this.logger.log("Audit archive job completed successfully");
     } catch (error) {
       this.logger.error(`Audit archive job failed: ${error.message}`, error.stack);
       throw error;
@@ -70,13 +70,13 @@ export class AuditArchiveJob {
    * 90+ gün önceki audit log kayıtlarını arşivler
    */
   private async archiveAuditLogs() {
-    this.logger.log('Archiving audit logs (90+ days old)...');
+    this.logger.log("Archiving audit logs (90+ days old)...");
 
     // 1. Arşivlenecek kayıtları getir
     const logsToArchive = await this.auditLogRepository.findToArchive(90);
 
     if (logsToArchive.length === 0) {
-      this.logger.log('No audit logs to archive');
+      this.logger.log("No audit logs to archive");
       return;
     }
 
@@ -85,10 +85,10 @@ export class AuditArchiveJob {
     // 2. Hash chain doğrulama
     const isValid = this.verifyHashChain(logsToArchive);
     if (!isValid) {
-      throw new Error('Hash chain verification failed! Data integrity compromised.');
+      throw new Error("Hash chain verification failed! Data integrity compromised.");
     }
 
-    this.logger.log('Hash chain verification passed');
+    this.logger.log("Hash chain verification passed");
 
     // 3. Arşiv dizinini oluştur (yoksa)
     await fs.mkdir(this.archiveDir, { recursive: true });
@@ -97,7 +97,7 @@ export class AuditArchiveJob {
     const archiveFileName = `audit-logs-${this.getDateString()}.jsonl`;
     const archiveFilePath = join(this.archiveDir, archiveFileName);
 
-    const jsonlLines = logsToArchive.map((log) =>
+    const jsonlLines = logsToArchive.map(log =>
       JSON.stringify({
         id: log.id,
         timestamp: log.timestamp,
@@ -113,7 +113,7 @@ export class AuditArchiveJob {
       }),
     );
 
-    await fs.appendFile(archiveFilePath, jsonlLines.join('\n') + '\n', 'utf-8');
+    await fs.appendFile(archiveFilePath, jsonlLines.join("\n") + "\n", "utf-8");
 
     this.logger.log(`Archived ${logsToArchive.length} logs to ${archiveFilePath}`);
 
@@ -121,7 +121,7 @@ export class AuditArchiveJob {
     await this.makeFileImmutable(archiveFilePath);
 
     // 6. Database'den kayıtları işaretle ve sil
-    const ids = logsToArchive.map((log) => log.id);
+    const ids = logsToArchive.map(log => log.id);
     await this.auditLogRepository.markArchived(ids);
     const deletedCount = await this.auditLogRepository.deleteArchived();
 
@@ -132,13 +132,13 @@ export class AuditArchiveJob {
    * 30+ gün önceki başarısız notification'ları arşivler
    */
   private async archiveFailedNotifications() {
-    this.logger.log('Archiving failed notifications (30+ days old)...');
+    this.logger.log("Archiving failed notifications (30+ days old)...");
 
     // 1. Arşivlenecek notification'ları getir
     const notificationsToArchive = await this.notificationRepository.findToArchive(30);
 
     if (notificationsToArchive.length === 0) {
-      this.logger.log('No failed notifications to archive');
+      this.logger.log("No failed notifications to archive");
       return;
     }
 
@@ -151,7 +151,7 @@ export class AuditArchiveJob {
     const archiveFileName = `notifications-${this.getDateString()}.jsonl`;
     const archiveFilePath = join(this.archiveDir, archiveFileName);
 
-    const jsonlLines = notificationsToArchive.map((notification) =>
+    const jsonlLines = notificationsToArchive.map(notification =>
       JSON.stringify({
         id: notification.id,
         eventType: notification.eventType,
@@ -167,15 +167,17 @@ export class AuditArchiveJob {
       }),
     );
 
-    await fs.appendFile(archiveFilePath, jsonlLines.join('\n') + '\n', 'utf-8');
+    await fs.appendFile(archiveFilePath, jsonlLines.join("\n") + "\n", "utf-8");
 
-    this.logger.log(`Archived ${notificationsToArchive.length} notifications to ${archiveFilePath}`);
+    this.logger.log(
+      `Archived ${notificationsToArchive.length} notifications to ${archiveFilePath}`,
+    );
 
     // 4. Dosyayı immutable yap
     await this.makeFileImmutable(archiveFilePath);
 
     // 5. Database'den sil
-    const ids = notificationsToArchive.map((n) => n.id);
+    const ids = notificationsToArchive.map(n => n.id);
     const deletedCount = await this.notificationRepository.deleteMany(ids);
 
     this.logger.log(`Deleted ${deletedCount} archived notifications from database`);
@@ -211,7 +213,9 @@ export class AuditArchiveJob {
       // Hash doğrulama (yeniden hesapla)
       const computedHash = this.computeHash(log);
       if (log.hash !== computedHash) {
-        this.logger.error(`Hash mismatch at index ${i}: expected=${log.hash}, computed=${computedHash}`);
+        this.logger.error(
+          `Hash mismatch at index ${i}: expected=${log.hash}, computed=${computedHash}`,
+        );
         return false;
       }
     }
@@ -226,8 +230,8 @@ export class AuditArchiveJob {
    * @returns SHA-256 hex string
    */
   private computeHash(log: any): string {
-    const data = `${log.timestamp}${log.action}${log.actorId}${log.targetEntity}${log.targetId}${JSON.stringify(log.details)}${log.previousHash || ''}`;
-    return createHash('sha256').update(data).digest('hex');
+    const data = `${log.timestamp}${log.action}${log.actorId}${log.targetEntity}${log.targetId}${JSON.stringify(log.details)}${log.previousHash || ""}`;
+    return createHash("sha256").update(data).digest("hex");
   }
 
   /**
@@ -241,8 +245,8 @@ export class AuditArchiveJob {
   private async makeFileImmutable(filePath: string) {
     try {
       // Linux için chattr +i (immutable flag)
-      if (process.platform === 'linux') {
-        const { exec } = require('child_process');
+      if (process.platform === "linux") {
+        const { exec } = require("child_process");
         await new Promise((resolve, reject) => {
           exec(`chattr +i "${filePath}"`, (error: any) => {
             if (error) {
@@ -270,8 +274,8 @@ export class AuditArchiveJob {
   private getDateString(): string {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
 }

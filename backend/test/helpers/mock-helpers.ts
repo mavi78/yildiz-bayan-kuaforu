@@ -227,7 +227,7 @@ export function createLoggerMock() {
 export function createConfigServiceMock() {
   return {
     get: jest.fn().mockImplementation((key: string) => {
-      const config = {
+      const config: Record<string, string | number> = {
         DATABASE_URL: "postgresql://test:test@localhost:5432/yildiz_salon_test",
         JWT_SECRET: "test-jwt-secret",
         REDIS_HOST: "localhost",

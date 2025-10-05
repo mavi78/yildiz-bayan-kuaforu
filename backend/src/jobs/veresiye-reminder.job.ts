@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
-import { PaymentRepository } from '../repositories/payment.repository';
-import { QueueManager, VeresiyeReminderJobPayload } from './queue.config';
-import { Payment } from '@prisma/client';
+import { Injectable, Logger } from "@nestjs/common";
+import { Cron } from "@nestjs/schedule";
+import { PaymentRepository } from "../repositories/payment.repository";
+import { QueueManager, VeresiyeReminderJobPayload } from "./queue.config";
+import { Payment } from "@prisma/client";
 
 /**
  * Veresiye Reminder Job
@@ -42,12 +42,12 @@ export class VeresiyeReminderJob {
    *
    * @Cron('0 9 * * *') - 09:00:00 daily
    */
-  @Cron('0 9 * * *', {
-    name: 'veresiye-reminder-job',
-    timeZone: 'Europe/Istanbul',
+  @Cron("0 9 * * *", {
+    name: "veresiye-reminder-job",
+    timeZone: "Europe/Istanbul",
   })
   async handleVeresiyeReminders() {
-    this.logger.log('Starting veresiye reminder job...');
+    this.logger.log("Starting veresiye reminder job...");
 
     try {
       // 1. 3 gün sonra vadesi dolacak ödemeler
@@ -59,7 +59,7 @@ export class VeresiyeReminderJob {
       // 3. Vadesi geçmiş ödemeler
       await this.processOverduePayments();
 
-      this.logger.log('Veresiye reminder job completed successfully');
+      this.logger.log("Veresiye reminder job completed successfully");
     } catch (error) {
       this.logger.error(`Veresiye reminder job failed: ${error.message}`, error.stack);
       throw error;
@@ -92,7 +92,7 @@ export class VeresiyeReminderJob {
    * Bugün vadesi dolan ödemeleri işler
    */
   private async processDueTodayPayments() {
-    this.logger.log('Processing payments due today...');
+    this.logger.log("Processing payments due today...");
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -102,7 +102,7 @@ export class VeresiyeReminderJob {
 
     const dueTodayPayments = await this.paymentRepository.findMany({
       where: {
-        method: 'VERESIYE',
+        method: "VERESIYE",
         veresiyeDueDate: {
           gte: today,
           lt: tomorrow,
@@ -111,7 +111,7 @@ export class VeresiyeReminderJob {
     });
 
     if (dueTodayPayments.length === 0) {
-      this.logger.log('No payments due today');
+      this.logger.log("No payments due today");
       return;
     }
 
@@ -126,12 +126,12 @@ export class VeresiyeReminderJob {
    * Vadesi geçmiş ödemeleri işler
    */
   private async processOverduePayments() {
-    this.logger.log('Processing overdue payments...');
+    this.logger.log("Processing overdue payments...");
 
     const overduePayments = await this.paymentRepository.findOverdue();
 
     if (overduePayments.length === 0) {
-      this.logger.log('No overdue payments');
+      this.logger.log("No overdue payments");
       return;
     }
 
@@ -166,7 +166,7 @@ export class VeresiyeReminderJob {
       daysUntilDue,
     };
 
-    await this.queueManager.veresiyeRemindersQueue.add('send-veresiye-reminder', payload, {
+    await this.queueManager.veresiyeRemindersQueue.add("send-veresiye-reminder", payload, {
       jobId: `veresiye-reminder-${payment.id}-${this.getDateString()}`,
       removeOnComplete: true, // Başarılı job'ları hemen sil
     });
@@ -188,8 +188,8 @@ export class VeresiyeReminderJob {
     if (!customer) return false;
 
     // Customer.notes içinde DISABLE_VERESIYE_REMINDERS flag'i var mı kontrol et
-    if (customer.notes && typeof customer.notes === 'string') {
-      return customer.notes.includes('DISABLE_VERESIYE_REMINDERS');
+    if (customer.notes && typeof customer.notes === "string") {
+      return customer.notes.includes("DISABLE_VERESIYE_REMINDERS");
     }
 
     return false;
@@ -220,8 +220,8 @@ export class VeresiyeReminderJob {
   private getDateString(): string {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
 }

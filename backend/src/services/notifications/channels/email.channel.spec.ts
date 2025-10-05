@@ -23,7 +23,7 @@ describe("EmailChannel", () => {
           provide: ConfigService,
           useValue: {
             get: jest.fn((key: string) => {
-              const config = {
+              const config: Record<string, string> = {
                 GMAIL_USER: "test@gmail.com",
                 GMAIL_APP_PASSWORD: "test-app-password",
               };
@@ -149,7 +149,7 @@ describe("EmailChannel", () => {
     it("should generate payment reminder email", () => {
       const result = service.generatePaymentReminderEmail(
         "Zeynep Ak",
-        "250.00",
+        250.0,
         "20.10.2025",
         "12.10.2025",
         "Saç Kesimi + Yıkama",

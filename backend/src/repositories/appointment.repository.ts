@@ -289,6 +289,11 @@ export class AppointmentRepository {
         status,
         ...(cancellationReason && { cancellationReason }),
       },
+      include: {
+        customer: true,
+        service: true,
+        staff: true,
+      },
     });
   }
 
