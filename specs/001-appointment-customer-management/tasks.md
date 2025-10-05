@@ -803,12 +803,26 @@ Based on plan.md structure decision (Web application):
   - ✅ Turkish JSDoc documentation
   - ✅ Installed dependencies: @nestjs/websockets, @nestjs/platform-socket.io, socket.io
 
-- [ ] **T076** Create Notification service in `backend/src/services/notifications/notification.service.ts`
-  - Inject all channels + NotificationRepository
-  - Load channel settings from DB (Admin config)
-  - **Note**: Channel settings stored in future SystemConfig table (to be defined in Phase 4)
-  - Queue notifications to BullMQ
-  - Methods: `sendAppointmentCreated()`, `sendAppointmentConfirmed()`, etc.
+- [x] **T076** Create Notification service in `backend/src/services/notifications/notification.service.ts`
+  - ✅ Injected all channels (EmailChannel, SmsChannel, NotificationsGateway)
+  - ✅ Injected NotificationRepository
+  - ✅ Multi-channel orchestration with createAndSendNotification() helper
+  - ✅ Channel settings: All channels active (SystemConfig table gelecek - T077-T078)
+  - ✅ Database tracking: Her notification için kanal durumları kaydediliyor
+  - ✅ Methods implemented:
+    - ✅ sendAppointmentCreated() - Email, SMS, Socket entegrasyonu
+    - ✅ sendAppointmentConfirmed() - Email, SMS, Socket entegrasyonu
+    - ✅ sendAppointmentCancelled() - Email, SMS, Socket entegrasyonu
+    - ✅ sendPaymentReminder() - Email, SMS, Socket entegrasyonu
+  - ✅ Helper methods:
+    - ✅ getActiveChannelsForEvent() - Event bazlı kanal seçimi
+    - ✅ isEmailChannelReady(), isSmsChannelReady()
+    - ✅ testEmailConnection(), testSmsConnection()
+    - ✅ getChannelsHealthStatus() - Tüm kanalların sağlık durumu
+    - ✅ getSocketConnectedCount() - WebSocket bağlantı sayısı
+  - ✅ Updated NotificationsModule with all providers
+  - ✅ Turkish JSDoc documentation
+  - ⏳ BullMQ job queue entegrasyonu (T077-T078 gelecek)
 
 ### Phase 5.2: Background Jobs (BullMQ)
 
