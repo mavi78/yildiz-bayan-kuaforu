@@ -826,10 +826,16 @@ Based on plan.md structure decision (Web application):
 
 ### Phase 5.2: Background Jobs (BullMQ)
 
-- [ ] **T077** Setup BullMQ in `backend/src/jobs/queue.config.ts`
+- [x] **T077** Setup BullMQ in `backend/src/jobs/queue.config.ts`
 
-  - Configure Redis connection
-  - Create queues: notifications, audit-archive, veresiye-reminders
+  - ✅ Configured Redis connection (REDIS_HOST, REDIS_PORT from env)
+  - ✅ Created queues: notifications, audit-archive, veresiye-reminders
+  - ✅ Installed bullmq package (v5.60.0)
+  - ✅ Created QueueManager service with lifecycle management
+  - ✅ Retry strategies: notifications (3x exponential), audit (2x), veresiye (3x exponential)
+  - ✅ Job cleanup: 24h for completed, 7d for failed
+  - ✅ TypeScript types: NotificationJobPayload, AuditArchiveJobPayload, VeresiyeReminderJobPayload
+  - ✅ Queue health monitoring method included
 
 - [ ] **T078** Create Notification Processor in `backend/src/jobs/notification.processor.ts`
 
