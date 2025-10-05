@@ -12,6 +12,7 @@ import { ReportsModule } from "@modules/reports/reports.module";
 import { WorkingHoursModule } from "@modules/working-hours/working-hours.module";
 import { AuditModule } from "@modules/audit/audit.module";
 import { NotificationsModule } from "@modules/notifications/notifications.module";
+import { JobsModule } from "@modules/jobs/jobs.module";
 
 /**
  * Ana uygulama modülü
@@ -23,6 +24,7 @@ import { NotificationsModule } from "@modules/notifications/notifications.module
  * Yapılandırmalar:
  * - ConfigModule: Environment değişkenleri yönetimi
  * - ThrottlerModule: Rate limiting (DDoS koruması)
+ * - JobsModule: BullMQ background job processors
  *
  * @module AppModule
  */
@@ -49,6 +51,7 @@ import { NotificationsModule } from "@modules/notifications/notifications.module
     WorkingHoursModule,
     AuditModule,
     NotificationsModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
