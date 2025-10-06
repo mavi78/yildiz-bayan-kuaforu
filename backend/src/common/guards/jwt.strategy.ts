@@ -7,12 +7,12 @@
  * @module common/guards
  */
 
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { RedisService } from "../redis.service";
-import { JwtPayload } from "../../services/auth.service";
+import { AuthService, JwtPayload } from "../../services/auth.service";
 
 /**
  * Request'e eklenen kullanıcı bilgisi
@@ -53,6 +53,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
     private readonly redisService: RedisService,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -67,9 +69,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * Passport tarafından otomatik çağrılır.
    * JWT doğrulandıktan sonra bu method çalışır.
    *
+   * FR-009: Admin force logout kontrolü eklendi
+   *
    * @param payload - JWT payload (sub, email, role, jti, iat, exp)
    * @returns Kullanıcı bilgisi (userId, email, role) - request.user'a atanır
-   * @throws UnauthorizedException - Token blacklist'te ise
+   * @throws UnauthorizedException - Token blacklist'te veya force logout edilmişse
    */
   async validate(payload: JwtPayload): Promise<JwtUser> {
     // 1. JTI kontrolü (blacklist)
@@ -79,7 +83,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException("Token iptal edilmiş. Lütfen tekrar giriş yapın.");
     }
 
-    // 2. Kullanıcı bilgilerini döndür
+    // 2. FR-009: Admin force logout kontrolü
+    const isForcedLogout = await this.authService.isUserForcedLogout(payload.sub, payload.iat || 0);
+
+    if (isForcedLogout) {
+      throw new UnauthorizedException(
+        "Oturumunuz sistem yöneticisi tarafından sonlandırıldı. Lütfen tekrar giriş yapın.",
+      );
+    }
+
+    // 3. Kullanıcı bilgilerini döndür
     // Bu obje request.user olarak kullanılabilir
     return {
       userId: payload.sub,

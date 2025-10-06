@@ -65,11 +65,12 @@ export class AuthService {
    * Kullanıcı kimlik bilgilerini doğrular
    *
    * Email veya telefon ile giriş yapılabilir.
+   * FR-007: 5 başarısız denemeden sonra 15 dakika kilitleme
    *
    * @param emailOrPhone - Email veya telefon numarası
    * @param password - Ham şifre
    * @returns Doğrulanmış kullanıcı
-   * @throws UnauthorizedException - Kimlik bilgileri geçersizse
+   * @throws UnauthorizedException - Kimlik bilgileri geçersizse veya hesap kilitliyse
    */
   async validateUser(
     emailOrPhone: string,
@@ -81,10 +82,20 @@ export class AuthService {
     lastName: string;
     role: Role;
   }> {
+    // FR-007: Login throttling kontrolü
+    const isLocked = await this.isAccountLocked(emailOrPhone);
+    if (isLocked) {
+      throw new UnauthorizedException(
+        "Hesap geçici olarak kilitlendi. 5 başarısız giriş denemesi yapıldı. Lütfen 15 dakika sonra tekrar deneyin.",
+      );
+    }
+
     // Kullanıcıyı bul
     const user = await this.userRepository.findByEmailOrPhone(emailOrPhone);
 
     if (!user) {
+      // Başarısız deneme kaydet
+      await this.recordFailedLoginAttempt(emailOrPhone);
       throw new UnauthorizedException("Geçersiz kimlik bilgileri");
     }
 
@@ -97,8 +108,13 @@ export class AuthService {
     const isPasswordValid = await this.bcryptService.compare(password, user.passwordHash);
 
     if (!isPasswordValid) {
+      // Başarısız deneme kaydet
+      await this.recordFailedLoginAttempt(emailOrPhone);
       throw new UnauthorizedException("Geçersiz kimlik bilgileri");
     }
+
+    // Başarılı giriş - başarısız denemeleri sıfırla
+    await this.resetFailedLoginAttempts(emailOrPhone);
 
     // Şifre hash'inin güncellenm esi gerekip gerekmediğini kontrol et
     const needsRehash = await this.bcryptService.needsRehash(user.passwordHash);
@@ -273,5 +289,95 @@ export class AuthService {
   async getUserIdFromToken(token: string): Promise<string> {
     const payload = await this.verifyToken(token);
     return payload.sub;
+  }
+
+  /**
+   * Başarısız login denemelerini kaydeder (FR-007)
+   *
+   * Redis'te email/phone başına başarısız deneme sayısını tutar.
+   * 5 başarısız denemeden sonra hesap 15 dakika kilitlenir.
+   *
+   * @param emailOrPhone - Email veya telefon numarası
+   */
+  private async recordFailedLoginAttempt(emailOrPhone: string): Promise<void> {
+    const key = `login:failed:${emailOrPhone}`;
+    const attempts = await this.redisService.get(key);
+    const currentAttempts = attempts ? parseInt(attempts, 10) : 0;
+    const newAttempts = currentAttempts + 1;
+
+    if (newAttempts >= 5) {
+      // 5. denemeden sonra hesabı kilitle (15 dakika)
+      const lockKey = `login:locked:${emailOrPhone}`;
+      await this.redisService.set(lockKey, "1", 15 * 60); // 15 dakika TTL
+      // Başarısız denemeleri sıfırla
+      await this.redisService.del(key);
+    } else {
+      // Başarısız deneme sayısını artır (15 dakika TTL)
+      await this.redisService.set(key, newAttempts.toString(), 15 * 60);
+    }
+  }
+
+  /**
+   * Hesabın kilitli olup olmadığını kontrol eder (FR-007)
+   *
+   * @param emailOrPhone - Email veya telefon numarası
+   * @returns Kilitliyse true
+   */
+  private async isAccountLocked(emailOrPhone: string): Promise<boolean> {
+    const lockKey = `login:locked:${emailOrPhone}`;
+    const isLocked = await this.redisService.get(lockKey);
+    return isLocked !== null;
+  }
+
+  /**
+   * Başarılı giriş sonrası başarısız denemeleri sıfırlar (FR-007)
+   *
+   * @param emailOrPhone - Email veya telefon numarası
+   */
+  private async resetFailedLoginAttempts(emailOrPhone: string): Promise<void> {
+    const key = `login:failed:${emailOrPhone}`;
+    await this.redisService.del(key);
+  }
+
+  /**
+   * Kullanıcıyı zorla logout yapar (FR-009)
+   *
+   * Admin tarafından kullanılır.
+   * Kullanıcının aktif tüm token'larını blacklist'e ekler.
+   *
+   * @param userId - Logout edilecek kullanıcı ID
+   */
+  async forceLogout(userId: string): Promise<void> {
+    // Kullanıcının aktif token'larını blacklist'e eklemek için
+    // bir "user logout" flag'i Redis'te saklanır
+    // JwtStrategy bu flag'i kontrol eder
+    const key = `user:force-logout:${userId}`;
+    // 8 saat TTL (en uzun token süresi 7 gün ama force logout genelde hemen etkili olmalı)
+    await this.redisService.set(key, Date.now().toString(), 7 * 24 * 60 * 60);
+  }
+
+  /**
+   * Kullanıcının zorla logout edilip edilmediğini kontrol eder (FR-009)
+   *
+   * JwtStrategy tarafından kullanılır.
+   *
+   * @param userId - Kullanıcı ID
+   * @param tokenIssuedAt - Token'ın oluşturulma zamanı (iat)
+   * @returns Force logout edilmişse true
+   */
+  async isUserForcedLogout(userId: string, tokenIssuedAt: number): Promise<boolean> {
+    const key = `user:force-logout:${userId}`;
+    const logoutTimestamp = await this.redisService.get(key);
+
+    if (!logoutTimestamp) {
+      return false;
+    }
+
+    // Token, force logout'tan önce mi oluşturuldu?
+    const logoutTime = parseInt(logoutTimestamp, 10);
+    const tokenTime = tokenIssuedAt * 1000; // iat saniye cinsinden, timestamp milisaniye
+
+    // Token force logout'tan önce oluşturulduysa, geçersiz
+    return tokenTime < logoutTime;
   }
 }

@@ -58,10 +58,10 @@
 - [x] **T012** UserRepository & InvitationRepository davranışlarını doğrula.
   - Test: `pnpm --filter backend test -- --runTestsByPath test/unit/repositories/user.repository.spec.ts test/unit/repositories/invitation.repository.spec.ts` (gerekirse yaz).
 
-- [ ] **T013** Auth servisleri (`AuthService`, `AuthController`, guards) FR-001…FR-009 ile uyumlu mu kontrol et.
+- [x] **T013** Auth servisleri (`AuthService`, `AuthController`, guards) FR-001…FR-009 ile uyumlu mu kontrol et.
   - Test: Unit + e2e (`pnpm --filter backend test -- --runTestsByPath test/unit/controllers/auth.controller.spec.ts test/e2e/auth.e2e-spec.ts`).
 
-- [ ] **T014** Register ve Login usecase’lerini FR gereksinimlerine göre gözden geçir.
+- [x] **T014** Register ve Login usecase'lerini FR gereksinimlerine göre gözden geçir.
   - Test: `pnpm --filter backend test -- --runTestsByPath test/unit/usecases/auth/*.spec.ts`.
 
 - [ ] **T015** Davet akışı (`ConvertGuestToRegisteredUsecase`, `InvitationsController`) FR-021/FR-022 ile uyumlu mu.
