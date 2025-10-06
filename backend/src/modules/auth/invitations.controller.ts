@@ -38,6 +38,7 @@ export class InvitationsController {
    */
   @Get()
   async findAll(@Query() query: ListInvitationsQueryDto) {
+    // DTO transformation'ları query parametrelerinde otomatik uygulanır
     const { isUsed, role, skip, take } = query;
 
     const [data, total] = await Promise.all([

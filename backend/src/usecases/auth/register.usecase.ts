@@ -12,6 +12,7 @@ import { Role } from "@prisma/client";
 import { InvitationService } from "../../services/invitation.service";
 import { UserRepository } from "../../repositories/user.repository";
 import { AuthService } from "../../services/auth.service";
+import { CustomerService } from "../../services/customer.service";
 
 /**
  * Kayıt için gerekli kullanıcı bilgileri
@@ -63,6 +64,7 @@ export class RegisterUsecase {
     private readonly invitationService: InvitationService,
     private readonly userRepository: UserRepository,
     private readonly authService: AuthService,
+    private readonly customerService: CustomerService,
   ) {}
 
   /**
@@ -110,10 +112,15 @@ export class RegisterUsecase {
       role: invitation.role,
     });
 
-    // 6. Daveti kullanıldı olarak işaretleme
+    // 6. Eğer davet bir guest customer için ise, guest customer'ı registered'a dönüştür (FR-022)
+    if (invitation.guestCustomerId) {
+      await this.customerService.convertGuestToRegistered(invitation.guestCustomerId, user.id);
+    }
+
+    // 7. Daveti kullanıldı olarak işaretleme
     await this.invitationService.markUsed(input.token);
 
-    // 7. JWT token üretimi
+    // 8. JWT token üretimi
     const loginResult = await this.authService.login({
       id: user.id,
       email: user.email,

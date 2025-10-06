@@ -14,12 +14,14 @@ import { RegisterUsecase } from "../../../../src/usecases/auth/register.usecase"
 import { InvitationService } from "../../../../src/services/invitation.service";
 import { UserRepository } from "../../../../src/repositories/user.repository";
 import { AuthService } from "../../../../src/services/auth.service";
+import { CustomerService } from "../../../../src/services/customer.service";
 
 describe("RegisterUsecase", () => {
   let usecase: RegisterUsecase;
   let invitationService: InvitationService;
   let userRepository: UserRepository;
   let authService: AuthService;
+  let customerService: CustomerService;
 
   const mockInvitationService = {
     validateNotExpired: jest.fn(),
@@ -38,6 +40,10 @@ describe("RegisterUsecase", () => {
     login: jest.fn(),
   };
 
+  const mockCustomerService = {
+    convertGuestToRegistered: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -54,6 +60,10 @@ describe("RegisterUsecase", () => {
           provide: AuthService,
           useValue: mockAuthService,
         },
+        {
+          provide: CustomerService,
+          useValue: mockCustomerService,
+        },
       ],
     }).compile();
 
@@ -61,6 +71,7 @@ describe("RegisterUsecase", () => {
     invitationService = module.get<InvitationService>(InvitationService);
     userRepository = module.get<UserRepository>(UserRepository);
     authService = module.get<AuthService>(AuthService);
+    customerService = module.get<CustomerService>(CustomerService);
 
     jest.clearAllMocks();
   });
@@ -507,6 +518,150 @@ describe("RegisterUsecase", () => {
 
       expect(result.isValid).toBe(false);
       expect(result.error).toContain("Sadece mobil telefon numaraları kabul edilir");
+    });
+  });
+
+  describe("execute - FR-021/FR-022: Guest to Registered Conversion", () => {
+    it("should convert guest customer to registered when invitation has guestCustomerId", async () => {
+      const guestCustomerId = "guest-customer-123";
+      const input = {
+        token: "valid-token-with-guest",
+        firstName: "Ayşe",
+        lastName: "Yılmaz",
+        phone: "+905551234567",
+        password: "Password123",
+      };
+
+      const invitation = {
+        id: "inv-123",
+        token: "valid-token-with-guest",
+        email: "ayse@example.com",
+        role: Role.CUSTOMER,
+        inviterId: "admin-123",
+        guestCustomerId,
+        isUsed: false,
+        expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000),
+        createdAt: new Date(),
+      };
+
+      mockInvitationService.validateNotExpired.mockResolvedValue({
+        isValid: true,
+        invitation,
+      });
+
+      mockUserRepository.findByEmail.mockResolvedValue(null);
+      mockUserRepository.findByPhone.mockResolvedValue(null);
+      mockAuthService.hashPassword.mockResolvedValue("hashed-password");
+
+      const createdUser = {
+        id: "user-123",
+        email: "ayse@example.com",
+        phone: "+905551234567",
+        passwordHash: "hashed-password",
+        firstName: "Ayşe",
+        lastName: "Yılmaz",
+        role: Role.CUSTOMER,
+        isActive: true,
+        lastLoginAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      mockUserRepository.create.mockResolvedValue(createdUser);
+      mockCustomerService.convertGuestToRegistered.mockResolvedValue({
+        id: guestCustomerId,
+        userId: createdUser.id,
+        type: "REGISTERED",
+        firstName: "Ayşe",
+        lastName: "Yılmaz",
+        phone: "+905551234567",
+        email: "ayse@example.com",
+      });
+
+      mockAuthService.login.mockResolvedValue({
+        access_token: "jwt-token",
+        expires_in: "7d",
+        user: {
+          id: "user-123",
+          email: "ayse@example.com",
+          firstName: "Ayşe",
+          lastName: "Yılmaz",
+          role: Role.CUSTOMER,
+        },
+      });
+
+      const result = await usecase.execute(input);
+
+      expect(mockCustomerService.convertGuestToRegistered).toHaveBeenCalledWith(
+        guestCustomerId,
+        createdUser.id,
+      );
+      expect(result.access_token).toBe("jwt-token");
+      expect(mockInvitationService.markUsed).toHaveBeenCalledWith("valid-token-with-guest");
+    });
+
+    it("should NOT convert customer when invitation has no guestCustomerId", async () => {
+      const input = {
+        token: "valid-token-no-guest",
+        firstName: "Mehmet",
+        lastName: "Demir",
+        phone: "+905559876543",
+        password: "Password123",
+      };
+
+      const invitation = {
+        id: "inv-456",
+        token: "valid-token-no-guest",
+        email: "mehmet@example.com",
+        role: Role.STAFF,
+        inviterId: "admin-123",
+        guestCustomerId: null,
+        isUsed: false,
+        expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000),
+        createdAt: new Date(),
+      };
+
+      mockInvitationService.validateNotExpired.mockResolvedValue({
+        isValid: true,
+        invitation,
+      });
+
+      mockUserRepository.findByEmail.mockResolvedValue(null);
+      mockUserRepository.findByPhone.mockResolvedValue(null);
+      mockAuthService.hashPassword.mockResolvedValue("hashed-password");
+
+      const createdUser = {
+        id: "user-456",
+        email: "mehmet@example.com",
+        phone: "+905559876543",
+        passwordHash: "hashed-password",
+        firstName: "Mehmet",
+        lastName: "Demir",
+        role: Role.STAFF,
+        isActive: true,
+        lastLoginAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      mockUserRepository.create.mockResolvedValue(createdUser);
+
+      mockAuthService.login.mockResolvedValue({
+        access_token: "jwt-token-staff",
+        expires_in: "12h",
+        user: {
+          id: "user-456",
+          email: "mehmet@example.com",
+          firstName: "Mehmet",
+          lastName: "Demir",
+          role: Role.STAFF,
+        },
+      });
+
+      const result = await usecase.execute(input);
+
+      expect(mockCustomerService.convertGuestToRegistered).not.toHaveBeenCalled();
+      expect(result.access_token).toBe("jwt-token-staff");
     });
   });
 });

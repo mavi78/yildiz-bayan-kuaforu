@@ -47,11 +47,12 @@ describe("InvitationsController", () => {
 
   it("should list invitations with filters", async () => {
     const { controller, invitationService } = createController();
+    // DTO transformation sonrası query (NestJS runtime'da class-transformer yapar)
     const query = {
-      isUsed: "true",
+      isUsed: true,
       role: Role.STAFF,
-      skip: "10",
-      take: "5",
+      skip: 10,
+      take: 5,
     };
 
     const invitations = [{ id: "inv-1" } as any];
