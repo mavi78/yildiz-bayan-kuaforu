@@ -52,7 +52,7 @@
 
 ## Milestone 2 – Auth & Invitation Domain (T011–T020)
 
-- [ ] **T011** User & Invitation Prisma modellerini spec’teki data-model ile kıyasla.
+- [x] **T011** User & Invitation Prisma modellerini spec'teki data-model ile kıyasla.
   - Test: `pnpm --filter backend exec prisma format && pnpm --filter backend exec prisma validate`.
 
 - [ ] **T012** UserRepository & InvitationRepository davranışlarını doğrula.
