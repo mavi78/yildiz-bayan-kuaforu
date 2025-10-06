@@ -40,8 +40,8 @@
   - Adımlar: Swagger modalitesi plan.md ile uyumlu mu (Bearer auth, tag'ler).
   - Test: `pnpm --filter backend exec ts-node tools/generate-swagger.ts` gibi bir script varsa çalıştır; yoksa `/swagger-json` e2e testi ekle.
 
-- [ ] **T009** Redis bağlantı yapılandırmasını doğrula (`backend/src/jobs/queue.config.ts`).
-  - Adımlar: Default değerler, parola/dB fallback’leri specs’deki FR-043/FR-047a ile uyumlu mu bak.
+- [x] **T009** Redis bağlantı yapılandırmasını doğrula (`backend/src/jobs/queue.config.ts`).
+  - Adımlar: Default değerler, parola/dB fallback'leri specs'deki FR-043/FR-047a ile uyumlu mu bak.
   - Test: `SKIP_DB_SETUP=true pnpm --filter backend test -- --runTestsByPath test/unit/redis-connections.spec.ts` yeşil olmalı; eksikler varsa düzelt.
 
 - [ ] **T010** Notification kanalları için temel sağlık kontrollerini gözden geçir (`NotificationService`, `email.channel`, `sms.channel`).
