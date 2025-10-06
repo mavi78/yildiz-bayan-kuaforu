@@ -29,7 +29,9 @@ services:
     image: redis:7-alpine
     container_name: yildiz-salon-redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass redis_password
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-redis_password}"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_password}
     ports:
       - "6379:6379"
     volumes:
@@ -68,7 +70,7 @@ services:
     container_name: yildiz-salon-redis-commander
     restart: unless-stopped
     environment:
-      - REDIS_HOSTS=local:redis:6379:0:redis_password
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD:-redis_password}
     ports:
       - "8081:8081"
     depends_on:
@@ -89,4 +91,3 @@ volumes:
 networks:
   yildiz-network:
     driver: bridge
-

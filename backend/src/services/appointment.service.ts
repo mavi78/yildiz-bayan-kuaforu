@@ -1,14 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  BadRequestException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { Appointment, AppointmentStatus } from "@prisma/client";
 import { AppointmentRepository } from "../repositories/appointment.repository";
 import { WorkingHoursRepository } from "../repositories/working-hours.repository";
 import { SpecialWorkingDayRepository } from "../repositories/special-working-day.repository";
 import { ServiceRepository } from "../repositories/service.repository";
+import { AppointmentWithRelations } from "@domains/appointments/appointment.types";
 
 /**
  * Appointment Service (İş Mantığı Katmanı)
@@ -273,7 +269,7 @@ export class AppointmentService {
    * @param data - Randevu verisi
    * @returns Oluşturulan randevu
    */
-  async create(data: any): Promise<Appointment> {
+  async create(data: any): Promise<AppointmentWithRelations> {
     return this.appointmentRepository.create(data);
   }
 
@@ -318,7 +314,7 @@ export class AppointmentService {
     id: string,
     status: AppointmentStatus,
     cancellationReason?: string,
-  ): Promise<Appointment> {
+  ): Promise<AppointmentWithRelations> {
     await this.findById(id); // Var mı kontrol
     return this.appointmentRepository.updateStatus(id, status, cancellationReason);
   }

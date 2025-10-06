@@ -72,7 +72,7 @@ export class ReviewsController {
   async create(
     @Param("id") customerId: string,
     @Body() dto: CreateReviewDto,
-    @CurrentUser() user: any,
+    @CurrentUser() _user: any,
   ) {
     // Güvenlik kontrolü: Müşteri sadece kendi yorumunu oluşturabilir
     // User'ın customer ID'si ile URL'deki customer ID eşleşmeli
@@ -112,7 +112,7 @@ export class ReviewsController {
   @Get("customers/:id/reviews")
   @UseGuards(AuthGuard("jwt"), RolesGuard)
   @Roles("CUSTOMER", "ADMIN", "STAFF")
-  async findByCustomer(@Param("id") customerId: string, @CurrentUser() user: any) {
+  async findByCustomer(@Param("id") customerId: string, @CurrentUser() _user: any) {
     const reviews = await this.reviewService.findByCustomer(customerId);
 
     // FR-036: DELETED durumu için özel mesaj

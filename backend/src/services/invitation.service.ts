@@ -270,7 +270,7 @@ export class InvitationService {
    * @throws NotFoundException - Davet bulunamazsa
    */
   async regenerateToken(oldToken: string): Promise<Invitation> {
-    const invitation = await this.findByToken(oldToken);
+    await this.findByToken(oldToken);
 
     // Yeni token üret
     const newToken = this.generateToken();

@@ -7,7 +7,7 @@
  * @module usecases/auth
  */
 
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { AuthService, LoginResult } from "../../services/auth.service";
 
 /**

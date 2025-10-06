@@ -49,7 +49,7 @@ export class CustomersController {
   @ApiResponse({ status: 201, description: "Müşteri başarıyla oluşturuldu" })
   @ApiResponse({ status: 400, description: "Geçersiz istek" })
   @ApiResponse({ status: 403, description: "Yetkisiz erişim" })
-  async createGuestCustomer(@Body() body: CreateGuestCustomerDto, @CurrentUser() user: JwtUser) {
+  async createGuestCustomer(@Body() body: CreateGuestCustomerDto, @CurrentUser() _user: JwtUser) {
     const customer = await this.customerService.createGuest({
       firstName: body.firstName,
       lastName: body.lastName,
@@ -92,7 +92,7 @@ export class CustomersController {
   @ApiResponse({ status: 200, description: "Müşteri listesi döndürüldü" })
   @ApiResponse({ status: 403, description: "Yetkisiz erişim" })
   async getCustomers(
-    @CurrentUser() user: JwtUser,
+    @CurrentUser() _user: JwtUser,
     @Query("type") type?: CustomerType,
     @Query("search") search?: string,
     @Query("limit") limit?: string,
@@ -140,7 +140,7 @@ export class CustomersController {
   @ApiResponse({ status: 200, description: "Müşteri detayı döndürüldü" })
   @ApiResponse({ status: 404, description: "Müşteri bulunamadı" })
   @ApiResponse({ status: 403, description: "Yetkisiz erişim" })
-  async getCustomerById(@Param("id") id: string, @CurrentUser() user: JwtUser) {
+  async getCustomerById(@Param("id") id: string, @CurrentUser() _user: JwtUser) {
     const customer: any = await this.customerService.findById(id, true);
 
     return {
@@ -182,7 +182,7 @@ export class CustomersController {
   async updateCustomer(
     @Param("id") id: string,
     @Body() body: UpdateCustomerDto,
-    @CurrentUser() user: JwtUser,
+    @CurrentUser() _user: JwtUser,
   ) {
     const customer = await this.customerService.update(id, {
       firstName: body.firstName,
@@ -236,7 +236,7 @@ export class CustomersController {
   async inviteGuest(
     @Param("id") id: string,
     @Body() body: InviteGuestDto,
-    @CurrentUser() user: JwtUser,
+    @CurrentUser() _user: JwtUser,
   ) {
     const result = await this.convertGuestUsecase.execute({
       customerId: id,

@@ -18,10 +18,9 @@ import {
   OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
-  MessageBody,
   ConnectedSocket,
 } from "@nestjs/websockets";
-import { Logger, UseGuards } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -100,7 +99,7 @@ export class NotificationsGateway
    *
    * Socket.io server hazır olduğunda çağrılır.
    */
-  afterInit(server: Server): void {
+  afterInit(_server: Server): void {
     this.logger.log("Notifications WebSocket Gateway initialized");
     this.logger.log(`Namespace: /notifications`);
     this.logger.log(

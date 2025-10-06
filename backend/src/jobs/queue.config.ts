@@ -1,7 +1,7 @@
-import { Queue, QueueOptions, Worker, Job } from "bullmq";
+import { Queue, QueueOptions } from "bullmq";
 import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import Redis from "ioredis";
+import Redis, { RedisOptions } from "ioredis";
 
 /**
  * BullMQ kuyruk isimleri
@@ -108,13 +108,22 @@ export class QueueManager implements OnModuleInit, OnModuleDestroy {
     // Redis bağlantısı oluştur
     const redisHost = this.configService.get<string>("REDIS_HOST", "localhost");
     const redisPort = this.configService.get<number>("REDIS_PORT", 6379);
+    const redisPassword = this.configService.get<string>("REDIS_PASSWORD");
+    const redisDb = this.configService.get<number>("REDIS_DB", 0);
 
-    this.redisConnection = new Redis({
+    const redisOptions: RedisOptions = {
       host: redisHost,
       port: redisPort,
       maxRetriesPerRequest: null, // BullMQ için önerilen
       enableReadyCheck: false, // BullMQ için önerilen
-    });
+      db: redisDb,
+    };
+
+    if (redisPassword) {
+      redisOptions.password = redisPassword;
+    }
+
+    this.redisConnection = new Redis(redisOptions);
 
     // Genel queue seçenekleri
     const defaultQueueOptions: QueueOptions = {

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { Cron, CronExpression } from "@nestjs/schedule";
+import { Cron } from "@nestjs/schedule";
 import { createHash } from "crypto";
 import { promises as fs } from "fs";
 import { join } from "path";
@@ -247,7 +247,7 @@ export class AuditArchiveJob {
       // Linux için chattr +i (immutable flag)
       if (process.platform === "linux") {
         const { exec } = require("child_process");
-        await new Promise((resolve, reject) => {
+        await new Promise(resolve => {
           exec(`chattr +i "${filePath}"`, (error: any) => {
             if (error) {
               this.logger.warn(`Could not set immutable flag: ${error.message}`);

@@ -8,11 +8,8 @@ import { VeresiyeReminderJob } from "../../jobs/veresiye-reminder.job";
 import { NotificationRepository } from "../../repositories/notification.repository";
 import { AuditLogRepository } from "../../repositories/audit-log.repository";
 import { PaymentRepository } from "../../repositories/payment.repository";
-import { NotificationService } from "../../services/notifications/notification.service";
-import { EmailChannel } from "../../services/notifications/channels/email.channel";
-import { SmsChannel } from "../../services/notifications/channels/sms.channel";
-import { NotificationsGateway } from "../notifications/notifications.gateway";
 import { PrismaService } from "../../common/prisma.service";
+import { NotificationsModule } from "../notifications/notifications.module";
 
 /**
  * Jobs Module
@@ -28,7 +25,7 @@ import { PrismaService } from "../../common/prisma.service";
  * @module JobsModule
  */
 @Module({
-  imports: [ConfigModule, ScheduleModule.forRoot()],
+  imports: [ConfigModule, ScheduleModule.forRoot(), NotificationsModule],
   providers: [
     PrismaService,
     QueueManager,
@@ -38,10 +35,6 @@ import { PrismaService } from "../../common/prisma.service";
     NotificationRepository,
     AuditLogRepository,
     PaymentRepository,
-    NotificationService,
-    EmailChannel,
-    SmsChannel,
-    NotificationsGateway,
   ],
   exports: [QueueManager],
 })

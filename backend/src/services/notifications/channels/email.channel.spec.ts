@@ -13,7 +13,7 @@ import { EmailChannel } from "./email.channel";
 
 describe("EmailChannel", () => {
   let service: EmailChannel;
-  let configService: ConfigService;
+  let _configService: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,7 +35,7 @@ describe("EmailChannel", () => {
     }).compile();
 
     service = module.get<EmailChannel>(EmailChannel);
-    configService = module.get<ConfigService>(ConfigService);
+    _configService = module.get<ConfigService>(ConfigService);
   });
 
   it("should be defined", () => {

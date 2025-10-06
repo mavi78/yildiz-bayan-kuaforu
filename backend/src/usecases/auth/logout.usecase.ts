@@ -143,7 +143,7 @@ export class LogoutUsecase {
    *
    * @param userId - Kullanıcı ID
    */
-  async logoutAllSessions(userId: string): Promise<LogoutResult> {
+  async logoutAllSessions(_userId: string): Promise<LogoutResult> {
     // TODO: Bu özellik için JTI'leri user ID ile ilişkilendirmek gerekir
     // Örnek pattern: blacklist:user:123:jti:abc-def-ghi
     // Şimdilik sadece placeholder

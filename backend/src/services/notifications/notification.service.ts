@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { Appointment, Customer, Service, User } from "@prisma/client";
+import { Customer } from "@prisma/client";
+import { AppointmentWithRelations } from "@domains/appointments/appointment.types";
 import { EmailChannel } from "./channels/email.channel";
 import { SmsChannel } from "./channels/sms.channel";
 import { NotificationsGateway } from "../../modules/notifications/notifications.gateway";
@@ -52,7 +53,7 @@ export class NotificationService {
    * @param eventType - Notification event type
    * @returns Aktif kanal listesi
    */
-  private getActiveChannelsForEvent(eventType: NotificationEvent): NotificationChannel[] {
+  private getActiveChannelsForEvent(_eventType: NotificationEvent): NotificationChannel[] {
     // TODO (T077-T078): SystemConfig table'dan admin ayarlarını oku
     // Şimdilik tüm kanallar aktif
     return [NotificationChannel.EMAIL, NotificationChannel.SMS, NotificationChannel.SOCKET];
@@ -133,13 +134,7 @@ export class NotificationService {
    *
    * @param appointment - Randevu bilgisi (relations ile birlikte)
    */
-  async sendAppointmentCreated(
-    appointment: Appointment & {
-      customer: Customer;
-      service: Service;
-      staff: User;
-    },
-  ): Promise<void> {
+  async sendAppointmentCreated(appointment: AppointmentWithRelations): Promise<void> {
     this.logger.log(`Sending appointment created notification for appointment ${appointment.id}`);
 
     const customerName = `${appointment.customer.firstName} ${appointment.customer.lastName}`;
@@ -221,13 +216,7 @@ export class NotificationService {
    *
    * @param appointment - Randevu bilgisi (relations ile birlikte)
    */
-  async sendAppointmentConfirmed(
-    appointment: Appointment & {
-      customer: Customer;
-      service: Service;
-      staff: User;
-    },
-  ): Promise<void> {
+  async sendAppointmentConfirmed(appointment: AppointmentWithRelations): Promise<void> {
     this.logger.log(`Sending appointment confirmed notification for appointment ${appointment.id}`);
 
     const customerName = `${appointment.customer.firstName} ${appointment.customer.lastName}`;
@@ -313,11 +302,7 @@ export class NotificationService {
    * @param reason - İptal sebebi (opsiyonel)
    */
   async sendAppointmentCancelled(
-    appointment: Appointment & {
-      customer: Customer;
-      service: Service;
-      staff: User;
-    },
+    appointment: AppointmentWithRelations,
     reason?: string,
   ): Promise<void> {
     this.logger.log(`Sending appointment cancelled notification for appointment ${appointment.id}`);

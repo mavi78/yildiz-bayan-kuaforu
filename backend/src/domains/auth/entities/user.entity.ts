@@ -9,7 +9,6 @@
 
 import { Email } from "../value-objects/email.vo";
 import { Phone } from "../value-objects/phone.vo";
-import { Password } from "../value-objects/password.vo";
 
 /**
  * Kullanıcı rolleri

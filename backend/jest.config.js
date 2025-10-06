@@ -1,6 +1,30 @@
 const { pathsToModuleNameMapper } = require("ts-jest");
 const { compilerOptions } = require("./tsconfig.json");
 
+const moduleNameMapperConfig = pathsToModuleNameMapper(compilerOptions.paths || {}, {
+  prefix: "<rootDir>/",
+});
+
+const tsTransform = {
+  "^.+\\.ts$": [
+    "ts-jest",
+    {
+      diagnostics: false,
+    },
+  ],
+};
+
+const baseProjectConfig = {
+  preset: "ts-jest",
+  testEnvironment: "node",
+  moduleNameMapper: moduleNameMapperConfig,
+  transform: tsTransform,
+  setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
+  moduleFileExtensions: ["js", "json", "ts"],
+  clearMocks: true,
+  restoreMocks: true,
+};
+
 /**
  * Jest konfigürasyonu - Backend test ortamı
  *
@@ -12,30 +36,10 @@ const { compilerOptions } = require("./tsconfig.json");
  */
 module.exports = {
   // Test ortamı
-  preset: "ts-jest",
-  testEnvironment: "node",
   passWithNoTests: true,
-  // TypeScript derleyici ayarları (diagnostics devre dışı bırakılarak hızlı test çalıştırma)
-  globals: {
-    "ts-jest": {
-      diagnostics: false,
-      isolatedModules: true,
-    },
-  },
-
   // Test dosyalarının konumu
   roots: ["<rootDir>/src", "<rootDir>/test"],
   testMatch: ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
-
-  // TypeScript konfigürasyonu
-  transform: {
-    "^.+\\.ts$": "ts-jest",
-  },
-
-  // Path mapping desteği (@/ alias'ları)
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {
-    prefix: "<rootDir>/",
-  }),
 
   // Coverage konfigürasyonu
   collectCoverage: false,
@@ -73,28 +77,25 @@ module.exports = {
   // E2E testleri için ayrı konfigürasyon
   projects: [
     {
+      ...baseProjectConfig,
       displayName: "unit",
-      testMatch: ["<rootDir>/src/**/*.spec.ts"],
-      testEnvironment: "node",
+      testMatch: [
+        "<rootDir>/src/**/*.spec.ts",
+        "<rootDir>/test/unit/**/*.spec.ts",
+      ],
     },
     {
+      ...baseProjectConfig,
       displayName: "integration",
       testMatch: ["<rootDir>/test/integration/**/*.spec.ts"],
-      testEnvironment: "node",
     },
     {
+      ...baseProjectConfig,
       displayName: "e2e",
       testMatch: ["<rootDir>/test/e2e/**/*.spec.ts"],
-      testEnvironment: "node",
     },
   ],
 
   // Verbose output
   verbose: true,
-
-  // Clear mocks between tests
-  clearMocks: true,
-
-  // Restore mocks after each test
-  restoreMocks: true,
 };

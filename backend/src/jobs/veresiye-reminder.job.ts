@@ -2,7 +2,6 @@ import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
 import { PaymentRepository } from "../repositories/payment.repository";
 import { QueueManager, VeresiyeReminderJobPayload } from "./queue.config";
-import { Payment } from "@prisma/client";
 
 /**
  * Veresiye Reminder Job

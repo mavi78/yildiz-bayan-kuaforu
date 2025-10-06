@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Appointment, AppointmentStatus, Prisma } from "@prisma/client";
+import { AppointmentWithRelations } from "@domains/appointments/appointment.types";
 import { PrismaService } from "../common/prisma.service";
 
 /**
@@ -26,7 +27,7 @@ export class AppointmentRepository {
    * @param data - Randevu oluşturma verisi
    * @returns Oluşturulan randevu
    */
-  async create(data: Prisma.AppointmentCreateInput): Promise<Appointment> {
+  async create(data: Prisma.AppointmentCreateInput): Promise<AppointmentWithRelations> {
     return this.prisma.appointment.create({
       data,
       include: {
@@ -282,7 +283,7 @@ export class AppointmentRepository {
     id: string,
     status: AppointmentStatus,
     cancellationReason?: string,
-  ): Promise<Appointment> {
+  ): Promise<AppointmentWithRelations> {
     return this.prisma.appointment.update({
       where: { id },
       data: {

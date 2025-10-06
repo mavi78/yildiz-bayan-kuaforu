@@ -1,12 +1,4 @@
-import {
-  IsNumber,
-  IsEnum,
-  IsDateString,
-  IsOptional,
-  IsString,
-  Min,
-  ValidateIf,
-} from "class-validator";
+import { IsNumber, IsEnum, IsDateString, IsOptional, IsString, Min } from "class-validator";
 import { PaymentMethod } from "@prisma/client";
 
 /**

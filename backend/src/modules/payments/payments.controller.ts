@@ -132,7 +132,7 @@ export class PaymentsController {
     @Query("method") method?: PaymentMethod,
     @Query("startDate") startDate?: string,
     @Query("endDate") endDate?: string,
-    @CurrentUser() user?: any,
+    @CurrentUser() _user?: any,
   ) {
     // Tarih aralığı filtresi varsa
     if (startDate && endDate) {
@@ -235,7 +235,7 @@ export class PaymentsController {
   @UseGuards(AuthGuard("jwt"), RolesGuard)
   @Roles("STAFF", "ADMIN")
   @HttpCode(HttpStatus.OK)
-  async update(@Param("id") id: string, @Body() dto: UpdatePaymentDto, @CurrentUser() user: any) {
+  async update(@Param("id") id: string, @Body() dto: UpdatePaymentDto, @CurrentUser() _user: any) {
     const payment = await this.paymentService.updatePayment(id, {
       amount: dto.amount,
       method: dto.method,

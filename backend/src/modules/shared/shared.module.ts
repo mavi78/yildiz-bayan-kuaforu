@@ -18,8 +18,7 @@ import { CustomerService } from "@services/customer.service";
 import { AppointmentService } from "@services/appointment.service";
 import { PaymentService } from "@services/payment.service";
 import { ReviewService } from "@services/review.service";
-import { NotificationService } from "@services/notifications/notification.service";
-import { EmailChannel } from "@services/notifications/channels/email.channel";
+import { NotificationsModule } from "@modules/notifications/notifications.module";
 import { BcryptService } from "@services/bcrypt.service";
 
 /**
@@ -32,6 +31,7 @@ import { BcryptService } from "@services/bcrypt.service";
  */
 @Global()
 @Module({
+  imports: [NotificationsModule],
   providers: [
     PrismaService,
     RedisService,
@@ -53,8 +53,6 @@ import { BcryptService } from "@services/bcrypt.service";
     AppointmentService,
     PaymentService,
     ReviewService,
-    NotificationService,
-    EmailChannel,
   ],
   exports: [
     PrismaService,
@@ -77,8 +75,7 @@ import { BcryptService } from "@services/bcrypt.service";
     AppointmentService,
     PaymentService,
     ReviewService,
-    NotificationService,
-    EmailChannel,
+    NotificationsModule,
   ],
 })
 export class SharedModule {}

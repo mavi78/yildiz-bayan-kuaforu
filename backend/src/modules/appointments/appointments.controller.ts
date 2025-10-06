@@ -22,7 +22,6 @@ import {
 } from "@usecases/appointments/create-registered-appointment.usecase";
 import { AppointmentService } from "@services/appointment.service";
 import { CurrentUser } from "@common/decorators/current-user.decorator";
-import { Roles } from "@common/decorators/roles.decorator";
 import { RolesGuard } from "@common/guards/roles.guard";
 import { CreateGuestAppointmentDto } from "./dto/create-guest-appointment.dto";
 import { CreateRegisteredAppointmentDto } from "./dto/create-registered-appointment.dto";
@@ -69,7 +68,7 @@ export class AppointmentsController {
   @ApiResponse({ status: 409, description: "Çakışma hatası" })
   async createAppointment(
     @Body() body: CreateGuestAppointmentDto | CreateRegisteredAppointmentDto,
-    @CurrentUser() user?: JwtUser,
+    @CurrentUser() _user?: JwtUser,
   ): Promise<CreateGuestAppointmentResult | CreateRegisteredAppointmentResult> {
     // Misafir randevusu (firstName, lastName, phone alanları var)
     if ("firstName" in body && "lastName" in body && "phone" in body) {
