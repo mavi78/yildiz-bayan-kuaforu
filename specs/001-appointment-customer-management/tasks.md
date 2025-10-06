@@ -55,7 +55,7 @@
 - [x] **T011** User & Invitation Prisma modellerini spec'teki data-model ile kıyasla.
   - Test: `pnpm --filter backend exec prisma format && pnpm --filter backend exec prisma validate`.
 
-- [ ] **T012** UserRepository & InvitationRepository davranışlarını doğrula.
+- [x] **T012** UserRepository & InvitationRepository davranışlarını doğrula.
   - Test: `pnpm --filter backend test -- --runTestsByPath test/unit/repositories/user.repository.spec.ts test/unit/repositories/invitation.repository.spec.ts` (gerekirse yaz).
 
 - [ ] **T013** Auth servisleri (`AuthService`, `AuthController`, guards) FR-001…FR-009 ile uyumlu mu kontrol et.
