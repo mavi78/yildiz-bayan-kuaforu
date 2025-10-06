@@ -20,6 +20,7 @@ import { PaymentService } from "@services/payment.service";
 import { ReviewService } from "@services/review.service";
 import { NotificationsModule } from "@modules/notifications/notifications.module";
 import { BcryptService } from "@services/bcrypt.service";
+import { AuditService } from "@services/audit.service";
 
 /**
  * SharedModule
@@ -48,6 +49,7 @@ import { BcryptService } from "@services/bcrypt.service";
     ReviewRepository,
     NotificationRepository,
     AuditLogRepository,
+    AuditService,
     InvitationService,
     CustomerService,
     AppointmentService,
@@ -70,6 +72,7 @@ import { BcryptService } from "@services/bcrypt.service";
     ReviewRepository,
     NotificationRepository,
     AuditLogRepository,
+    AuditService,
     InvitationService,
     CustomerService,
     AppointmentService,

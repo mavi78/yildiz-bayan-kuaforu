@@ -13,6 +13,7 @@ import { Role } from "@prisma/client";
 import { UserRepository } from "../repositories/user.repository";
 import { BcryptService } from "./bcrypt.service";
 import { RedisService } from "../common/redis.service";
+import { AuditService } from "./audit.service";
 
 /**
  * JWT Payload yapısı
@@ -59,6 +60,7 @@ export class AuthService {
     private readonly bcryptService: BcryptService,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
+    private readonly auditService: AuditService,
   ) {}
 
   /**
@@ -95,12 +97,19 @@ export class AuthService {
 
     if (!user) {
       // Başarısız deneme kaydet
-      await this.recordFailedLoginAttempt(emailOrPhone);
+      const attemptCount = await this.recordFailedLoginAttempt(emailOrPhone);
+
+      // Audit log'a kaydet
+      await this.auditService.logLoginFailure(null, emailOrPhone, "User not found", attemptCount);
+
       throw new UnauthorizedException("Geçersiz kimlik bilgileri");
     }
 
     // Kullanıcı aktif mi kontrol et
     if (!user.isActive) {
+      // Audit log'a kaydet
+      await this.auditService.logLoginFailure(user.id, emailOrPhone, "Account is inactive", 0);
+
       throw new UnauthorizedException("Hesap deaktif durumda");
     }
 
@@ -109,12 +118,19 @@ export class AuthService {
 
     if (!isPasswordValid) {
       // Başarısız deneme kaydet
-      await this.recordFailedLoginAttempt(emailOrPhone);
+      const attemptCount = await this.recordFailedLoginAttempt(emailOrPhone);
+
+      // Audit log'a kaydet
+      await this.auditService.logLoginFailure(user.id, emailOrPhone, "Invalid password", attemptCount);
+
       throw new UnauthorizedException("Geçersiz kimlik bilgileri");
     }
 
     // Başarılı giriş - başarısız denemeleri sıfırla
     await this.resetFailedLoginAttempts(emailOrPhone);
+
+    // Başarılı login'i audit log'a kaydet
+    await this.auditService.logLoginSuccess(user.id, emailOrPhone);
 
     // Şifre hash'inin güncellenm esi gerekip gerekmediğini kontrol et
     const needsRehash = await this.bcryptService.needsRehash(user.passwordHash);
@@ -298,23 +314,41 @@ export class AuthService {
    * 5 başarısız denemeden sonra hesap 15 dakika kilitlenir.
    *
    * @param emailOrPhone - Email veya telefon numarası
+   * @returns Yeni deneme sayısı
    */
-  private async recordFailedLoginAttempt(emailOrPhone: string): Promise<void> {
+  private async recordFailedLoginAttempt(emailOrPhone: string): Promise<number> {
     const key = `login:failed:${emailOrPhone}`;
     const attempts = await this.redisService.get(key);
     const currentAttempts = attempts ? parseInt(attempts, 10) : 0;
     const newAttempts = currentAttempts + 1;
 
     if (newAttempts >= 5) {
+      // Kullanıcıyı bul (audit log için user ID gerekli)
+      const user = await this.userRepository.findByEmailOrPhone(emailOrPhone);
+      const userId = user?.id || "unknown";
+
       // 5. denemeden sonra hesabı kilitle (15 dakika)
       const lockKey = `login:locked:${emailOrPhone}`;
+      const lockedUntil = new Date(Date.now() + 15 * 60 * 1000);
       await this.redisService.set(lockKey, "1", 15 * 60); // 15 dakika TTL
+
+      // Account lock'u audit log'a kaydet
+      await this.auditService.logAccountLock(
+        userId,
+        "Too many failed login attempts",
+        newAttempts,
+        "15 minutes",
+        lockedUntil,
+      );
+
       // Başarısız denemeleri sıfırla
       await this.redisService.del(key);
     } else {
       // Başarısız deneme sayısını artır (15 dakika TTL)
       await this.redisService.set(key, newAttempts.toString(), 15 * 60);
     }
+
+    return newAttempts;
   }
 
   /**

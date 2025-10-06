@@ -15,6 +15,7 @@ import {
 } from "@nestjs/common";
 import { Invitation, Role } from "@prisma/client";
 import { InvitationRepository } from "../repositories/invitation.repository";
+import { AuditService } from "./audit.service";
 
 /**
  * Davet oluşturma için gerekli veriler
@@ -46,7 +47,10 @@ export interface InvitationValidationResult {
  */
 @Injectable()
 export class InvitationService {
-  constructor(private readonly invitationRepository: InvitationRepository) {}
+  constructor(
+    private readonly invitationRepository: InvitationRepository,
+    private readonly auditService: AuditService,
+  ) {}
 
   /**
    * Yeni davet oluşturur
@@ -83,7 +87,7 @@ export class InvitationService {
     expiresAt.setHours(expiresAt.getHours() + 72);
 
     // Daveti oluştur
-    return this.invitationRepository.create({
+    const invitation = await this.invitationRepository.create({
       token,
       email: data.email,
       role: data.role,
@@ -91,6 +95,18 @@ export class InvitationService {
       guestCustomerId: data.guestCustomerId,
       expiresAt,
     });
+
+    // Audit log'a kaydet
+    await this.auditService.logInvitationCreated(
+      invitation.id,
+      data.inviterId,
+      data.email,
+      data.role,
+      expiresAt,
+      data.guestCustomerId,
+    );
+
+    return invitation;
   }
 
   /**

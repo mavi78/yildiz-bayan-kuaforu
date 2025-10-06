@@ -73,11 +73,12 @@
 - [x] **T017** Refresh token / logout mekanizmalarının audit'lenmesini incele.
   - Test: `pnpm --filter backend test -- --runTestsByPath test/unit/services/auth-token.spec.ts`.
 
-- [ ] **T018** Auth modülü Swagger dökümantasyonu FR-005 ile uyumlu mu.
-  - Test: Swagger e2e testi (login/register endpointlerinin 200/401 cevaplarını doğrula).
+- [x] **T018** Auth modülü Swagger dökümantasyonu FR-005 ile uyumlu mu.
+  - Test: `NODE_ENV=test pnpm --filter backend test -- --runTestsByPath test/e2e/auth-swagger.spec.ts`.
 
-- [ ] **T019** Auth alanları için audit log tetiklemeleri (login başarısız, davet oluşturma) kontrol et.
-  - Test: Audit repository unit testleri (`test/unit/repositories/audit-log.repository.spec.ts`).
+- [x] **T019** Auth alanları için audit log tetiklemeleri (login başarısız, davet oluşturma) kontrol et.
+  - Test: `NODE_ENV=test pnpm --filter backend test -- --runTestsByPath test/unit/repositories/audit-log.repository.spec.ts test/unit/services/auth-audit-integration.spec.ts`.
+  - **COMPLETED**: Auth işlemlerinde audit log entegrasyonu tamamlandı. AuditService oluşturuldu (hash chain desteği ile FR-063) ve AuthService/InvitationService'e entegre edildi. Tüm 28 test başarılı (21 repository + 7 integration).
 
 - [ ] **T020** Auth domaininde quickstart Flow-0 (davet → kayıt → login) senaryosunu uçtan uca test et.
   - Test: Yeni bir e2e testi yaz (`test/e2e/auth-invitation.flow.spec.ts`) ve `pnpm --filter backend test -- --selectProjects e2e --runTestsByPath ...` ile çalıştır.
