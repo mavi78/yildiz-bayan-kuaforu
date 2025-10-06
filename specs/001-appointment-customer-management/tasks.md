@@ -67,8 +67,8 @@
 - [x] **T015** Davet akışı (`ConvertGuestToRegisteredUsecase`, `InvitationsController`) FR-021/FR-022 ile uyumlu mu.
   - Test: `pnpm --filter backend test -- --runTestsByPath test/unit/usecases/customers/convert-guest-to-registered.usecase.spec.ts test/unit/controllers/invitations.controller.spec.ts`.
 
-- [ ] **T016** JWT stratejileri ve rol guard’larını kontrol et (`RolesGuard`, `CurrentUser` decorator).
-  - Test: `pnpm --filter backend test -- --runTestsByPath test/unit/common/roles-guard.spec.ts` (gerekirse ekle).
+- [x] **T016** JWT stratejileri ve rol guard'larını kontrol et (`RolesGuard`, `CurrentUser` decorator).
+  - Test: `pnpm --filter backend test -- --runTestsByPath test/unit/common/roles-guard.spec.ts test/unit/common/jwt-strategy.spec.ts test/unit/common/current-user-decorator.spec.ts`.
 
 - [ ] **T017** Refresh token / logout mekanizmalarının audit’lenmesini incele.
   - Test: `pnpm --filter backend test -- --runTestsByPath test/unit/services/auth-token.spec.ts`.
