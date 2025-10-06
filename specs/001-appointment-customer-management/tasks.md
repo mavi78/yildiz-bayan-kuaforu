@@ -44,7 +44,7 @@
   - Adımlar: Default değerler, parola/dB fallback'leri specs'deki FR-043/FR-047a ile uyumlu mu bak.
   - Test: `SKIP_DB_SETUP=true pnpm --filter backend test -- --runTestsByPath test/unit/redis-connections.spec.ts` yeşil olmalı; eksikler varsa düzelt.
 
-- [ ] **T010** Notification kanalları için temel sağlık kontrollerini gözden geçir (`NotificationService`, `email.channel`, `sms.channel`).
+- [x] **T010** Notification kanalları için temel sağlık kontrollerini gözden geçir (`NotificationService`, `email.channel`, `sms.channel`).
   - Adımlar: `NotificationService` planmd/taslakta belirtilen multi-channel davranışı destekliyor mu kontrol et.
   - Test: `pnpm --filter backend test -- --runTestsByPath src/services/notifications/channels/email.channel.spec.ts` ve SMS için benzeri.
 

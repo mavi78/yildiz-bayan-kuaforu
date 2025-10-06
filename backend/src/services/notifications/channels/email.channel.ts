@@ -481,7 +481,8 @@ export class EmailChannel {
     appointmentDate: string,
     serviceName: string,
   ): { subject: string; html: string; text: string } {
-    const subject = `Ödeme Hatırlatması - ${amount} TL`;
+    const formattedAmount = amount.toFixed(2);
+    const subject = `Ödeme Hatırlatması - ${formattedAmount} TL`;
 
     const html = `
       <!DOCTYPE html>
@@ -516,7 +517,7 @@ export class EmailChannel {
             
             <div class="payment-details">
               <h3>Ödeme Detayları</h3>
-              <div class="amount">${amount} TL</div>
+              <div class="amount">${formattedAmount} TL</div>
               <p><strong>Vade Tarihi:</strong> ${dueDate}</p>
               <p><strong>Randevu Tarihi:</strong> ${appointmentDate}</p>
               <p><strong>Hizmet:</strong> ${serviceName}</p>
@@ -544,7 +545,7 @@ export class EmailChannel {
       
       Veresiye ödemenizin vadesi yaklaşıyor. Ödeme detaylarınız:
       
-      Tutar: ${amount} TL
+      Tutar: ${formattedAmount} TL
       Vade Tarihi: ${dueDate}
       Randevu Tarihi: ${appointmentDate}
       Hizmet: ${serviceName}

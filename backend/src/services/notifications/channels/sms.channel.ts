@@ -555,9 +555,10 @@ export class SmsChannel {
    * @returns SMS mesajı
    */
   generatePaymentReminderSms(customerName: string, amount: number, dueDate: string): string {
+    const formattedAmount = amount.toFixed(2);
     let message = `Merhaba ${customerName},\n\n`;
     message += `Odeme Hatirlatmasi:\n\n`;
-    message += `Tutar: ${amount} TL\n`;
+    message += `Tutar: ${formattedAmount} TL\n`;
     message += `Vade Tarihi: ${dueDate}\n`;
     message += `\nOdemenizi vade tarihinden once yapmanizi rica ederiz.\n`;
     message += `\nYildiz Bayan Kuaforu`;
